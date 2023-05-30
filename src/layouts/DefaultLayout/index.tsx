@@ -13,7 +13,7 @@ function DefautlLayout({ children }: MyComponentProps): JSX.Element {
         <div className={cx('wrapper')}>
             <div className={cx('inner')}>
                 <Header />
-                {children}
+                <div className={cx('body')}>{children}</div>
             </div>
         </div>
     );

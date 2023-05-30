@@ -1,3 +1,8 @@
+:root {
+    --black-color: #000;
+    --font-family: 'Roboto', sans-serif;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -7,4 +12,24 @@
 html {
     font-size: 62.5%;
     scroll-behavior: smooth;
+}
+
+body {
+    font-family: var(--font-family);
+}
+
+input {
+    outline: none;
+    border: none;
+}
+
+@font-face {
+    font-family: Roboto;
+    src: url('../../assets/fonts/Roboto-Bold.woff2');
+    font-weight: 600;
+}
+
+@font-face {
+    font-family: Roboto;
+    src: url('../../assets/fonts/Roboto-Regular.woff2');
 }
