@@ -2,12 +2,20 @@ import classNames from 'classnames/bind';
 import style from './Navigate.module.scss';
 import HeadlessTippy from '@tippyjs/react/headless';
 import 'tippy.js/dist/tippy.css';
-import { listCategory } from '../../apiLocal/listCategory';
+import { categories } from '../../apiLocal/categories';
 import { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 
 const cx = classNames.bind(style);
 function Navigate() {
     const [showList, setShowList] = useState(false);
+    const [showOverlay, setShowOverlay] = useState(false);
+
+    const navigate = useNavigate();
+
+    const handleItem = (slug: string) => {
+        navigate(`/category/${slug}`);
+    };
 
     return (
         <div className={cx('wrapper')}>
@@ -21,8 +29,14 @@ function Navigate() {
                     offset={[0, 0]}
                     render={() => (
                         <div className={cx('list')}>
-                            {listCategory.map((item, index) => (
-                                <div key={index} className={cx('list-item')}>
+                            {categories.map((item, index) => (
+                                <div
+                                    onMouseEnter={() => setShowOverlay(true)}
+                                    onMouseLeave={() => setShowOverlay(false)}
+                                    onClick={() => handleItem(item.slug)}
+                                    key={index}
+                                    className={cx('list-item')}
+                                >
                                     {item.title}
                                 </div>
                             ))}
@@ -44,10 +58,13 @@ function Navigate() {
                 </HeadlessTippy>
                 <div className={cx('item')}>Steam Gift Cards</div>
                 <div className={cx('item')}>Bestsellers</div>
-                <div className={cx('item')}>Random Keys</div>
+                <Link to="/editor/1" className={cx('item')}>
+                    Random Keys
+                </Link>
                 <div className={cx('item')}>Software</div>
                 <div className={cx('plus')}>Save more with G2A Plus</div>
             </div>
+            <div className={cx('overlay', showOverlay && 'show')}></div>
         </div>
     );
 }

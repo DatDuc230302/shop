@@ -2,7 +2,7 @@ import { routePath as path } from './routers';
 import DefautlLayout from '../layouts/DefaultLayout';
 import Home from '../pages/Home';
 import Editor from '../pages/Editor';
-import Category from '../pages/category';
+import Category from '../pages/Category';
 
 interface route {
     path: string;

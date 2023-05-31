@@ -7,15 +7,19 @@ const cx = classNames.bind(style);
 function Category() {
     const url = window.location.href;
     const params = useParams();
-    let str = url.indexOf('=');
+    let str = url.indexOf('query=');
 
     const [query, setQuery] = useState('');
 
     useEffect(() => {
-        let temp = url.slice(str + 1);
-        temp = temp.replace(/%/g, ' ');
-        temp = temp.replace(/20/g, '');
-        setQuery(temp);
+        if (str !== -1) {
+            let temp = url.slice(str + 6);
+            temp = temp.replace(/%/g, ' ');
+            temp = temp.replace(/20/g, '');
+            setQuery(temp);
+        } else {
+            setQuery('Dat');
+        }
     }, [params]);
 
     return (

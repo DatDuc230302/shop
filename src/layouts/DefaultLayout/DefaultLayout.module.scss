@@ -5,5 +5,20 @@
 .body {
     padding-top: 120px;
     height: 1000px;
-    background-color: #ccc;
+    background-color: #f9f9f9;
+
+    width: 100%;
+    display: flex;
+    padding: 120px 16px 0 16px;
+    justify-content: center;
+
+    &.tb,
+    &.mb {
+        padding-top: 126px;
+    }
+}
+
+.body-inner {
+    width: 1170px;
+    height: 100%;
 }

@@ -81,6 +81,10 @@
         text-decoration: underline;
         border-top: 1px solid #ccc;
         border-bottom: 1px solid #ccc;
+
+        .overlay {
+            display: block;
+        }
     }
 }
 
@@ -118,5 +122,22 @@
 
     &:hover {
         background-color: #6e11ef;
+    }
+}
+
+.overlay {
+    position: fixed;
+    top: 120px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    visibility: hidden;
+    opacity: 0;
+    transition: all linear 0.3s;
+
+    &.show {
+        visibility: visible;
+        opacity: 1;
     }
 }

@@ -39,10 +39,8 @@ function Header() {
     };
 
     document.onkeydown = (e) => {
-        const value = valueInput.toLocaleLowerCase();
         if (e.which === 13) {
-            valueInput.length > 0 &&
-                (check !== 0 ? navigate(`/category/${cateSearch}?query=${value}`) : navigate(`/search?query=${value}`));
+            handleSearch();
         }
     };
 
@@ -198,7 +196,7 @@ function Header() {
                         </div>
                     )}
                     <div className={cx('actions')}>
-                        <Link to={'/editor/1'} className={cx('user')}>
+                        <div className={cx('user')}>
                             <svg
                                 version="1.1"
                                 xmlns="http://www.w3.org/2000/svg"
@@ -211,7 +209,7 @@ function Header() {
                                     d="M17 8c0 2.76-2.24 5-5 5s-5-2.24-5-5 2.24-5 5-5 5 2.24 5 5zm4 10l-6-3H9l-6 3v3h18v-3z"
                                 ></path>
                             </svg>
-                        </Link>
+                        </div>
                         {pc && <div className={cx('auth')}>Sign in / Register</div>}
                         <div className={cx('cart')}>
                             <svg
