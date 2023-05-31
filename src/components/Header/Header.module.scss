@@ -3,7 +3,7 @@
     background-color: var(--black-color);
     display: flex;
     justify-content: center;
-    padding: 0 24px;
+    padding: 0 16px;
     position: fixed;
     user-select: none;
 }
@@ -19,11 +19,25 @@
     width: 100%;
     display: flex;
     align-items: center;
+    justify-content: space-between;
+}
+
+.menu-logo {
+    display: flex;
+    height: 30px;
+    align-items: center;
+}
+
+.menu {
+    cursor: pointer;
+    margin-right: 8px;
 }
 
 .logo {
-    width: 200px;
-    height: 30px;
+    &.pc {
+        height: 30px;
+        width: 200px;
+    }
 }
 
 .search {
@@ -36,10 +50,16 @@
 .search-input {
     padding: 11px 40px 11px 15px;
     border-radius: 3px 0px 0px 3px;
-    height: 100%;
+    height: 40px;
     width: 67.165%;
     color: #7575a1;
     background-color: white;
+
+    &.tb,
+    &.mb {
+        width: 100%;
+        border-radius: 3px;
+    }
 
     &::placeholder {
         transform: translateY(1px);
@@ -145,6 +165,7 @@
 }
 
 .user {
+    flex-shrink: 0;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -164,6 +185,7 @@
 }
 
 .cart {
+    flex-shrink: 0;
     cursor: pointer;
     margin-left: 25px;
     display: flex;
