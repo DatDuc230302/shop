@@ -33,7 +33,8 @@ function Header() {
     };
 
     const handleSearch = () => {
-        const value = valueInput.toLocaleLowerCase();
+        // const value = valueInput.toLocaleLowerCase();
+        const value = valueInput;
         valueInput.length > 0 &&
             (check !== 0 ? navigate(`/category/${cateSearch}?query=${value}`) : navigate(`/search?query=${value}`));
     };

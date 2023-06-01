@@ -2,6 +2,7 @@ import classNames from 'classnames/bind';
 import style from './Category.module.scss';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import SearchArea from '../../components/SearchArea';
 
 const cx = classNames.bind(style);
 function Category() {
@@ -24,7 +25,9 @@ function Category() {
 
     return (
         <div className={cx('wrapper')}>
-            <div className={cx('inner')}>{query}</div>
+            <div className={cx('inner')}>
+                <SearchArea />
+            </div>
         </div>
     );
 }

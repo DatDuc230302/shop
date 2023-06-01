@@ -1,7 +1,8 @@
 import classNames from 'classnames/bind';
 import style from './Home.module.scss';
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import SearchArea from '../../components/SearchArea';
 
 const cx = classNames.bind(style);
 function Home() {
@@ -24,17 +25,7 @@ function Home() {
 
     return (
         <div className={cx('wrapper')}>
-            <div className={cx('inner')}>
-                {query.length > 0 && (
-                    <div className={cx('result')}>
-                        <Link to={'/'} className={cx('result-link')}>
-                            G2A
-                        </Link>
-                        <span className={cx('result-character')}> › </span>
-                        <span className={cx('result-title')}>Search results</span>
-                    </div>
-                )}
-            </div>
+            <div className={cx('inner')}>{query.length > 0 && <SearchArea />}</div>
         </div>
     );
 }
