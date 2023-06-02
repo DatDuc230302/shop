@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import { sorts } from '../../apiLocal/sorts';
 import HeadLessTippy from '@tippyjs/react/headless';
 import 'tippy.js/dist/tippy.css';
+import SearchArea1 from '../SearchArea1';
 
 const cx = classNames.bind(style);
 
@@ -146,6 +147,7 @@ function SearchArea() {
                         </div>
                     </div>
                 </div>
+                <SearchArea1 query={query} />
             </div>
         </div>
     );
