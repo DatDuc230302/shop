@@ -212,7 +212,7 @@ function Header() {
                         <Auth />
                     </div>
                 </div>
-                {pc ? (
+                {/* {pc ? (
                     <Navigate />
                 ) : (
                     <input
@@ -222,7 +222,7 @@ function Header() {
                         type="text"
                         className={cx('search-input', tb && 'tb', mb && 'mb')}
                     />
-                )}
+                )} */}
             </div>
         </div>
     );

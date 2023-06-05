@@ -3,12 +3,14 @@ import style from './Auth.module.scss';
 import { GoogleLogin } from 'react-google-login';
 import { GoogleLogout } from 'react-google-login';
 import { useEffect, useState } from 'react';
-import HeadlessTippy from '@tippyjs/react/headless';
 import { useMediaQuery } from 'react-responsive';
+import axios from 'axios';
+import HeadlessTippy from '@tippyjs/react/headless';
 import 'tippy.js/dist/tippy.css';
-const clientId = '796532655839-3484b4jq39k3kin9f8v1hfv8f0q1slvs.apps.googleusercontent.com';
+import { Link } from 'react-router-dom';
 
 const cx = classNames.bind(style);
+const clientId = '796532655839-3484b4jq39k3kin9f8v1hfv8f0q1slvs.apps.googleusercontent.com';
 
 function Auth() {
     const pc = useMediaQuery({ minWidth: 992 });
@@ -19,24 +21,45 @@ function Auth() {
     const [name, setName] = useState('');
     const [avatar, setAvatar] = useState('');
     const [mail, setMail] = useState('');
+    const [rule, setRule] = useState(-1);
+    const [carts, serCarts] = useState(0);
     const [currentUser, setCurrentUser] = useState(false);
 
     useEffect(() => {
-        if (name.length > 0 && avatar.length > 0) {
+        if (name.length > 0) {
             setCurrentUser(true);
         } else {
             setCurrentUser(false);
         }
-    }, [name, avatar]);
+    }, [name]);
 
     // Login
-    const loginSuccess = (res: any) => {
+    const loginSuccess = async (res: any) => {
         const api = res.profileObj;
-        localStorage.setItem('name', `${api.name}`);
-        localStorage.setItem('avatar', `${api.imageUrl}`);
-        setName(api.name);
-        setAvatar(api.imageUrl);
-        setMail(api.email);
+        const resData = await axios.post('http://localhost:5000/users/findId', { id: api.googleId });
+        if (resData.data.length > 0) {
+            const data = resData.data[0];
+            setName(data.name);
+            setAvatar(data.avatar);
+            setMail(data.email);
+            setRule(data.rule);
+            serCarts(data.carts.length);
+            localStorage.setItem('currentUser', data.id);
+        } else {
+            setName(api.name);
+            setAvatar(api.imageUrl);
+            setMail(api.email);
+            setRule(1);
+            localStorage.setItem('currentUser', api.googleId);
+            await axios.post('http://localhost:5000/users/add', {
+                id: api.googleId,
+                name: api.name,
+                avatar: api.imageUrl,
+                rule: 1,
+                email: api.email,
+                carts: [],
+            });
+        }
         setShow(false);
     };
     const loginFailure = (res: any) => {
@@ -46,10 +69,8 @@ function Auth() {
     // Logout
 
     const logoutSuccess = () => {
-        localStorage.removeItem('name');
-        localStorage.removeItem('avatar');
+        localStorage.removeItem('currentUser');
         setName('');
-        setAvatar('');
         setShow(false);
     };
 
@@ -95,16 +116,13 @@ function Auth() {
                                 {currentUser ? (
                                     <div className={cx('member')}>
                                         <div className={cx('info')}>
-                                            <img
-                                                className={cx('avatar')}
-                                                src={'https://static.g2a.com/xAsiiuY6oKCFifTi59qELP/avatar_5.svg'}
-                                                alt=""
-                                            />
+                                            <img className={cx('avatar')} src={avatar} alt="" />
                                             <div className={cx('detail')}>
                                                 <span className={cx('gmail')}>{mail}</span>
                                                 <span className={cx('rule')}>
                                                     <div className={cx('rule-box')}></div>
-                                                    G2A Plus inactive
+                                                    {rule === 0 && 'Admin'}
+                                                    {rule === 1 && 'Member'}
                                                 </span>
                                             </div>
                                         </div>
@@ -120,10 +138,10 @@ function Auth() {
                                                     <g
                                                         strokeLinecap="round"
                                                         strokeLinejoin="round"
-                                                        stroke-width="2"
+                                                        strokeWidth="2"
                                                         stroke="#757575"
                                                         fill="none"
-                                                        stroke-miterlimit="10"
+                                                        strokeMiterlimit="10"
                                                     >
                                                         <circle cx="12" cy="12" r="3"></circle>
                                                         <path d="M20 12a8.049 8.049 0 00-.188-1.713l2.714-2.055-2-3.464-3.143 1.326a7.987 7.987 0 00-2.961-1.719L14 1h-4l-.422 3.375a7.987 7.987 0 00-2.961 1.719L3.474 4.768l-2 3.464 2.714 2.055a7.9 7.9 0 000 3.426l-2.714 2.055 2 3.464 3.143-1.326a7.987 7.987 0 002.961 1.719L10 23h4l.422-3.375a7.987 7.987 0 002.961-1.719l3.143 1.326 2-3.464-2.714-2.055A8.049 8.049 0 0020 12z"></path>
@@ -175,13 +193,14 @@ function Auth() {
                             )}
                         </div>
                     </HeadlessTippy>
-                    {pc && <div className={cx('auth')}>{currentUser ? 'Your G2A' : 'Sign in / Register'}</div>}
+                    {pc && <div className={cx('auth')}>{currentUser ? name : 'Sign in / Register'}</div>}
                 </div>
-                <div className={cx('cart')}>
+                <Link to={'/page/cart'} className={cx('cart')}>
                     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width={24} height={24}>
                         <path fill="white" d="M21 7l-2 10H5L2.4 4H0V2h5l1 5h15zM7 22h3v-3H7v3zm7 0h3v-3h-3v3z"></path>
                     </svg>
-                </div>
+                    {carts > 0 && currentUser && <span className={cx('quantity')}>{carts}</span>}
+                </Link>
             </div>
         </div>
     );

@@ -3,6 +3,7 @@ import DefautlLayout from '../layouts/DefaultLayout';
 import Home from '../pages/Home';
 import Editor from '../pages/Editor';
 import Category from '../pages/Category';
+import Cart from '../pages/Cart';
 
 interface route {
     path: string;
@@ -15,4 +16,5 @@ export const routes: route[] = [
     { path: path.home, component: <Home />, layout: DefautlLayout },
     { path: path.editor, component: <Editor />, layout: DefautlLayout },
     { path: path.category, component: <Category />, layout: DefautlLayout },
+    { path: path.cart, component: <Cart />, layout: DefautlLayout },
 ];
