@@ -6,25 +6,27 @@ import { useMediaQuery } from 'react-responsive';
 import HeadlessTippy from '@tippyjs/react/headless';
 import 'tippy.js/dist/tippy.css';
 import { categories } from '../../apiLocal/categories';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navigate from '../Navigate';
+import { gapi } from 'gapi-script';
+import Auth from '../Auth';
 
 const cx = classNames.bind(style);
+const clientId = '796532655839-3484b4jq39k3kin9f8v1hfv8f0q1slvs.apps.googleusercontent.com';
+
 function Header() {
     const pc = useMediaQuery({ minWidth: 992 });
-
     const tb = useMediaQuery({ minWidth: 768, maxWidth: 991 });
-
     const mb = useMediaQuery({ maxWidth: 767 });
+
+    const navigate = useNavigate();
 
     const [check, setCheck] = useState(0);
     const [cateTitle, setCateTitle] = useState('All categories');
     const [turnCate, setTurnCate] = useState(false);
     const [valueInput, setValueInput] = useState('');
     const [cateSearch, setCateSearch] = useState('');
-
-    const navigate = useNavigate();
 
     const handleItem = (id: number, title: string, slug?: string) => {
         setCheck(id);
@@ -44,6 +46,16 @@ function Header() {
             handleSearch();
         }
     };
+
+    useEffect(() => {
+        function start() {
+            gapi.client.init({
+                clientId: clientId,
+                scope: 'email profile',
+            });
+        }
+        gapi.load('client:auth2', start);
+    });
 
     return (
         <div className={cx('wrapper')}>
@@ -197,35 +209,7 @@ function Header() {
                         </div>
                     )}
                     <div className={cx('actions')}>
-                        <div className={cx('user')}>
-                            <svg
-                                version="1.1"
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 24 24"
-                                width={24}
-                                height={24}
-                            >
-                                <path
-                                    fill="white"
-                                    d="M17 8c0 2.76-2.24 5-5 5s-5-2.24-5-5 2.24-5 5-5 5 2.24 5 5zm4 10l-6-3H9l-6 3v3h18v-3z"
-                                ></path>
-                            </svg>
-                        </div>
-                        {pc && <div className={cx('auth')}>Sign in / Register</div>}
-                        <div className={cx('cart')}>
-                            <svg
-                                version="1.1"
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 24 24"
-                                width={24}
-                                height={24}
-                            >
-                                <path
-                                    fill="white"
-                                    d="M21 7l-2 10H5L2.4 4H0V2h5l1 5h15zM7 22h3v-3H7v3zm7 0h3v-3h-3v3z"
-                                ></path>
-                            </svg>
-                        </div>
+                        <Auth />
                     </div>
                 </div>
                 {pc ? (

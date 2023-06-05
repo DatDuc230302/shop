@@ -84,6 +84,11 @@
     flex: 1;
     min-height: 400px;
     padding-left: 30px;
+
+    &.tb,
+    &.mb {
+        padding-left: 0;
+    }
 }
 
 .tag {
@@ -290,6 +295,11 @@
     overflow: hidden;
     text-overflow: ellipsis;
     line-height: 20px;
+
+    &.tb,
+    &.mb {
+        max-width: 200px;
+    }
 }
 
 .layout2-buy {

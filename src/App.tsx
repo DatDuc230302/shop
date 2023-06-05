@@ -1,5 +1,6 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { routes } from './routes';
+import { useEffect } from 'react';
 
 // Import the functions you need from the SDKs you need
 import { initializeApp } from 'firebase/app';

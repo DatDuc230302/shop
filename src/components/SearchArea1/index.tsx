@@ -27,6 +27,57 @@ const list = [
     },
 ];
 
+const pros = [
+    {
+        img: 'https://images.g2a.com/newlayout/470x275/1x1x0/xbox-game-pass-for-pc-3-months-global-i10000080969032/5cc03659ae653ac9c43f9f65',
+        name: 'Xbox Game Pass for PC 3 Months - Key - GLOBAL',
+        price: 26.9,
+        discount: 36,
+        base: 'SPONSORED',
+        category: 'games',
+    },
+    {
+        img: 'https://images.g2a.com/newlayout/470x275/1x1x0/xbox-game-pass-for-pc-3-months-global-i10000080969032/5cc03659ae653ac9c43f9f65',
+        name: 'Xbox Game Pass for PC 3 Months - Key - GLOBAL',
+        price: 16.03,
+        discount: 0,
+        base: 'SPONSORED',
+        category: 'games',
+    },
+    {
+        img: 'https://images.g2a.com/newlayout/470x275/1x1x0/xbox-game-pass-for-pc-3-months-global-i10000080969032/5cc03659ae653ac9c43f9f65',
+        name: 'Xbox Game Pass for PC 3 Months - Key - GLOBAL',
+        price: 74.27,
+        discount: 3,
+        base: 'SPONSORED',
+        category: 'games',
+    },
+    {
+        img: 'https://images.g2a.com/newlayout/470x275/1x1x0/xbox-game-pass-for-pc-3-months-global-i10000080969032/5cc03659ae653ac9c43f9f65',
+        name: 'Xbox Game Pass for PC 3 Months - Key - GLOBAL',
+        price: 26.9,
+        discount: 36,
+        base: 'SPONSORED',
+        category: 'games',
+    },
+    {
+        img: 'https://images.g2a.com/newlayout/470x275/1x1x0/xbox-game-pass-for-pc-3-months-global-i10000080969032/5cc03659ae653ac9c43f9f65',
+        name: 'Xbox Game Pass for PC 3 Months - Key - GLOBAL',
+        price: 16.03,
+        discount: 0,
+        base: 'SPONSORED',
+        category: 'games',
+    },
+    {
+        img: 'https://images.g2a.com/newlayout/470x275/1x1x0/xbox-game-pass-for-pc-3-months-global-i10000080969032/5cc03659ae653ac9c43f9f65',
+        name: 'Xbox Game Pass for PC 3 Months - Key - GLOBAL',
+        price: 74.27,
+        discount: 1,
+        base: 'SPONSORED',
+        category: 'games',
+    },
+];
+
 function SearchArea1({ query, view }: any) {
     const [priceMin, setPriceMin] = useState(0);
     const [priceMax, setPriceMax] = useState(0);
@@ -61,7 +112,7 @@ function SearchArea1({ query, view }: any) {
 
     const handleCategories = (title: string) => {
         const slug = title.toLowerCase();
-        navigate(`/category/${slug}?query=${query}`);
+        query.length > 0 ? navigate(`/category/${slug}?query=${query}`) : navigate(`/category/${slug}`);
     };
 
     return (
@@ -110,7 +161,7 @@ function SearchArea1({ query, view }: any) {
                         </div>
                     </div>
                 )}
-                <div className={cx('body')}>
+                <div className={cx('body', tb && 'tb', mb && 'mb')}>
                     {showFilterPrice && (
                         <div className={cx('tag')}>
                             <div onClick={() => handleClose()} className={cx('tag-price')}>
@@ -129,7 +180,7 @@ function SearchArea1({ query, view }: any) {
                             </div>
                         </div>
                     )}
-                    {view === 1 ? <Layout1 /> : <Layout2 />}
+                    {view === 1 ? <Layout1 api={pros} /> : <Layout2 api={pros} />}
                 </div>
             </div>
         </div>

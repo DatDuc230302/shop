@@ -19,6 +19,10 @@ function SearchArea() {
     key = key + params.key;
     const [query, setQuery] = useState('');
 
+    useEffect(() => {
+        setQuery('');
+    }, [params.key]);
+
     const newKey = key.charAt(0).toUpperCase() + key.slice(1);
 
     const pc = useMediaQuery({ minWidth: 992 });
@@ -63,13 +67,20 @@ function SearchArea() {
 
                     <span className={cx('result-title')}>Search results</span>
                 </div>
-
                 {pc && (
                     <div className={cx('tools')}>
                         <div className={cx('tools-result')}>
-                            <span className={cx('tools-name')}>{query} - search results</span>
+                            <span className={cx('tools-name')}>
+                                {query.length > 0 ? `${query} - search results` : newKey}
+                            </span>
                             <div className={cx('tools-quantity')}>
-                                74 results for: <span className={cx('toolsQuantity-name')}>"{query}"</span>
+                                {query.length > 0 ? (
+                                    <>
+                                        74 results for: <span className={cx('toolsQuantity-name')}>"{query}"</span>
+                                    </>
+                                ) : (
+                                    '123124 products'
+                                )}
                             </div>
                         </div>
                         <div className={cx('tools-actions')}>
