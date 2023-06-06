@@ -2,6 +2,7 @@ import classNames from 'classnames/bind';
 import style from './DefaultLayout.module.scss';
 import Header from '../../components/Header';
 import { useMediaQuery } from 'react-responsive';
+import Navigate from '../../components/Navigate';
 
 const cx = classNames.bind(style);
 

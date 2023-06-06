@@ -1,9 +1,12 @@
 import { routePath as path } from './routers';
 import DefautlLayout from '../layouts/DefaultLayout';
+import SecondLayout from '../layouts/SecondLayout';
 import Home from '../pages/Home';
 import Editor from '../pages/Editor';
 import Category from '../pages/Category';
 import Cart from '../pages/Cart';
+//
+import HomeAdmin from '../admin/pages/HomeAdmin';
 
 interface route {
     path: string;
@@ -17,4 +20,5 @@ export const routes: route[] = [
     { path: path.editor, component: <Editor />, layout: DefautlLayout },
     { path: path.category, component: <Category />, layout: DefautlLayout },
     { path: path.cart, component: <Cart />, layout: DefautlLayout },
+    { path: path.homeAdmin, component: <HomeAdmin />, layout: SecondLayout },
 ];

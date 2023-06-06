@@ -61,7 +61,9 @@ function Navigate() {
                 <Link to="/editor/1" className={cx('item')}>
                     Random Keys
                 </Link>
-                <div className={cx('item')}>Software</div>
+                <Link to={'/admin/home'} className={cx('item')}>
+                    Software
+                </Link>
                 <div className={cx('plus')}>Save more with G2A Plus</div>
             </div>
             <div className={cx('overlay', showOverlay && 'show')}></div>

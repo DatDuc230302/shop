@@ -1,37 +1,36 @@
 import classNames from 'classnames/bind';
 import style from './Auth.module.scss';
+import axios from 'axios';
+import HeadlessTippy from '@tippyjs/react/headless';
+import 'tippy.js/dist/tippy.css';
 import { GoogleLogin } from 'react-google-login';
 import { GoogleLogout } from 'react-google-login';
 import { useEffect, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
-import axios from 'axios';
-import HeadlessTippy from '@tippyjs/react/headless';
-import 'tippy.js/dist/tippy.css';
 import { Link } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux/es/exports';
+import authAction from '../../redux/actions/authAction';
 
 const cx = classNames.bind(style);
 const clientId = '796532655839-3484b4jq39k3kin9f8v1hfv8f0q1slvs.apps.googleusercontent.com';
 
 function Auth() {
+    // Responsive
     const pc = useMediaQuery({ minWidth: 992 });
     const tb = useMediaQuery({ minWidth: 768, maxWidth: 991 });
     const mb = useMediaQuery({ maxWidth: 767 });
 
+    // State
     const [show, setShow] = useState(false);
     const [name, setName] = useState('');
     const [avatar, setAvatar] = useState('');
     const [mail, setMail] = useState('');
     const [rule, setRule] = useState(-1);
     const [carts, serCarts] = useState(0);
-    const [currentUser, setCurrentUser] = useState(false);
 
-    useEffect(() => {
-        if (name.length > 0) {
-            setCurrentUser(true);
-        } else {
-            setCurrentUser(false);
-        }
-    }, [name]);
+    //Redux
+    const dispath = useDispatch();
+    const currentUser = useSelector((state: any) => state.authReducer);
 
     // Login
     const loginSuccess = async (res: any) => {
@@ -45,6 +44,7 @@ function Auth() {
             setRule(data.rule);
             serCarts(data.carts.length);
             localStorage.setItem('currentUser', data.id);
+            localStorage.setItem('carts', data.carts.length);
         } else {
             setName(api.name);
             setAvatar(api.imageUrl);
@@ -60,6 +60,7 @@ function Auth() {
                 carts: [],
             });
         }
+        dispath(authAction('LOGIN'));
         setShow(false);
     };
     const loginFailure = (res: any) => {
@@ -67,10 +68,10 @@ function Auth() {
     };
 
     // Logout
-
     const logoutSuccess = () => {
         localStorage.removeItem('currentUser');
-        setName('');
+        localStorage.removeItem('carts');
+        dispath(authAction('LOGOUT'));
         setShow(false);
     };
 
