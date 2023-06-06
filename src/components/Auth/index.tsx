@@ -10,6 +10,7 @@ import { useMediaQuery } from 'react-responsive';
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux/es/exports';
 import authAction from '../../redux/actions/authAction';
+import { ServerURL } from '../../connect';
 
 const cx = classNames.bind(style);
 const clientId = '796532655839-3484b4jq39k3kin9f8v1hfv8f0q1slvs.apps.googleusercontent.com';
@@ -35,7 +36,7 @@ function Auth() {
     // Login
     const loginSuccess = async (res: any) => {
         const api = res.profileObj;
-        const resData = await axios.post('http://localhost:5000/users/findId', { id: api.googleId });
+        const resData = await axios.post(`${ServerURL}/users/findId`, { id: api.googleId });
         if (resData.data.length > 0) {
             const data = resData.data[0];
             setName(data.name);
@@ -51,7 +52,7 @@ function Auth() {
             setMail(api.email);
             setRule(1);
             localStorage.setItem('currentUser', api.googleId);
-            await axios.post('http://localhost:5000/users/add', {
+            await axios.post(`${ServerURL}/users/add`, {
                 id: api.googleId,
                 name: api.name,
                 avatar: api.imageUrl,

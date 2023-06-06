@@ -5,7 +5,6 @@ import { useNavigate } from 'react-router-dom';
 import { useMediaQuery } from 'react-responsive';
 import Layout1 from './Layout1';
 import Layout2 from './Layout2';
-
 const cx = classNames.bind(style);
 
 const list = [
@@ -27,69 +26,21 @@ const list = [
     },
 ];
 
-const pros = [
-    {
-        img: 'https://images.g2a.com/newlayout/470x275/1x1x0/xbox-game-pass-for-pc-3-months-global-i10000080969032/5cc03659ae653ac9c43f9f65',
-        name: 'Xbox Game Pass for PC 3 Months - Key - GLOBAL',
-        price: 26.9,
-        discount: 36,
-        base: 'SPONSORED',
-        category: 'games',
-    },
-    {
-        img: 'https://images.g2a.com/newlayout/470x275/1x1x0/xbox-game-pass-for-pc-3-months-global-i10000080969032/5cc03659ae653ac9c43f9f65',
-        name: 'Xbox Game Pass for PC 3 Months - Key - GLOBAL',
-        price: 16.03,
-        discount: 0,
-        base: 'SPONSORED',
-        category: 'games',
-    },
-    {
-        img: 'https://images.g2a.com/newlayout/470x275/1x1x0/xbox-game-pass-for-pc-3-months-global-i10000080969032/5cc03659ae653ac9c43f9f65',
-        name: 'Xbox Game Pass for PC 3 Months - Key - GLOBAL',
-        price: 74.27,
-        discount: 3,
-        base: 'SPONSORED',
-        category: 'games',
-    },
-    {
-        img: 'https://images.g2a.com/newlayout/470x275/1x1x0/xbox-game-pass-for-pc-3-months-global-i10000080969032/5cc03659ae653ac9c43f9f65',
-        name: 'Xbox Game Pass for PC 3 Months - Key - GLOBAL',
-        price: 26.9,
-        discount: 36,
-        base: 'SPONSORED',
-        category: 'games',
-    },
-    {
-        img: 'https://images.g2a.com/newlayout/470x275/1x1x0/xbox-game-pass-for-pc-3-months-global-i10000080969032/5cc03659ae653ac9c43f9f65',
-        name: 'Xbox Game Pass for PC 3 Months - Key - GLOBAL',
-        price: 16.03,
-        discount: 0,
-        base: 'SPONSORED',
-        category: 'games',
-    },
-    {
-        img: 'https://images.g2a.com/newlayout/470x275/1x1x0/xbox-game-pass-for-pc-3-months-global-i10000080969032/5cc03659ae653ac9c43f9f65',
-        name: 'Xbox Game Pass for PC 3 Months - Key - GLOBAL',
-        price: 74.27,
-        discount: 1,
-        base: 'SPONSORED',
-        category: 'games',
-    },
-];
+function SearchArea1({ query, view, api }: any) {
+    // Responsive
+    const pc = useMediaQuery({ minWidth: 992 });
+    const tb = useMediaQuery({ minWidth: 768, maxWidth: 991 });
+    const mb = useMediaQuery({ maxWidth: 767 });
 
-function SearchArea1({ query, view }: any) {
+    // State
     const [priceMin, setPriceMin] = useState(0);
     const [priceMax, setPriceMax] = useState(0);
     const [showFilterPrice, setFilterPricee] = useState(false);
 
-    const pc = useMediaQuery({ minWidth: 992 });
-
-    const tb = useMediaQuery({ minWidth: 768, maxWidth: 991 });
-
-    const mb = useMediaQuery({ maxWidth: 767 });
-
+    // React Router
     const navigate = useNavigate();
+
+    // Effect
 
     useEffect(() => {
         if (priceMin > 0 && priceMax > 0) {
@@ -98,6 +49,8 @@ function SearchArea1({ query, view }: any) {
             setFilterPricee(false);
         }
     }, [priceMin, priceMax]);
+
+    // Function
 
     const handlePrice = (e: React.ChangeEvent<HTMLInputElement>, bool: boolean) => {
         const value: number = Number(e.target.value);
@@ -180,7 +133,7 @@ function SearchArea1({ query, view }: any) {
                             </div>
                         </div>
                     )}
-                    {view === 1 ? <Layout1 api={pros} /> : <Layout2 api={pros} />}
+                    {view === 1 ? <Layout1 api={api} /> : <Layout2 api={api} />}
                 </div>
             </div>
         </div>

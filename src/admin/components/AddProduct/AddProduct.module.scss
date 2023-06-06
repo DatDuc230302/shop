@@ -5,14 +5,14 @@
     bottom: 0;
     right: 0;
     display: flex;
-    align-items: center;
+    padding-top: 40px;
     justify-content: center;
 }
 
 .inner {
-    width: 50%;
+    width: 40%;
     display: flex;
-    justify-content: center;
+
     flex-direction: column;
 }
 
@@ -34,10 +34,40 @@
     padding: 12px;
     margin-top: 10px;
     width: 100%;
+    transition: all linear 0.2s;
+
+    &:focus {
+        border: 1px solid #266dfb;
+        box-shadow: 0 0 4px #266dfb;
+    }
 }
 
 .select {
     font-size: 1.4rem;
     cursor: pointer;
     outline: none;
+}
+
+label {
+    font-size: 1.4rem;
+    cursor: pointer;
+    height: 40px;
+    margin-bottom: 10px;
+
+    &:hover {
+        background-color: #ccc;
+    }
+}
+
+.view-img {
+    object-fit: contain;
+    border-radius: 6px;
+    height: 200px;
+}
+
+button {
+    cursor: pointer;
+    &:hover {
+        background-color: #ccc;
+    }
 }

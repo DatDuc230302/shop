@@ -7,6 +7,8 @@ import HeadLessTippy from '@tippyjs/react/headless';
 import 'tippy.js/dist/tippy.css';
 import SearchArea1 from '../SearchArea1';
 import { useMediaQuery } from 'react-responsive';
+import { ServerURL } from '../../connect';
+import axios from 'axios';
 
 const cx = classNames.bind(style);
 
@@ -18,6 +20,7 @@ function SearchArea() {
     let key = '';
     key = key + params.key;
     const [query, setQuery] = useState('');
+    const [api, setApi] = useState([]);
 
     useEffect(() => {
         setQuery('');
@@ -26,9 +29,7 @@ function SearchArea() {
     const newKey = key.charAt(0).toUpperCase() + key.slice(1);
 
     const pc = useMediaQuery({ minWidth: 992 });
-
     const tb = useMediaQuery({ minWidth: 768, maxWidth: 991 });
-
     const mb = useMediaQuery({ maxWidth: 767 });
 
     useEffect(() => {
@@ -48,6 +49,17 @@ function SearchArea() {
     const handleSortItem = (title: string, index: number) => {
         setValueSort(title);
         setCountSort(index);
+    };
+
+    useEffect(() => {
+        if (query.length > 0) {
+            getApi();
+        }
+    }, [query]);
+
+    const getApi = async () => {
+        const data = await axios.post(`${ServerURL}/products/find`, { key: String(query) });
+        setApi(data.data);
     };
 
     return (
@@ -76,7 +88,8 @@ function SearchArea() {
                             <div className={cx('tools-quantity')}>
                                 {query.length > 0 ? (
                                     <>
-                                        74 results for: <span className={cx('toolsQuantity-name')}>"{query}"</span>
+                                        {api.length} results for:{' '}
+                                        <span className={cx('toolsQuantity-name')}>"{query}"</span>
                                     </>
                                 ) : (
                                     '123124 products'
@@ -168,7 +181,7 @@ function SearchArea() {
                         </div>
                     </div>
                 )}
-                <SearchArea1 query={query} view={view} />
+                <SearchArea1 api={api} query={query} view={view} />
             </div>
         </div>
     );

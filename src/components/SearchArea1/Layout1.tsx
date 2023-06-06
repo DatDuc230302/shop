@@ -13,7 +13,7 @@ function Layout1({ api }: any) {
         <div className={cx('layout1')}>
             {api.map((item: any, index: number) => (
                 <div key={index} className={cx('layout1-box')}>
-                    <span className={cx('layout1-base')}>{item.base}</span>
+                    <span className={cx('layout1-title')}>{item.title}</span>
                     <div className={cx('layout1-item')}>
                         <img className={cx('layout1-img')} src={item.img} alt="" />
                         <div className={cx('layout1-info')}>

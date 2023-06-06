@@ -25,7 +25,7 @@ function Layout2({ api }: any) {
                     </div>
                     <div className={cx('layout2-detail', tb && 'tb', mb && 'mb')}>
                         <div className={cx('layout2-info')}>
-                            <span className={cx('layout2-base')}>{item.base}</span>
+                            <span className={cx('layout2-title')}>{item.title}</span>
                             <span className={cx('layout2-name', tb && 'tb', mb && 'mb')}>{item.name}</span>
                         </div>
                         <div className={cx('layout2-buy', tb && 'tb', mb && 'mb')}>
