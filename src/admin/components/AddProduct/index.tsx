@@ -151,7 +151,7 @@ function AddProduct() {
                     <option value={'gift cards'} className={cx('option')}>
                         Gift Cards
                     </option>
-                    <option value={'subscription'} className={cx('option')}>
+                    <option value={'subscriptions'} className={cx('option')}>
                         Subscriptions
                     </option>
                     <option value={'e - learning'} className={cx('option')}>

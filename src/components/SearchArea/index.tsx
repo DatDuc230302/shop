@@ -12,25 +12,29 @@ import axios from 'axios';
 
 const cx = classNames.bind(style);
 
-function SearchArea() {
+function SearchArea({ category }: any) {
     const url = window.location.href;
     const params = useParams();
     let str = url.indexOf('query=');
-
     let key = '';
     key = key + params.key;
     const [query, setQuery] = useState('');
-    const [api, setApi] = useState([]);
-
     useEffect(() => {
         setQuery('');
     }, [params.key]);
-
     const newKey = key.charAt(0).toUpperCase() + key.slice(1);
 
+    // Responsive
     const pc = useMediaQuery({ minWidth: 992 });
     const tb = useMediaQuery({ minWidth: 768, maxWidth: 991 });
     const mb = useMediaQuery({ maxWidth: 767 });
+
+    // State
+    const [api, setApi] = useState([]);
+    const [sortOption, setSortOption] = useState(false);
+    const [valueSort, setValueSort] = useState('Best match');
+    const [countSort, setCountSort] = useState(-1);
+    const [view, setView] = useState(0);
 
     useEffect(() => {
         if (str !== -1) {
@@ -41,24 +45,154 @@ function SearchArea() {
         }
     }, [params]);
 
-    const [sortOption, setSortOption] = useState(false);
-    const [valueSort, setValueSort] = useState('Best match');
-    const [countSort, setCountSort] = useState(0);
-    const [view, setView] = useState(0);
-
     const handleSortItem = (title: string, index: number) => {
         setValueSort(title);
         setCountSort(index);
     };
 
     useEffect(() => {
-        if (query.length > 0) {
-            getApi();
+        if (category !== undefined && query.length > 0) {
+            findNameCateAndQuery();
+            return;
         }
+        if (category === undefined) {
+            findName();
+        } else {
+            findNameCate();
+        }
+    }, [category, query]);
+
+    useEffect(() => {
+        setValueSort('Best match');
+        setCountSort(-1);
     }, [query]);
 
-    const getApi = async () => {
-        const data = await axios.post(`${ServerURL}/products/find`, { key: String(query) });
+    useEffect(() => {
+        setValueSort('Best match');
+        setCountSort(-1);
+    }, [category]);
+
+    // Sort Api
+    useEffect(() => {
+        switch (countSort) {
+            case 0:
+                if (category !== undefined && query.length > 0) {
+                    findNameCateAndQuery();
+                    return;
+                }
+                if (category === undefined) {
+                    findName();
+                } else {
+                    findNameCate();
+                }
+                break;
+            case 1:
+                if (category !== undefined && query.length > 0) {
+                    sortDateCateAndQuery();
+                    return;
+                }
+                if (category === undefined) {
+                    sortDate();
+                } else {
+                    sortDateCate();
+                }
+                break;
+            case 2:
+                if (category !== undefined && query.length > 0) {
+                    sortLowestCateAndQuery();
+                    return;
+                }
+                if (category === undefined) {
+                    sortLowest();
+                } else {
+                    sortLowestCate();
+                }
+                break;
+            case 3:
+                if (category !== undefined && query.length > 0) {
+                    sortHighestCateAndQuery();
+                    return;
+                }
+                if (category === undefined) {
+                    sortHighest();
+                } else {
+                    sortHighestCate();
+                }
+                break;
+            default:
+                return;
+        }
+    }, [countSort]);
+
+    const findName = async () => {
+        const data = await axios.post(`${ServerURL}/products/findName`, { key: String(query) });
+        setApi(data.data);
+    };
+
+    const sortDate = async () => {
+        const data = await axios.post(`${ServerURL}/products/sortDate`, { key: String(query) });
+        setApi(data.data);
+    };
+
+    const sortDateCate = async () => {
+        const data = await axios.post(`${ServerURL}/products/sortDateCate`, { category: category });
+        setApi(data.data);
+    };
+
+    const sortDateCateAndQuery = async () => {
+        const data = await axios.post(`${ServerURL}/products/sortDateCateAndQuery`, {
+            category: category,
+            key: String(query),
+        });
+        setApi(data.data);
+    };
+
+    const sortLowest = async () => {
+        const data = await axios.post(`${ServerURL}/products/sortLowest`, { key: String(query) });
+        setApi(data.data);
+    };
+
+    const sortLowestCate = async () => {
+        const data = await axios.post(`${ServerURL}/products/sortLowestCate`, { category: category });
+        setApi(data.data);
+    };
+
+    const sortLowestCateAndQuery = async () => {
+        const data = await axios.post(`${ServerURL}/products/sortLowestCateAndQuery`, {
+            category: category,
+            key: String(query),
+        });
+        setApi(data.data);
+    };
+
+    const sortHighest = async () => {
+        const data = await axios.post(`${ServerURL}/products/sortHighest`, { key: String(query) });
+        setApi(data.data);
+    };
+
+    const sortHighestCate = async () => {
+        const data = await axios.post(`${ServerURL}/products/sortHighestCate`, { category: category });
+        setApi(data.data);
+    };
+
+    const sortHighestCateAndQuery = async () => {
+        const data = await axios.post(`${ServerURL}/products/sortHighestCateAndQuery`, {
+            category: category,
+            key: String(query),
+        });
+        setApi(data.data);
+    };
+
+    const findNameCate = async () => {
+        const data = await axios.post(`${ServerURL}/products/findNameCate`, { category: category });
+        setApi(data.data);
+    };
+
+    const findNameCateAndQuery = async () => {
+        const data = await axios.post(`${ServerURL}/products/findNameCateAndQuery`, {
+            category: category,
+            key: String(query),
+        });
         setApi(data.data);
     };
 
@@ -92,7 +226,7 @@ function SearchArea() {
                                         <span className={cx('toolsQuantity-name')}>"{query}"</span>
                                     </>
                                 ) : (
-                                    '123124 products'
+                                    `${api.length} products`
                                 )}
                             </div>
                         </div>
@@ -138,6 +272,7 @@ function SearchArea() {
                                     interactive
                                     placement="bottom-start"
                                     offset={[1, 0]}
+                                    zIndex={100}
                                     render={() => (
                                         <div className={cx('sort-option', sortOption && 'show')}>
                                             {sorts.map((item, index) => (

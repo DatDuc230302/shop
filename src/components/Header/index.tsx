@@ -36,7 +36,7 @@ function Header() {
 
     const handleSearch = () => {
         // const value = valueInput.toLocaleLowerCase();
-        const value = valueInput;
+        const value = valueInput.normalize('NFD').replace(/[\u0300-\u036F]/g, '');
         valueInput.length > 0 &&
             (check !== 0 ? navigate(`/category/${cateSearch}?query=${value}`) : navigate(`/search?query=${value}`));
     };

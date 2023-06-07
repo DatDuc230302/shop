@@ -17,12 +17,12 @@ export const categories = [
     {
         title: 'Subscriptions',
         id: 4,
-        slug: 'subcriptions',
+        slug: 'subscriptions',
     },
     {
-        title: 'E-Learning',
+        title: 'E - Learning',
         id: 5,
-        slug: 'e-learning',
+        slug: 'e - learning',
     },
     {
         title: 'Charity',

@@ -9,20 +9,32 @@ const cx = classNames.bind(style);
 
 const list = [
     {
-        title: 'Gaming',
-        quantity: 296,
+        title: 'gaming',
+        category: 'Gaming',
     },
     {
-        title: 'Software',
-        quantity: 11,
+        title: 'software',
+        category: 'Software',
     },
     {
-        title: 'Gift cards',
-        quantity: 1,
+        title: 'gift cards',
+        category: 'Gift cards',
     },
     {
-        title: 'Subscription',
-        quantity: 1,
+        title: 'subscriptions',
+        category: 'Subscriptions',
+    },
+    {
+        title: 'e - learning',
+        category: 'E - learning',
+    },
+    {
+        title: 'charity',
+        category: 'Charity',
+    },
+    {
+        title: 'other',
+        category: 'Other',
     },
 ];
 
@@ -75,16 +87,21 @@ function SearchArea1({ query, view, api }: any) {
                     <div className={cx('filter')}>
                         <div className={cx('categories')}>
                             <span className={cx('categories-title')}>Categories</span>
-                            {list.map((item, index) => (
-                                <div
-                                    onClick={() => handleCategories(item.title)}
-                                    key={index}
-                                    className={cx('categories-item')}
-                                >
-                                    <span className={cx('categoriesItem-title')}>{item.title}</span>
-                                    <span className={cx('categoriesItem-quantity')}>{item.quantity}</span>
-                                </div>
-                            ))}
+                            {list.map(
+                                (item: any, index: number) =>
+                                    api.filter((it: any) => it.category === item.title).length > 0 && (
+                                        <div
+                                            onClick={() => handleCategories(item.title)}
+                                            key={index}
+                                            className={cx('categories-item')}
+                                        >
+                                            <span className={cx('categoriesItem-title')}>{item.category}</span>
+                                            <span className={cx('categoriesItem-quantity')}>
+                                                {api.filter((it: any) => it.category === item.title).length}
+                                            </span>
+                                        </div>
+                                    ),
+                            )}
                         </div>
                         <div className={cx('price')}>
                             <div className={cx('price-title')}>
