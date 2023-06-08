@@ -35,6 +35,8 @@ function SearchArea({ category }: any) {
     const [valueSort, setValueSort] = useState('Best match');
     const [countSort, setCountSort] = useState(-1);
     const [view, setView] = useState(0);
+    const [priceMin, setPriceMin] = useState(0);
+    const [priceMax, setPriceMax] = useState(100000000);
 
     useEffect(() => {
         if (str !== -1) {
@@ -129,6 +131,19 @@ function SearchArea({ category }: any) {
         setApi(data.data);
     };
 
+    const findNameCate = async () => {
+        const data = await axios.post(`${ServerURL}/products/findNameCate`, { category: category });
+        setApi(data.data);
+    };
+
+    const findNameCateAndQuery = async () => {
+        const data = await axios.post(`${ServerURL}/products/findNameCateAndQuery`, {
+            category: category,
+            key: String(query),
+        });
+        setApi(data.data);
+    };
+
     const sortDate = async () => {
         const data = await axios.post(`${ServerURL}/products/sortDate`, { key: String(query) });
         setApi(data.data);
@@ -183,18 +198,64 @@ function SearchArea({ category }: any) {
         setApi(data.data);
     };
 
-    const findNameCate = async () => {
-        const data = await axios.post(`${ServerURL}/products/findNameCate`, { category: category });
+    const sortBetweenPrice = async () => {
+        const data = await axios.post(`${ServerURL}/products/sortBetweenPrice`, {
+            priceMin: priceMin,
+            priceMax: priceMax,
+            key: String(query),
+        });
         setApi(data.data);
     };
 
-    const findNameCateAndQuery = async () => {
-        const data = await axios.post(`${ServerURL}/products/findNameCateAndQuery`, {
+    const sortBetweenPriceCate = async () => {
+        const data = await axios.post(`${ServerURL}/products/sortBetweenPriceCate`, {
+            priceMin: priceMin,
+            priceMax: priceMax,
+            category: category,
+        });
+        setApi(data.data);
+    };
+
+    const sortBetweenPriceCateAndQuery = async () => {
+        const data = await axios.post(`${ServerURL}/products/sortBetweenPriceCateAndQuery`, {
+            priceMin: priceMin,
+            priceMax: priceMax,
             category: category,
             key: String(query),
         });
         setApi(data.data);
     };
+
+    useEffect(() => {
+        const debounceTimer = setTimeout(() => {
+            // Xử lý logic sau thời gian debounce
+            if (priceMax !== 100000000 && priceMax !== 0) {
+                if (category !== undefined && query.length > 0) {
+                    sortBetweenPriceCateAndQuery();
+                    return;
+                }
+                if (category === undefined) {
+                    sortBetweenPrice();
+                } else {
+                    sortBetweenPriceCate();
+                }
+            } else if (priceMin === 0 && priceMax === 0) {
+                if (category !== undefined && query.length > 0) {
+                    findNameCateAndQuery();
+                    return;
+                }
+                if (category === undefined) {
+                    findName();
+                } else {
+                    findNameCate();
+                }
+            }
+        }, 1000); // Thời gian debounce, 500ms trong ví dụ này}
+
+        return () => {
+            clearTimeout(debounceTimer);
+        };
+    }, [priceMin, priceMax]);
 
     return (
         <div className={cx('wrapper')}>
@@ -316,7 +377,7 @@ function SearchArea({ category }: any) {
                         </div>
                     </div>
                 )}
-                <SearchArea1 api={api} query={query} view={view} />
+                <SearchArea1 setPriceMin={setPriceMin} setPriceMax={setPriceMax} api={api} query={query} view={view} />
             </div>
         </div>
     );
