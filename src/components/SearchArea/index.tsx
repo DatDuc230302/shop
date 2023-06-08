@@ -12,6 +12,20 @@ import axios from 'axios';
 
 const cx = classNames.bind(style);
 
+const withLoading = (apiFunction: any, setLoading: any) => {
+    return async (...args: any) => {
+        setLoading(true);
+        try {
+            const response = await apiFunction(...args);
+            return response;
+        } catch (error) {
+            throw error;
+        } finally {
+            setLoading(false);
+        }
+    };
+};
+
 function SearchArea({ category }: any) {
     const url = window.location.href;
     const params = useParams();
@@ -37,6 +51,7 @@ function SearchArea({ category }: any) {
     const [view, setView] = useState(0);
     const [priceMin, setPriceMin] = useState(0);
     const [priceMax, setPriceMax] = useState(100000000);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         if (str !== -1) {
@@ -126,97 +141,97 @@ function SearchArea({ category }: any) {
         }
     }, [countSort]);
 
-    const findName = async () => {
+    const findName = withLoading(async () => {
         const data = await axios.post(`${ServerURL}/products/findName`, { key: String(query) });
         setApi(data.data);
-    };
+    }, setLoading);
 
-    const findNameCate = async () => {
+    const findNameCate = withLoading(async () => {
         const data = await axios.post(`${ServerURL}/products/findNameCate`, { category: category });
         setApi(data.data);
-    };
+    }, setLoading);
 
-    const findNameCateAndQuery = async () => {
+    const findNameCateAndQuery = withLoading(async () => {
         const data = await axios.post(`${ServerURL}/products/findNameCateAndQuery`, {
             category: category,
             key: String(query),
         });
         setApi(data.data);
-    };
+    }, setLoading);
 
-    const sortDate = async () => {
+    const sortDate = withLoading(async () => {
         const data = await axios.post(`${ServerURL}/products/sortDate`, { key: String(query) });
         setApi(data.data);
-    };
+    }, setLoading);
 
-    const sortDateCate = async () => {
+    const sortDateCate = withLoading(async () => {
         const data = await axios.post(`${ServerURL}/products/sortDateCate`, { category: category });
         setApi(data.data);
-    };
+    }, setLoading);
 
-    const sortDateCateAndQuery = async () => {
+    const sortDateCateAndQuery = withLoading(async () => {
         const data = await axios.post(`${ServerURL}/products/sortDateCateAndQuery`, {
             category: category,
             key: String(query),
         });
         setApi(data.data);
-    };
+    }, setLoading);
 
-    const sortLowest = async () => {
+    const sortLowest = withLoading(async () => {
         const data = await axios.post(`${ServerURL}/products/sortLowest`, { key: String(query) });
         setApi(data.data);
-    };
+    }, setLoading);
 
-    const sortLowestCate = async () => {
+    const sortLowestCate = withLoading(async () => {
         const data = await axios.post(`${ServerURL}/products/sortLowestCate`, { category: category });
         setApi(data.data);
-    };
+    }, setLoading);
 
-    const sortLowestCateAndQuery = async () => {
+    const sortLowestCateAndQuery = withLoading(async () => {
         const data = await axios.post(`${ServerURL}/products/sortLowestCateAndQuery`, {
             category: category,
             key: String(query),
         });
         setApi(data.data);
-    };
+    }, setLoading);
 
-    const sortHighest = async () => {
+    const sortHighest = withLoading(async () => {
         const data = await axios.post(`${ServerURL}/products/sortHighest`, { key: String(query) });
         setApi(data.data);
-    };
+    }, setLoading);
 
-    const sortHighestCate = async () => {
+    const sortHighestCate = withLoading(async () => {
         const data = await axios.post(`${ServerURL}/products/sortHighestCate`, { category: category });
         setApi(data.data);
-    };
+    }, setLoading);
 
-    const sortHighestCateAndQuery = async () => {
+    const sortHighestCateAndQuery = withLoading(async () => {
         const data = await axios.post(`${ServerURL}/products/sortHighestCateAndQuery`, {
             category: category,
             key: String(query),
         });
         setApi(data.data);
-    };
+    }, setLoading);
 
-    const sortBetweenPrice = async () => {
+    const sortBetweenPrice = withLoading(async () => {
         const data = await axios.post(`${ServerURL}/products/sortBetweenPrice`, {
             priceMin: priceMin,
             priceMax: priceMax,
             key: String(query),
         });
         setApi(data.data);
-    };
+    }, setLoading);
 
-    const sortBetweenPriceCate = async () => {
+    const sortBetweenPriceCate = withLoading(async () => {
         const data = await axios.post(`${ServerURL}/products/sortBetweenPriceCate`, {
             priceMin: priceMin,
             priceMax: priceMax,
             category: category,
         });
         setApi(data.data);
-    };
+    }, setLoading);
 
-    const sortBetweenPriceCateAndQuery = async () => {
+    const sortBetweenPriceCateAndQuery = withLoading(async () => {
         const data = await axios.post(`${ServerURL}/products/sortBetweenPriceCateAndQuery`, {
             priceMin: priceMin,
             priceMax: priceMax,
@@ -224,7 +239,7 @@ function SearchArea({ category }: any) {
             key: String(query),
         });
         setApi(data.data);
-    };
+    }, setLoading);
 
     useEffect(() => {
         const debounceTimer = setTimeout(() => {
@@ -377,7 +392,14 @@ function SearchArea({ category }: any) {
                         </div>
                     </div>
                 )}
-                <SearchArea1 setPriceMin={setPriceMin} setPriceMax={setPriceMax} api={api} query={query} view={view} />
+                <SearchArea1
+                    loading={loading}
+                    setPriceMin={setPriceMin}
+                    setPriceMax={setPriceMax}
+                    api={api}
+                    query={query}
+                    view={view}
+                />
             </div>
         </div>
     );

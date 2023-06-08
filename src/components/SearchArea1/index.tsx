@@ -6,6 +6,7 @@ import { useMediaQuery } from 'react-responsive';
 import Layout1 from './Layout1';
 import Layout2 from './Layout2';
 import { emptySearch } from '../../assets/imgs/empty_search';
+import Loading from '../Loading';
 const cx = classNames.bind(style);
 
 const list = [
@@ -39,7 +40,7 @@ const list = [
     },
 ];
 
-function SearchArea1({ query, view, api, setPriceMin, setPriceMax }: any) {
+function SearchArea1({ loading, query, view, api, setPriceMin, setPriceMax }: any) {
     // Responsive
     const pc = useMediaQuery({ minWidth: 992 });
     const tb = useMediaQuery({ minWidth: 768, maxWidth: 991 });
@@ -159,18 +160,27 @@ function SearchArea1({ query, view, api, setPriceMin, setPriceMax }: any) {
                             </div>
                         </div>
                     )}
-                    {api.length > 0 && (view === 1 ? <Layout1 api={api} /> : <Layout2 api={api} />)}
-                    {api.length === 0 && (
-                        <div className={cx('empty')}>
-                            {emptySearch}
-                            <span className={cx('title')}>No matching products found</span>
-                            <span className={cx('change')}>
-                                Change or{' '}
-                                <Link to={'/'} className={cx('back')}>
-                                    Reset filters »
-                                </Link>
-                            </span>
-                        </div>
+                    {!loading ? (
+                        api.length > 0 ? (
+                            view === 1 ? (
+                                <Layout1 api={api} />
+                            ) : (
+                                <Layout2 api={api} />
+                            )
+                        ) : (
+                            <div className={cx('empty')}>
+                                {emptySearch}
+                                <span className={cx('title')}>No matching products found</span>
+                                <span className={cx('change')}>
+                                    Change or{' '}
+                                    <Link to={'/'} className={cx('back')}>
+                                        Reset filters »
+                                    </Link>
+                                </span>
+                            </div>
+                        )
+                    ) : (
+                        <Loading />
                     )}
                 </div>
             </div>
