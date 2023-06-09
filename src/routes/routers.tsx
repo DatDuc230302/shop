@@ -3,6 +3,7 @@ export const routePath: {
     editor: string;
     category: string;
     cart: string;
+    detail: string;
     //
     homeAdmin: string;
 } = {
@@ -10,6 +11,7 @@ export const routePath: {
     editor: '/editor/:key',
     category: '/category/:key',
     cart: '/page/cart',
+    detail: '/detail/:key',
     //
     homeAdmin: '/admin/home',
 };

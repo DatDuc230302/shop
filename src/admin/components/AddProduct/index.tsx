@@ -76,10 +76,17 @@ function AddProduct() {
     }, [downloadURL]);
 
     const postData = async () => {
+        let priceDiscount: number;
+        if (discount > 0) {
+            priceDiscount = price - (discount / 100) * price;
+        } else {
+            priceDiscount = 0;
+        }
         const data = await axios.post(`${ServerURL}/products/add`, {
             name: name,
             price: price,
             discount: discount,
+            priceDiscount: priceDiscount.toFixed(2),
             title: title,
             category: category,
             img: downloadURL,

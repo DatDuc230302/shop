@@ -1,7 +1,6 @@
 .wrapper {
     margin-top: 29px;
     width: 100%;
-    height: 1000px;
 }
 
 .inner {
@@ -300,6 +299,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     line-height: 20px;
+    color: #212121;
 
     &.tb,
     &.mb {
