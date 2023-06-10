@@ -9,7 +9,7 @@ export const routePath: {
 } = {
     home: '/',
     editor: '/editor/:key',
-    category: '/category/:key',
+    category: '/category',
     cart: '/page/cart',
     detail: '/detail/:key',
     //

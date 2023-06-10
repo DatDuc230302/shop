@@ -7,6 +7,9 @@ import { ServerURL } from '../../connect';
 import axios from 'axios';
 import Loading from '../../components/Loading';
 import { loadingApi } from '../../components/Loading';
+import cartAction from '../../redux/actions/cartAction';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 const cx = classNames.bind(style);
 
@@ -16,27 +19,40 @@ function Detail() {
     const tb = useMediaQuery({ minWidth: 768, maxWidth: 991 });
     const mb = useMediaQuery({ maxWidth: 767 });
 
+    // Router-Dom
     const params = useParams();
+    const navigate = useNavigate();
 
     const backUrl = () => {
         window.history.back();
     };
+
+    // Redux
+    const dispath = useDispatch();
+    const currentUser = useSelector((state: any) => state.authReducer);
 
     // State
     const [pickPrice, setPickPrice] = useState(true);
     const [api, setApi] = useState([]);
     const [plus, setPlus] = useState('Add to cart');
     const [loading, setLoading] = useState(false);
+    const [loadingCart, setLoadingCart] = useState(false);
 
+    // Effect
     useEffect(() => {
         getApi();
         window.scrollTo(0, 0);
     }, []);
 
+    // Function
     const getApi = loadingApi(async () => {
         const data = await axios.post(`${ServerURL}/products/findId`, { id: String(params.key) });
         setApi(data.data);
     }, setLoading);
+
+    const addCarts = loadingApi(async (userId: string, item: string) => {
+        axios.post(`${ServerURL}/users/addCarts`, { id: userId, item: item });
+    }, setLoadingCart);
 
     const handlePickPrice = (bool: boolean) => {
         if (bool) {
@@ -46,6 +62,29 @@ function Detail() {
             setPickPrice(false);
             setPlus('Register Premium Member');
         }
+    };
+
+    const handleAddCart = (item: string) => {
+        if (currentUser) {
+            const userId = localStorage.getItem('currentUser');
+            addCarts(userId, item);
+        } else {
+            var cartsValue = localStorage.getItem('cartsLocal');
+            if (cartsValue === null || typeof cartsValue !== 'string') {
+                var cartsArray = [];
+            } else {
+                cartsArray = JSON.parse(cartsValue);
+            }
+            cartsArray.push(item);
+            dispath(cartAction());
+            localStorage.setItem('cartsLocal', JSON.stringify(cartsArray));
+        }
+        navigate('/page/cart');
+    };
+
+    const handleMove = () => {
+        dispath(cartAction());
+        localStorage.removeItem('cartsLocal');
     };
 
     return (
@@ -78,22 +117,27 @@ function Detail() {
                     </Link>
                     <span className={cx('result-character')}> › </span>
                     {api.map((item: any, index: number) => (
-                        <>
-                            <span key={index} className={cx('result-title')}>
+                        <div key={index}>
+                            <span className={cx('result-title')}>
                                 {item.category.charAt(0).toUpperCase() + item.category.slice(1)}
                             </span>
                             <span className={cx('result-character')}> › </span>
-                        </>
+                        </div>
                     ))}
                     <span className={cx('result-title')}>Search results</span>
                 </div>
-                <img className={cx('advert')} src={require('./../../assets/imgs/advert.avif')} alt="" />
+                <img
+                    onClick={() => handleMove()}
+                    className={cx('advert')}
+                    src={require('./../../assets/imgs/advert.avif')}
+                    alt=""
+                />
                 {loading ? (
                     <Loading />
                 ) : (
                     api.map((item: any, index: number) => (
                         <div key={index} className={cx('product', tb && 'tb', mb && 'mb')}>
-                            <img src={item.img} className={cx('img')} alt="" />
+                            <img src={item.img} className={cx('product-img')} alt="" />
                             <div className={cx('info', tb && 'tb', mb && 'mb')}>
                                 <div className={cx('name')}>{item.name}</div>
                                 <div className={cx('asset', tb && 'tb', mb && 'mb')}>
@@ -215,10 +259,32 @@ function Detail() {
                                         </div>
                                     </div>
                                 </div>
+                                <span className={cx('system')}>
+                                    Check system requirements{' '}
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 24 24"
+                                        width="24px"
+                                        height="24px"
+                                        fill="currentColor"
+                                    >
+                                        <path
+                                            fill="none"
+                                            strokeMiterlimit="10"
+                                            d="M16 10l-4 4-4-4"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth="2"
+                                            stroke="currentColor"
+                                        ></path>
+                                    </svg>
+                                </span>
+                                <span className={cx('info-description')}>{item.description}</span>
+                                <span className={cx('more')}>Read more</span>
                             </div>
                             <div className={cx('contact')}>
                                 <div className={cx('contact-box')}>
-                                    <span className={cx('title')}>{item.title}</span>
+                                    <span className={cx('title')}>{item.title.toUpperCase()}</span>
                                     <div className={cx('feedBack')}>
                                         <img
                                             className={cx('img')}
@@ -245,7 +311,7 @@ function Detail() {
                                                 <span>
                                                     $
                                                     <span style={{ fontWeight: 'bold', marginLeft: 8.4 }}>
-                                                        {item.priceDiscount}
+                                                        {item.discount > 0 ? item.priceDiscount : item.price}
                                                     </span>
                                                 </span>
                                             </span>
@@ -263,7 +329,9 @@ function Detail() {
                                                 <span>
                                                     $
                                                     <span style={{ fontWeight: 'bold', marginLeft: 8.4 }}>
-                                                        {item.priceDiscount - 0.41}
+                                                        {(
+                                                            (item.discount > 0 ? item.priceDiscount : item.price) - 0.41
+                                                        ).toFixed(2)}
                                                     </span>
                                                 </span>
                                                 <span
@@ -279,7 +347,9 @@ function Detail() {
                                                 </span>
                                             </div>
                                         </div>
-                                        <div className={cx('pay-cart')}>{plus}</div>
+                                        <div onClick={() => handleAddCart(item._id)} className={cx('pay-cart')}>
+                                            {loadingCart ? 'HIHi' : plus}
+                                        </div>
                                     </div>
                                 </div>
                             </div>

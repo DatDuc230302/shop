@@ -5,8 +5,6 @@ import { Link } from 'react-router-dom';
 const cx = classNames.bind(style);
 
 function Layout1({ api }: any) {
-    console.log(api);
-
     return (
         <div className={cx('layout1')}>
             {api.map(

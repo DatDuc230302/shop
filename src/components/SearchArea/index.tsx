@@ -282,7 +282,7 @@ function SearchArea({ category }: any) {
                     <span className={cx('result-character')}> › </span>
                     {newKey !== 'Search' && (
                         <>
-                            <span className={cx('result-title')}>{newKey}</span>
+                            <span className={cx('result-title')}>{category !== undefined ? newKey : 'Category'}</span>
                             <span className={cx('result-character')}> › </span>
                         </>
                     )}
@@ -293,7 +293,11 @@ function SearchArea({ category }: any) {
                     <div className={cx('tools')}>
                         <div className={cx('tools-result')}>
                             <span className={cx('tools-name')}>
-                                {query.length > 0 ? `${query} - search results` : newKey}
+                                {query.length > 0
+                                    ? `${query} - search results`
+                                    : category !== undefined
+                                    ? newKey
+                                    : 'Category'}
                             </span>
                             <div className={cx('tools-quantity')}>
                                 {query.length > 0 ? (

@@ -27,25 +27,36 @@ function Auth() {
     const [avatar, setAvatar] = useState('');
     const [mail, setMail] = useState('');
     const [rule, setRule] = useState(-1);
-    const [carts, serCarts] = useState(0);
+    const [cartsLocal, setCartsLocal] = useState([]);
 
     //Redux
     const dispath = useDispatch();
     const currentUser = useSelector((state: any) => state.authReducer);
+    const renderCart = useSelector((state: any) => state.cartReducer);
+
+    // Effect
+    useEffect(() => {
+        const temp = localStorage.getItem('cartsLocal');
+        const carts = JSON.parse(`${temp}`);
+        if (carts !== null) {
+            setCartsLocal(carts);
+        } else {
+            setCartsLocal([]);
+        }
+    }, [renderCart]);
 
     // Login
     const loginSuccess = async (res: any) => {
         const api = res.profileObj;
         const resData = await axios.post(`${ServerURL}/users/findId`, { id: api.googleId });
+        const carts = cartsLocal !== null ? cartsLocal : [];
         if (resData.data.length > 0) {
             const data = resData.data[0];
             setName(data.name);
             setAvatar(data.avatar);
             setMail(data.email);
             setRule(data.rule);
-            serCarts(data.carts.length);
             localStorage.setItem('currentUser', data.id);
-            localStorage.setItem('carts', data.carts.length);
         } else {
             setName(api.name);
             setAvatar(api.imageUrl);
@@ -58,7 +69,7 @@ function Auth() {
                 avatar: api.imageUrl,
                 rule: 1,
                 email: api.email,
-                carts: [],
+                carts: carts,
             });
         }
         dispath(authAction('LOGIN'));
@@ -201,7 +212,7 @@ function Auth() {
                     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width={24} height={24}>
                         <path fill="white" d="M21 7l-2 10H5L2.4 4H0V2h5l1 5h15zM7 22h3v-3H7v3zm7 0h3v-3h-3v3z"></path>
                     </svg>
-                    {carts > 0 && currentUser && <span className={cx('quantity')}>{carts}</span>}
+                    {cartsLocal.length > 0 && <span className={cx('quantity')}>{cartsLocal.length}</span>}
                 </Link>
             </div>
         </div>

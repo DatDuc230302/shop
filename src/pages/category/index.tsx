@@ -2,7 +2,6 @@ import classNames from 'classnames/bind';
 import style from './Category.module.scss';
 import SearchArea from '../../components/SearchArea';
 import { useParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
 
 const cx = classNames.bind(style);
 function Category() {

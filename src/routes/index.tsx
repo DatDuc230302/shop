@@ -19,6 +19,7 @@ export const routes: route[] = [
     { path: `${path.home}/:key`, component: <Home />, layout: DefautlLayout },
     { path: path.home, component: <Home />, layout: DefautlLayout },
     { path: path.editor, component: <Editor />, layout: DefautlLayout },
+    { path: `${path.category}/:key`, component: <Category />, layout: DefautlLayout },
     { path: path.category, component: <Category />, layout: DefautlLayout },
     { path: path.cart, component: <Cart />, layout: DefautlLayout },
     { path: path.detail, component: <Detail />, layout: DefautlLayout },

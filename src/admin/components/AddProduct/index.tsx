@@ -88,6 +88,7 @@ function AddProduct() {
             discount: discount,
             priceDiscount: priceDiscount.toFixed(2),
             title: title,
+            description: description,
             category: category,
             img: downloadURL,
         });
