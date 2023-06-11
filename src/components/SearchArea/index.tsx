@@ -73,7 +73,9 @@ function SearchArea({ category }: any) {
             return;
         }
         if (category === undefined) {
-            findName();
+            if (query.length > 0) {
+                findName();
+            }
         } else {
             findNameCate();
         }

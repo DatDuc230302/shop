@@ -13,6 +13,13 @@
     align-items: center;
     justify-content: space-between;
     margin-bottom: 35px;
+
+    &.tb,
+    &.mb {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
     .row {
         display: flex;
         align-items: flex-end;
@@ -47,6 +54,39 @@
     display: flex;
     width: 100%;
     justify-content: space-between;
+
+    &.tb,
+    &.mb {
+        flex-direction: column;
+
+        .box-product {
+            width: 100%;
+        }
+
+        .pay {
+            width: 100%;
+        }
+
+        .product-header {
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: center;
+            gap: 4px;
+        }
+
+        .product-name {
+            width: 100%;
+        }
+
+        .productItem-detail {
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .productItem-last {
+            padding-left: 10px;
+        }
+    }
 
     .box-product {
         display: flex;
@@ -101,13 +141,25 @@
         cursor: pointer;
     }
 
+    .productItem-detail {
+        display: flex;
+        flex: 1;
+    }
+
     .product-name {
         margin-left: 16px;
         font-size: 14px;
         font-weight: 700;
         color: rgb(33, 33, 33);
         line-height: 20px;
-        width: 47%;
+        width: 55.9%;
+    }
+
+    .productItem-last {
+        height: 100%;
+        flex: 1;
+        display: flex;
+        justify-content: space-between;
     }
 
     .product-tools {
@@ -115,6 +167,31 @@
         display: flex;
         align-items: center;
         padding-bottom: 1px;
+    }
+
+    .sub-change {
+        width: 65px;
+        background-color: white;
+        border-radius: 3px;
+        border: 1px solid #e0e0e0;
+        overflow-y: auto;
+        max-height: 183px;
+        padding: 4px 0;
+    }
+
+    .subChange-item {
+        min-height: 35px;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.4rem;
+        transition: all linear 0.2s;
+        cursor: pointer;
+
+        &:hover {
+            background-color: rgba(0, 0, 0, 0.1);
+        }
     }
 
     .tools-change {

@@ -5,35 +5,106 @@ import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import { emptyCart } from '../../assets/imgs/empty_cart';
 import { ServerURL } from '../../connect';
+import Loading from '../../components/Loading';
+import { loadingApi } from '../../components/Loading';
+import { useDispatch, useSelector } from 'react-redux';
+import cartAction from '../../redux/actions/cartAction';
+import HeadLessTippy from '@tippyjs/react/headless';
+import 'tippy.js/dist/tippy.css';
+import { choose } from '../../apiLocal/choose';
+import { useMediaQuery } from 'react-responsive';
 
 const cx = classNames.bind(style);
 
 function Cart() {
+    // Responsive
+    const pc = useMediaQuery({ minWidth: 992 });
+
+    const tb = useMediaQuery({ minWidth: 768, maxWidth: 991 });
+
+    const mb = useMediaQuery({ maxWidth: 767 });
     // State
     const [api, setApi] = useState([]);
     const [showChange, setShowChange] = useState(false);
-
-    // Effect
-    useEffect(() => {
-        getApi();
-    }, []);
+    const [loading, setLoading] = useState(false);
+    const [indexProduct, setIndexProduct] = useState(-1);
 
     // React-Router
     const navigate = useNavigate();
 
+    // Redux
+    const dispath = useDispatch();
+    const rerender = useSelector((state: any) => state.cartReducer);
+
+    // Effect
+    useEffect(() => {
+        getApi();
+        window.scrollTo(0, 0);
+    }, [rerender]);
+
+    let apiUnique = api.filter((obj: any, index: any, self: any) => {
+        return index === self.findIndex((item: any) => item._id === obj._id);
+    });
+
     // Function
-    const getApi = async () => {
+    const getApi = loadingApi(async () => {
         if (localStorage.getItem('cartsLocal') !== null) {
             const arrId = JSON.parse(`${localStorage.getItem('cartsLocal')}`);
             const data = await axios.post(`${ServerURL}/products/findAllById`, { arrId: arrId });
             setApi(data.data);
         }
+    }, setLoading);
+
+    const handleChoose = (id: number) => {
+        setIndexProduct(id);
+        setShowChange(!showChange);
+    };
+
+    const handleChange = (id: any, quantity: number) => {
+        const arr = JSON.parse(`${localStorage.getItem('cartsLocal')}`);
+        const lenArr = arr.filter((item: any, index: any) => item === id).length;
+        if (lenArr > quantity) {
+            let count = 0;
+            const filteredArr = arr.filter((obj: any) => {
+                if (obj === id) {
+                    count++;
+                    return count <= quantity; // Giữ lại tối đa 2 phần tử
+                }
+                return true;
+            });
+            localStorage.setItem('cartsLocal', JSON.stringify(filteredArr));
+            dispath(cartAction());
+        } else {
+            const arr = JSON.parse(`${localStorage.getItem('cartsLocal')}`);
+            for (var i = 0; i < quantity - lenArr; i++) {
+                arr.push(id);
+            }
+            localStorage.setItem('cartsLocal', JSON.stringify(arr));
+            dispath(cartAction());
+        }
+        setShowChange(false);
+    };
+
+    const handleDelete = (id: any) => {
+        const arr = JSON.parse(`${localStorage.getItem('cartsLocal')}`);
+        let count = 0;
+        const filteredArr = arr.filter((obj: any) => {
+            if (obj === id) {
+                count++;
+                return count <= 0; // Giữ lại tối đa 0 phần tử
+            }
+            return true;
+        });
+        localStorage.setItem('cartsLocal', JSON.stringify(filteredArr));
+        dispath(cartAction());
     };
 
     return (
         <div className={cx('wrapper')}>
             <div className={cx('inner')}>
-                {localStorage.getItem('cartsLocal') === null ? (
+                {loading ? (
+                    <Loading />
+                ) : api.length === 0 ? (
                     <div className={cx('empty')}>
                         <div className={cx('img')}>{emptyCart}</div>
                         <span className={cx('title')}>Your cart is empty</span>
@@ -44,7 +115,7 @@ function Cart() {
                     </div>
                 ) : (
                     <>
-                        <div className={cx('header')}>
+                        <div className={cx('header', tb && 'tb', mb && 'mb')}>
                             <div className={cx('row')}>
                                 <span className={cx('title')}>Your cart</span>
                                 <span className={cx('quantity')}>({api.length} products)</span>
@@ -74,9 +145,9 @@ function Cart() {
                                 </span>
                             </div>
                         </div>
-                        <div className={cx('body')}>
+                        <div className={cx('body', tb && 'tb', mb && 'mb')}>
                             <div className={cx('box-product')}>
-                                {api.map((item: any, index: any) => (
+                                {apiUnique.map((item: any, index: any) => (
                                     <div key={index} className={cx('product')}>
                                         <div className={cx('product-header')}>
                                             <span className={cx('header-title')}>
@@ -98,62 +169,104 @@ function Cart() {
                                                 src={item.img}
                                                 alt=""
                                             />
-                                            <span className={cx('product-name')}>
-                                                Red Dead Redemption 2 (PC) - Rockstar Key - GLOBAL
-                                            </span>
-                                            <div className={cx('product-tools')}>
-                                                <div
-                                                    onClick={() => setShowChange(true)}
-                                                    className={cx('tools-change', showChange && 'active')}
-                                                >
-                                                    1
-                                                    <svg
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        viewBox="0 0 24 24"
-                                                        width="22px"
-                                                        height="22px"
-                                                        fill="currentColor"
-                                                        style={{ marginLeft: 17, transform: 'translateY(-3px)' }}
-                                                    >
-                                                        <path
-                                                            fill="none"
-                                                            strokeMiterlimit="10"
-                                                            d="M16 10l-4 4-4-4"
-                                                            strokeLinecap="round"
-                                                            strokeLinejoin="round"
-                                                            strokeWidth="2"
-                                                            stroke="currentColor"
-                                                        ></path>
-                                                    </svg>
+                                            <div className={cx('productItem-detail')}>
+                                                <span className={cx('product-name')}>{item.name}</span>
+                                                <div className={cx('productItem-last')}>
+                                                    <div className={cx('product-tools')}>
+                                                        <HeadLessTippy
+                                                            interactive
+                                                            appendTo={'parent'}
+                                                            visible={indexProduct === index && showChange}
+                                                            placement="bottom"
+                                                            offset={[0, 2]}
+                                                            onClickOutside={() => setShowChange(false)}
+                                                            render={() => (
+                                                                <div className={cx('sub-change')}>
+                                                                    {choose.map((it, index) => (
+                                                                        <div
+                                                                            onClick={() => handleChange(item._id, it)}
+                                                                            key={index}
+                                                                            className={cx('subChange-item')}
+                                                                        >
+                                                                            {it}
+                                                                        </div>
+                                                                    ))}
+                                                                </div>
+                                                            )}
+                                                        >
+                                                            <div
+                                                                onClick={() => handleChoose(index)}
+                                                                className={cx('tools-change', showChange && 'active')}
+                                                            >
+                                                                {
+                                                                    api.filter(
+                                                                        (it: any, index: number) => it._id === item._id,
+                                                                    ).length
+                                                                }
+                                                                <svg
+                                                                    xmlns="http://www.w3.org/2000/svg"
+                                                                    viewBox="0 0 24 24"
+                                                                    width="22px"
+                                                                    height="22px"
+                                                                    fill="currentColor"
+                                                                    style={{
+                                                                        marginLeft: 17,
+                                                                        transform: 'translateY(-3px)',
+                                                                    }}
+                                                                >
+                                                                    <path
+                                                                        fill="none"
+                                                                        strokeMiterlimit="10"
+                                                                        d="M16 10l-4 4-4-4"
+                                                                        strokeLinecap="round"
+                                                                        strokeLinejoin="round"
+                                                                        strokeWidth="2"
+                                                                        stroke="currentColor"
+                                                                    ></path>
+                                                                </svg>
+                                                            </div>
+                                                        </HeadLessTippy>
+                                                        <svg
+                                                            onClick={() => handleDelete(item._id)}
+                                                            xmlns="http://www.w3.org/2000/svg"
+                                                            viewBox="0 0 24 24"
+                                                            width="13.8px"
+                                                            height="13.6px"
+                                                            fill="#9b9b9b"
+                                                            style={{
+                                                                cursor: 'pointer',
+                                                                transform: 'translateY(-0.8px)',
+                                                            }}
+                                                        >
+                                                            <g
+                                                                strokeLinecap="round"
+                                                                strokeLinejoin="round"
+                                                                strokeWidth="2"
+                                                                stroke="#9b9b9b"
+                                                                fill="none"
+                                                                strokeMiterlimit="10"
+                                                            >
+                                                                <path d="M20 9v12a2 2 0 01-2 2H6a2 2 0 01-2-2V9M1 5h22M12 12v6M8 12v6M16 12v6M8 5V1h8v4"></path>
+                                                            </g>
+                                                        </svg>
+                                                    </div>
+                                                    <div className={cx('product-price')}>
+                                                        <span className={cx('dollars')}>
+                                                            ${' '}
+                                                            <span style={{ fontWeight: 'bold' }}>
+                                                                {(
+                                                                    (item.discount > 0
+                                                                        ? item.priceDiscount
+                                                                        : item.price) *
+                                                                    api.filter(
+                                                                        (it: any, index: number) => it._id === item._id,
+                                                                    ).length
+                                                                ).toFixed(2)}
+                                                            </span>
+                                                        </span>
+                                                        <span className={cx('vat')}>VAT inc. if applicable</span>
+                                                    </div>
                                                 </div>
-                                                <svg
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    viewBox="0 0 24 24"
-                                                    width="13.8px"
-                                                    height="13.6px"
-                                                    fill="#9b9b9b"
-                                                    style={{ cursor: 'pointer', transform: 'translateY(-0.8px)' }}
-                                                >
-                                                    <g
-                                                        strokeLinecap="round"
-                                                        strokeLinejoin="round"
-                                                        strokeWidth="2"
-                                                        stroke="#9b9b9b"
-                                                        fill="none"
-                                                        strokeMiterlimit="10"
-                                                    >
-                                                        <path d="M20 9v12a2 2 0 01-2 2H6a2 2 0 01-2-2V9M1 5h22M12 12v6M8 12v6M16 12v6M8 5V1h8v4"></path>
-                                                    </g>
-                                                </svg>
-                                            </div>
-                                            <div className={cx('product-price')}>
-                                                <span className={cx('dollars')}>
-                                                    ${' '}
-                                                    <span style={{ fontWeight: 'bold' }}>
-                                                        {item.discount > 0 ? item.priceDiscount : item.price}
-                                                    </span>
-                                                </span>
-                                                <span className={cx('vat')}>VAT inc. if applicable</span>
                                             </div>
                                         </div>
                                         <div className={cx('footer')}>Buy more from this seller</div>
@@ -172,7 +285,7 @@ function Cart() {
                                                     width="14.4px"
                                                     height="14px"
                                                     fill="#6202EA"
-                                                    font-size="14px"
+                                                    fontSize="14px"
                                                 >
                                                     <path
                                                         d="M6 12l4 4 8-8"
@@ -193,7 +306,7 @@ function Cart() {
                                                     width="14.4px"
                                                     height="14px"
                                                     fill="#6202EA"
-                                                    font-size="14px"
+                                                    fontSize="14px"
                                                 >
                                                     <path
                                                         d="M6 12l4 4 8-8"
@@ -214,7 +327,7 @@ function Cart() {
                                                     width="14.4px"
                                                     height="14px"
                                                     fill="#6202EA"
-                                                    font-size="14px"
+                                                    fontSize="14px"
                                                 >
                                                     <path
                                                         d="M6 12l4 4 8-8"
