@@ -82,11 +82,6 @@ function Detail() {
         navigate('/page/cart');
     };
 
-    const handleMove = () => {
-        dispath(cartAction());
-        localStorage.removeItem('cartsLocal');
-    };
-
     return (
         <div className={cx('wrapper')}>
             <div className={cx('inner')}>
@@ -126,12 +121,7 @@ function Detail() {
                     ))}
                     <span className={cx('result-title')}>Search results</span>
                 </div>
-                <img
-                    onClick={() => handleMove()}
-                    className={cx('advert')}
-                    src={require('./../../assets/imgs/advert.avif')}
-                    alt=""
-                />
+                <img className={cx('advert')} src={require('./../../assets/imgs/advert.avif')} alt="" />
                 {loading ? (
                     <Loading />
                 ) : (

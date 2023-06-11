@@ -75,6 +75,8 @@ function SearchArea({ category }: any) {
         if (category === undefined) {
             if (query.length > 0) {
                 findName();
+            } else {
+                findAll();
             }
         } else {
             findNameCate();
@@ -142,6 +144,11 @@ function SearchArea({ category }: any) {
                 return;
         }
     }, [countSort]);
+
+    const findAll = withLoading(async () => {
+        const data = await axios.get(`${ServerURL}/products/get`);
+        setApi(data.data);
+    }, setLoading);
 
     const findName = withLoading(async () => {
         const data = await axios.post(`${ServerURL}/products/findName`, { key: String(query) });
