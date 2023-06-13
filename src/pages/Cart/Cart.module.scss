@@ -1,6 +1,5 @@
 .wrapper {
     width: 100%;
-    height: 2000px;
     user-select: none;
 }
 
@@ -259,6 +258,7 @@
         border: 1px solid #bd97f4;
         border-radius: 4px;
         padding-left: 14.6px;
+        margin-bottom: 16px;
     }
 
     .payBox1-header {
@@ -285,6 +285,56 @@
         color: #212121;
         gap: 4px;
         margin-bottom: 6px;
+    }
+
+    .pay-box2 {
+        width: 100%;
+        padding: 16px;
+        background: rgb(255, 255, 255);
+        border: 1px solid rgb(224, 224, 224);
+        border-radius: 4px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .payBox2-price {
+        width: 100%;
+        height: 34px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 12px;
+    }
+
+    .payBox2-title {
+        color: rgb(33, 33, 33);
+        font-weight: bold;
+        font-size: 14px;
+    }
+
+    .payBox2-dollars {
+        font-size: 2.2rem;
+        color: #212121;
+    }
+
+    .payBox2-button {
+        width: 100%;
+        height: 42.4px;
+        border-radius: 4px;
+        background-color: #247fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 1.4rem;
+        cursor: pointer;
+        transition: all linear 0.2s;
+        color: white;
+        font-family: Arial;
+
+        &:hover {
+            background-color: #1d6ee0;
+        }
     }
 }
 

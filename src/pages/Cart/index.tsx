@@ -19,10 +19,9 @@ const cx = classNames.bind(style);
 function Cart() {
     // Responsive
     const pc = useMediaQuery({ minWidth: 992 });
-
     const tb = useMediaQuery({ minWidth: 768, maxWidth: 991 });
-
     const mb = useMediaQuery({ maxWidth: 767 });
+
     // State
     const [api, setApi] = useState([]);
     const [showChange, setShowChange] = useState(false);
@@ -34,13 +33,14 @@ function Cart() {
 
     // Redux
     const dispath = useDispatch();
+    const currentUser = useSelector((state: any) => state.authReducer);
     const rerender = useSelector((state: any) => state.cartReducer);
 
     // Effect
     useEffect(() => {
         getApi();
         window.scrollTo(0, 0);
-    }, [rerender]);
+    }, [rerender, currentUser]);
 
     let apiUnique = api.filter((obj: any, index: any, self: any) => {
         return index === self.findIndex((item: any) => item._id === obj._id);
@@ -48,11 +48,35 @@ function Cart() {
 
     // Function
     const getApi = loadingApi(async () => {
-        if (localStorage.getItem('cartsLocal') !== null) {
-            const arrId = JSON.parse(`${localStorage.getItem('cartsLocal')}`);
-            const data = await axios.post(`${ServerURL}/products/findAllById`, { arrId: arrId });
+        if (currentUser) {
+            const idUser = localStorage.getItem('currentUser');
+            const cartsUser = await axios.post(`${ServerURL}/users/findId`, { id: idUser });
+            const data = await axios.post(`${ServerURL}/products/findAllById`, { arrId: cartsUser.data[0].carts });
             setApi(data.data);
+        } else {
+            if (localStorage.getItem('cartsLocal') !== null) {
+                const arrId = JSON.parse(`${localStorage.getItem('cartsLocal')}`);
+                const data = await axios.post(`${ServerURL}/products/findAllById`, { arrId: arrId });
+                setApi(data.data);
+            }
         }
+    }, setLoading);
+
+    const updateCarts = async (newArr: any, item: any) => {
+        await axios.post(`${ServerURL}/users/updateCarts`, {
+            id: localStorage.getItem('currentUser'),
+            newArr: newArr,
+            item: item,
+        });
+        dispath(cartAction());
+    };
+
+    const deleteCarts = loadingApi(async (item: any) => {
+        await axios.post(`${ServerURL}/users/deleteCarts`, {
+            id: localStorage.getItem('currentUser'),
+            item: item,
+        });
+        dispath(cartAction());
     }, setLoading);
 
     const handleChoose = (id: number) => {
@@ -61,42 +85,55 @@ function Cart() {
     };
 
     const handleChange = (id: any, quantity: number) => {
-        const arr = JSON.parse(`${localStorage.getItem('cartsLocal')}`);
-        const lenArr = arr.filter((item: any, index: any) => item === id).length;
-        if (lenArr > quantity) {
+        if (currentUser) {
+            const arr = [];
+            for (let i = 0; i < quantity; i++) {
+                arr.push(id);
+            }
+            updateCarts(arr, id);
+        } else {
+            const arr = JSON.parse(`${localStorage.getItem('cartsLocal')}`);
+            const lenArr = arr.filter((item: any) => item === id).length;
             let count = 0;
             const filteredArr = arr.filter((obj: any) => {
                 if (obj === id) {
                     count++;
-                    return count <= quantity; // Giữ lại tối đa 2 phần tử
+                    return count <= quantity;
                 }
                 return true;
             });
-            localStorage.setItem('cartsLocal', JSON.stringify(filteredArr));
-            dispath(cartAction());
-        } else {
-            const arr = JSON.parse(`${localStorage.getItem('cartsLocal')}`);
-            for (var i = 0; i < quantity - lenArr; i++) {
-                arr.push(id);
+            if (lenArr >= quantity) {
+                localStorage.setItem('cartsLocal', JSON.stringify(filteredArr));
+                dispath(cartAction());
+            } else {
+                for (let i = 0; i < quantity - lenArr; i++) {
+                    arr.push(id);
+                }
+                localStorage.setItem('cartsLocal', JSON.stringify(arr));
+                dispath(cartAction());
             }
-            localStorage.setItem('cartsLocal', JSON.stringify(arr));
-            dispath(cartAction());
         }
+
         setShowChange(false);
     };
 
     const handleDelete = (id: any) => {
-        const arr = JSON.parse(`${localStorage.getItem('cartsLocal')}`);
-        let count = 0;
-        const filteredArr = arr.filter((obj: any) => {
-            if (obj === id) {
-                count++;
-                return count <= 0; // Giữ lại tối đa 0 phần tử
-            }
-            return true;
-        });
-        localStorage.setItem('cartsLocal', JSON.stringify(filteredArr));
-        dispath(cartAction());
+        if (currentUser) {
+            deleteCarts(id);
+        } else {
+            const arr = JSON.parse(`${localStorage.getItem('cartsLocal')}`);
+            let count = 0;
+            const filteredArr = arr.filter((obj: any) => {
+                if (obj === id) {
+                    count++;
+                    return count <= 0; // Giữ lại tối đa 0 phần tử
+                }
+                return true;
+            });
+
+            localStorage.setItem('cartsLocal', JSON.stringify(filteredArr));
+            dispath(cartAction());
+        }
     };
 
     return (
@@ -344,6 +381,27 @@ function Cart() {
                                         </div>
                                         <div className={cx('payBox1-button')}></div>
                                     </div>
+                                </div>
+                                <div className={cx('pay-box2')}>
+                                    <div className={cx('payBox2-price')}>
+                                        <span className={cx('payBox2-title')}>Total price</span>
+                                        <span className={cx('payBox2-dollars')}>
+                                            ${' '}
+                                            <span style={{ fontWeight: 'bold' }}>
+                                                {api
+                                                    .reduce(
+                                                        (accumulator: any, item: any) =>
+                                                            accumulator +
+                                                            (item.discount > 0 ? item.priceDiscount : item.price),
+                                                        0,
+                                                    )
+                                                    .toFixed(2)}
+                                            </span>
+                                        </span>
+                                    </div>
+                                    <Link to={'/payment'} className={cx('payBox2-button')}>
+                                        Continue to payment
+                                    </Link>
                                 </div>
                             </div>
                         </div>

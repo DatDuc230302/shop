@@ -52,6 +52,7 @@ function Detail() {
 
     const addCarts = loadingApi(async (userId: string, item: string) => {
         axios.post(`${ServerURL}/users/addCarts`, { id: userId, item: item });
+        dispath(cartAction());
     }, setLoadingCart);
 
     const handlePickPrice = (bool: boolean) => {
@@ -66,8 +67,7 @@ function Detail() {
 
     const handleAddCart = (item: string) => {
         if (currentUser) {
-            const userId = localStorage.getItem('currentUser');
-            addCarts(userId, item);
+            addCarts(localStorage.getItem('currentUser'), item);
         } else {
             var cartsValue = localStorage.getItem('cartsLocal');
             if (cartsValue === null || typeof cartsValue !== 'string') {

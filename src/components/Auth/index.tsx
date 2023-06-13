@@ -11,6 +11,7 @@ import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux/es/exports';
 import authAction from '../../redux/actions/authAction';
 import { ServerURL } from '../../connect';
+import cartAction from '../../redux/actions/cartAction';
 
 const cx = classNames.bind(style);
 const clientId = '796532655839-3484b4jq39k3kin9f8v1hfv8f0q1slvs.apps.googleusercontent.com';
@@ -23,6 +24,7 @@ function Auth() {
 
     // State
     const [show, setShow] = useState(false);
+    const [idUser, setIdUser] = useState('');
     const [name, setName] = useState('');
     const [avatar, setAvatar] = useState('');
     const [mail, setMail] = useState('');
@@ -35,21 +37,44 @@ function Auth() {
     const renderCart = useSelector((state: any) => state.cartReducer);
 
     // Effect
+    // useEffect(() => {
+    // const temp = localStorage.getItem('cartsLocal');
+    // const carts = JSON.parse(`${temp}`);
+    // if (carts !== null) {
+    //     setCartsLocal(carts);
+    // } else {
+    //     setCartsLocal([]);
+    // }
+    // }, [renderCart]);
+
     useEffect(() => {
-        const temp = localStorage.getItem('cartsLocal');
-        const carts = JSON.parse(`${temp}`);
-        if (carts !== null) {
-            setCartsLocal(carts);
+        if (currentUser) {
+            getUser(idUser);
         } else {
-            setCartsLocal([]);
+            const temp = localStorage.getItem('cartsLocal');
+            const carts = JSON.parse(`${temp}`);
+            if (carts !== null) {
+                setCartsLocal(carts);
+            } else {
+                setCartsLocal([]);
+            }
         }
-    }, [renderCart]);
+    }, [currentUser, renderCart]);
+
+    // Function
+    const getUser = async (idUser: any) => {
+        // const carts = JSON.parse(`${localStorage.getItem('cartsLocal')}`);
+        const data = await axios.post(`${ServerURL}/users/findId`, { id: idUser });
+        const cartsUser = data.data[0].carts;
+        setCartsLocal(cartsUser);
+    };
 
     // Login
     const loginSuccess = async (res: any) => {
         const api = res.profileObj;
+        setIdUser(api.googleId);
         const resData = await axios.post(`${ServerURL}/users/findId`, { id: api.googleId });
-        const carts = cartsLocal !== null ? cartsLocal : [];
+        // const carts = cartsLocal !== null ? cartsLocal : [];
         if (resData.data.length > 0) {
             const data = resData.data[0];
             setName(data.name);
@@ -69,7 +94,7 @@ function Auth() {
                 avatar: api.imageUrl,
                 rule: 1,
                 email: api.email,
-                carts: carts,
+                carts: [],
             });
         }
         dispath(authAction('LOGIN'));
@@ -84,6 +109,7 @@ function Auth() {
         localStorage.removeItem('currentUser');
         localStorage.removeItem('carts');
         dispath(authAction('LOGOUT'));
+        dispath(cartAction());
         setShow(false);
     };
 
@@ -129,7 +155,29 @@ function Auth() {
                                 {currentUser ? (
                                     <div className={cx('member')}>
                                         <div className={cx('info')}>
-                                            <img className={cx('avatar')} src={avatar} alt="" />
+                                            <div className={cx('avatar')}>
+                                                <img className={cx('avatar-img')} src={avatar} alt="" />
+                                                <div className={cx('avatar-change')}>
+                                                    <svg
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24"
+                                                        width="12px"
+                                                        height="12px"
+                                                        fill="white"
+                                                    >
+                                                        <g
+                                                            strokeLinecap="round"
+                                                            strokeLinejoin="round"
+                                                            strokeWidth="2"
+                                                            stroke="white"
+                                                            fill="none"
+                                                            strokeMiterlimit="10"
+                                                        >
+                                                            <path d="M14.328 4.672l5 5M8 21l-6 1 1-6L16.414 2.586a2 2 0 012.828 0l2.172 2.172a2 2 0 010 2.828z"></path>
+                                                        </g>
+                                                    </svg>
+                                                </div>
+                                            </div>
                                             <div className={cx('detail')}>
                                                 <span className={cx('gmail')}>{mail}</span>
                                                 <span className={cx('rule')}>
