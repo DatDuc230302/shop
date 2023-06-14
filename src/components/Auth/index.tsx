@@ -12,6 +12,7 @@ import { useSelector, useDispatch } from 'react-redux/es/exports';
 import authAction from '../../redux/actions/authAction';
 import { ServerURL } from '../../connect';
 import cartAction from '../../redux/actions/cartAction';
+import ChangeAvatar from '../ChangeAvatar';
 
 const cx = classNames.bind(style);
 const clientId = '796532655839-3484b4jq39k3kin9f8v1hfv8f0q1slvs.apps.googleusercontent.com';
@@ -23,13 +24,15 @@ function Auth() {
     const mb = useMediaQuery({ maxWidth: 767 });
 
     // State
-    const [show, setShow] = useState(false);
     const [idUser, setIdUser] = useState('');
     const [name, setName] = useState('');
     const [avatar, setAvatar] = useState('');
     const [mail, setMail] = useState('');
-    const [rule, setRule] = useState(-1);
+    const [rule, setRule] = useState(1);
     const [cartsLocal, setCartsLocal] = useState([]);
+    const [show, setShow] = useState(false);
+    const [showChangeAva, setShowChangeAva] = useState(false);
+    const [oldAvatar, setOldvatar] = useState('');
 
     //Redux
     const dispath = useDispatch();
@@ -37,16 +40,6 @@ function Auth() {
     const renderCart = useSelector((state: any) => state.cartReducer);
 
     // Effect
-    // useEffect(() => {
-    // const temp = localStorage.getItem('cartsLocal');
-    // const carts = JSON.parse(`${temp}`);
-    // if (carts !== null) {
-    //     setCartsLocal(carts);
-    // } else {
-    //     setCartsLocal([]);
-    // }
-    // }, [renderCart]);
-
     useEffect(() => {
         if (currentUser) {
             getUser(idUser);
@@ -63,7 +56,6 @@ function Auth() {
 
     // Function
     const getUser = async (idUser: any) => {
-        // const carts = JSON.parse(`${localStorage.getItem('cartsLocal')}`);
         const data = await axios.post(`${ServerURL}/users/findId`, { id: idUser });
         const cartsUser = data.data[0].carts;
         setCartsLocal(cartsUser);
@@ -74,9 +66,9 @@ function Auth() {
         const api = res.profileObj;
         setIdUser(api.googleId);
         const resData = await axios.post(`${ServerURL}/users/findId`, { id: api.googleId });
-        // const carts = cartsLocal !== null ? cartsLocal : [];
-        if (resData.data.length > 0) {
-            const data = resData.data[0];
+        const data = resData.data[0];
+        setOldvatar(api.imageUrl);
+        if (data !== undefined) {
             setName(data.name);
             setAvatar(data.avatar);
             setMail(data.email);
@@ -86,7 +78,6 @@ function Auth() {
             setName(api.name);
             setAvatar(api.imageUrl);
             setMail(api.email);
-            setRule(1);
             localStorage.setItem('currentUser', api.googleId);
             await axios.post(`${ServerURL}/users/add`, {
                 id: api.googleId,
@@ -112,7 +103,6 @@ function Auth() {
         dispath(cartAction());
         setShow(false);
     };
-
     const logoutUI = ({ onClick }: any) => {
         return (
             <div onClick={onClick} className={cx('logoutUI')}>
@@ -155,7 +145,13 @@ function Auth() {
                                 {currentUser ? (
                                     <div className={cx('member')}>
                                         <div className={cx('info')}>
-                                            <div className={cx('avatar')}>
+                                            <div
+                                                onClick={() => {
+                                                    setShowChangeAva(!showChangeAva);
+                                                    setShow(false);
+                                                }}
+                                                className={cx('avatar')}
+                                            >
                                                 <img className={cx('avatar-img')} src={avatar} alt="" />
                                                 <div className={cx('avatar-change')}>
                                                     <svg
@@ -262,6 +258,15 @@ function Auth() {
                     </svg>
                     {cartsLocal.length > 0 && <span className={cx('quantity')}>{cartsLocal.length}</span>}
                 </Link>
+                {currentUser && (
+                    <ChangeAvatar
+                        oldAvatar={oldAvatar}
+                        avatar={avatar}
+                        setAvatar={setAvatar}
+                        showChangeAva={showChangeAva}
+                        setShowChangeAva={setShowChangeAva}
+                    />
+                )}
             </div>
         </div>
     );

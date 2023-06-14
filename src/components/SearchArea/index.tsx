@@ -40,6 +40,7 @@ function SearchArea({ category }: any) {
     const [priceMax, setPriceMax] = useState(100000000);
     const [loading, setLoading] = useState(false);
 
+    // Effect
     useEffect(() => {
         if (str !== -1) {
             let temp = url.slice(str + 6);
@@ -49,10 +50,9 @@ function SearchArea({ category }: any) {
         }
     }, [params]);
 
-    const handleSortItem = (title: string, index: number) => {
-        setValueSort(title);
-        setCountSort(index);
-    };
+    useEffect(() => {
+        setView(0);
+    }, [tb, mb]);
 
     useEffect(() => {
         if (category !== undefined) {
@@ -93,7 +93,37 @@ function SearchArea({ category }: any) {
         setCountSort(-1);
     }, [category]);
 
-    // Sort Api
+    useEffect(() => {
+        const debounceTimer = setTimeout(() => {
+            // Xử lý logic sau thời gian debounce
+            if (priceMax !== 100000000 && priceMax !== 0) {
+                if (category !== undefined && query.length > 0) {
+                    sortBetweenPriceCateAndQuery();
+                    return;
+                }
+                if (category === undefined) {
+                    sortBetweenPrice();
+                } else {
+                    sortBetweenPriceCate();
+                }
+            } else if (priceMin === 0 && priceMax === 0) {
+                if (category !== undefined && query.length > 0) {
+                    findNameCateAndQuery();
+                    return;
+                }
+                if (category === undefined) {
+                    findName();
+                } else {
+                    findNameCate();
+                }
+            }
+        }, 1000); // Thời gian debounce, 500ms trong ví dụ này}
+
+        return () => {
+            clearTimeout(debounceTimer);
+        };
+    }, [priceMin, priceMax]);
+
     useEffect(() => {
         switch (countSort) {
             case 0:
@@ -145,6 +175,7 @@ function SearchArea({ category }: any) {
         }
     }, [countSort]);
 
+    // Function
     const findAll = loadingApi(async () => {
         const data = await axios.get(`${ServerURL}/products/get`);
         setApi(data.data);
@@ -250,36 +281,10 @@ function SearchArea({ category }: any) {
         setApi(data.data);
     }, setLoading);
 
-    useEffect(() => {
-        const debounceTimer = setTimeout(() => {
-            // Xử lý logic sau thời gian debounce
-            if (priceMax !== 100000000 && priceMax !== 0) {
-                if (category !== undefined && query.length > 0) {
-                    sortBetweenPriceCateAndQuery();
-                    return;
-                }
-                if (category === undefined) {
-                    sortBetweenPrice();
-                } else {
-                    sortBetweenPriceCate();
-                }
-            } else if (priceMin === 0 && priceMax === 0) {
-                if (category !== undefined && query.length > 0) {
-                    findNameCateAndQuery();
-                    return;
-                }
-                if (category === undefined) {
-                    findName();
-                } else {
-                    findNameCate();
-                }
-            }
-        }, 1000); // Thời gian debounce, 500ms trong ví dụ này}
-
-        return () => {
-            clearTimeout(debounceTimer);
-        };
-    }, [priceMin, priceMax]);
+    const handleSortItem = (title: string, index: number) => {
+        setValueSort(title);
+        setCountSort(index);
+    };
 
     return (
         <div className={cx('wrapper')}>
@@ -298,27 +303,27 @@ function SearchArea({ category }: any) {
 
                     <span className={cx('result-title')}>Search results</span>
                 </div>
-                {pc && (
-                    <div className={cx('tools')}>
-                        <div className={cx('tools-result')}>
-                            <span className={cx('tools-name')}>
-                                {query.length > 0
-                                    ? `${query} - search results`
-                                    : category !== undefined
-                                    ? newKey
-                                    : 'Category'}
-                            </span>
-                            <div className={cx('tools-quantity')}>
-                                {query.length > 0 ? (
-                                    <>
-                                        {api.length} results for:{' '}
-                                        <span className={cx('toolsQuantity-name')}>"{query}"</span>
-                                    </>
-                                ) : (
-                                    `${api.length} products`
-                                )}
-                            </div>
+                <div className={cx('tools')}>
+                    <div className={cx('tools-result')}>
+                        <span className={cx('tools-name')}>
+                            {query.length > 0
+                                ? `${query} - search results`
+                                : category !== undefined
+                                ? newKey
+                                : 'Category'}
+                        </span>
+                        <div className={cx('tools-quantity')}>
+                            {query.length > 0 ? (
+                                <>
+                                    {api.length} results for:{' '}
+                                    <span className={cx('toolsQuantity-name')}>"{query}"</span>
+                                </>
+                            ) : (
+                                `${api.length} products`
+                            )}
                         </div>
+                    </div>
+                    {pc && (
                         <div className={cx('tools-actions')}>
                             <div onClick={() => setView(0)} className={cx('actions-view')}>
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14px" height="14px">
@@ -403,8 +408,8 @@ function SearchArea({ category }: any) {
                                 </HeadLessTippy>
                             </div>
                         </div>
-                    </div>
-                )}
+                    )}
+                </div>
                 <SearchArea1
                     loading={loading}
                     setPriceMin={setPriceMin}
@@ -413,6 +418,29 @@ function SearchArea({ category }: any) {
                     query={query}
                     view={view}
                 />
+                {!pc && (
+                    <div className={cx('filterSort')}>
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            width="20px"
+                            height="20px"
+                            fill="currentColor"
+                            style={{ marginRight: 10 }}
+                        >
+                            <path
+                                fill="none"
+                                stroke-miterlimit="10"
+                                d="M22 4l-8 8v8l-4 2V12L2 4V1h20v3z"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                stroke="currentColor"
+                            ></path>
+                        </svg>
+                        Filter & sort
+                    </div>
+                )}
             </div>
         </div>
     );

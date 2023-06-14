@@ -229,6 +229,27 @@
 .contact {
     width: 302px;
 
+    &.tb,
+    &.mb {
+        width: 100%;
+        margin-bottom: 146px;
+
+        .pay {
+            padding: 0 16px;
+            left: 0;
+            position: fixed;
+            bottom: 0;
+            background-color: white;
+            padding-bottom: 10px;
+        }
+
+        .pay-list {
+            padding-top: 10px;
+            flex-direction: row;
+            align-items: center;
+        }
+    }
+
     .contact-box {
         border-radius: 4px;
         position: relative;
@@ -284,6 +305,12 @@
     width: 100%;
     display: flex;
     flex-direction: column;
+}
+
+.pay-list {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
 }
 
 .pay-item {

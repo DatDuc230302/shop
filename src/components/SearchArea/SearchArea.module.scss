@@ -6,6 +6,7 @@
 .inner {
     display: flex;
     flex-direction: column;
+    padding-bottom: 60px;
 }
 
 .result {
@@ -182,4 +183,25 @@
     &.rotate {
         transform: rotate(0);
     }
+}
+
+.filterSort {
+    width: 142px;
+    height: 42px;
+    z-index: 9;
+    font-size: 1.4rem;
+    color: rgb(255, 255, 255);
+    height: 42px;
+    width: 142px;
+    border-radius: 3px;
+    background-color: rgb(47, 130, 251);
+    display: flex;
+    position: fixed;
+    -webkit-box-pack: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    align-items: center;
+    bottom: 15px;
+    right: 15px;
+    cursor: pointer;
 }

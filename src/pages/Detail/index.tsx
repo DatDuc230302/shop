@@ -272,7 +272,7 @@ function Detail() {
                                 <span className={cx('info-description')}>{item.description}</span>
                                 <span className={cx('more')}>Read more</span>
                             </div>
-                            <div className={cx('contact')}>
+                            <div className={cx('contact', tb && 'tb', mb && 'mb')}>
                                 <div className={cx('contact-box')}>
                                     <span className={cx('title')}>{item.title.toUpperCase()}</span>
                                     <div className={cx('feedBack')}>
@@ -292,53 +292,56 @@ function Detail() {
                                         </div>
                                     </div>
                                     <div className={cx('pay')}>
-                                        <div
-                                            onClick={() => handlePickPrice(true)}
-                                            className={cx('pay-item', pickPrice && 'active')}
-                                        >
-                                            <div className={cx('pay-button', pickPrice && 'active')}></div>
-                                            <span className={cx('pay-price')}>
-                                                <span>
-                                                    $
-                                                    <span style={{ fontWeight: 'bold', marginLeft: 8.4 }}>
-                                                        {item.discount > 0 ? item.priceDiscount : item.price}
-                                                    </span>
-                                                </span>
-                                            </span>
-                                        </div>
-                                        <div
-                                            style={{ height: '75.6px' }}
-                                            onClick={() => handlePickPrice(false)}
-                                            className={cx('pay-item', !pickPrice && 'active')}
-                                        >
+                                        <div className={cx('pay-list')}>
                                             <div
-                                                style={{ transform: 'translateY(-1px)' }}
-                                                className={cx('pay-button', !pickPrice && 'active')}
-                                            ></div>
-                                            <div className={cx('pay-price')}>
-                                                <span>
-                                                    $
-                                                    <span style={{ fontWeight: 'bold', marginLeft: 8.4 }}>
-                                                        {(
-                                                            (item.discount > 0 ? item.priceDiscount : item.price) - 0.41
-                                                        ).toFixed(2)}
+                                                onClick={() => handlePickPrice(true)}
+                                                className={cx('pay-item', pickPrice && 'active')}
+                                            >
+                                                <div className={cx('pay-button', pickPrice && 'active')}></div>
+                                                <span className={cx('pay-price')}>
+                                                    <span>
+                                                        $
+                                                        <span style={{ fontWeight: 'bold', marginLeft: 8.4 }}>
+                                                            {item.discount > 0 ? item.priceDiscount : item.price}
+                                                        </span>
                                                     </span>
                                                 </span>
-                                                <span
-                                                    style={{
-                                                        transform: 'translateY(-11px)',
-                                                        height: '18px',
-                                                        fontSize: '1.2rem',
-                                                        color: '#6202ea',
-                                                    }}
-                                                >
-                                                    Save <strong style={{ height: '18px' }}>$ 0.41 </strong>with G2A
-                                                    Plus
-                                                </span>
+                                            </div>
+                                            <div
+                                                style={{ height: '75.6px' }}
+                                                onClick={() => handlePickPrice(false)}
+                                                className={cx('pay-item', !pickPrice && 'active')}
+                                            >
+                                                <div
+                                                    style={{ transform: 'translateY(-1px)' }}
+                                                    className={cx('pay-button', !pickPrice && 'active')}
+                                                ></div>
+                                                <div className={cx('pay-price')}>
+                                                    <span>
+                                                        $
+                                                        <span style={{ fontWeight: 'bold', marginLeft: 8.4 }}>
+                                                            {(
+                                                                (item.discount > 0 ? item.priceDiscount : item.price) -
+                                                                0.41
+                                                            ).toFixed(2)}
+                                                        </span>
+                                                    </span>
+                                                    <span
+                                                        style={{
+                                                            transform: 'translateY(-11px)',
+                                                            height: '18px',
+                                                            fontSize: '1.2rem',
+                                                            color: '#6202ea',
+                                                        }}
+                                                    >
+                                                        Save <strong style={{ height: '18px' }}>$ 0.41 </strong>with G2A
+                                                        Plus
+                                                    </span>
+                                                </div>
                                             </div>
                                         </div>
                                         <div onClick={() => handleAddCart(item._id)} className={cx('pay-cart')}>
-                                            {loadingCart ? 'HIHi' : plus}
+                                            {plus}
                                         </div>
                                     </div>
                                 </div>

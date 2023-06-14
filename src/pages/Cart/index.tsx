@@ -159,6 +159,7 @@ function Cart() {
                             </div>
                             <div className={cx('warn')}>
                                 <svg
+                                    style={{ flexShrink: 0 }}
                                     xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 24 24"
                                     width="20"
@@ -310,7 +311,7 @@ function Cart() {
                                     </div>
                                 ))}
                             </div>
-                            <div className={cx('pay')}>
+                            <div className={cx('pay', tb && 'tb', mb && 'mb')}>
                                 <div className={cx('pay-box1')}>
                                     <span className={cx('payBox1-header')}>Save extra with G2A Plus</span>
                                     <div className={cx('payBox1-detail')}>
