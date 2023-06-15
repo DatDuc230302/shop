@@ -42,7 +42,7 @@ function Detail() {
     useEffect(() => {
         getApi();
         window.scrollTo(0, 0);
-    }, []);
+    }, [params.key]);
 
     // Function
     const getApi = loadingApi(async () => {

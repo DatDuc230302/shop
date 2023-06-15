@@ -39,6 +39,7 @@ function SearchArea({ category }: any) {
     const [priceMin, setPriceMin] = useState(0);
     const [priceMax, setPriceMax] = useState(100000000);
     const [loading, setLoading] = useState(false);
+    const [showFilter, setShowFilter] = useState(false);
 
     // Effect
     useEffect(() => {
@@ -288,7 +289,7 @@ function SearchArea({ category }: any) {
 
     return (
         <div className={cx('wrapper')}>
-            <div className={cx('inner')}>
+            <div className={cx('inner', tb && 'tb', mb && 'mb')}>
                 <div className={cx('result')}>
                     <Link to={'/'} className={cx('result-link')}>
                         G2A
@@ -303,27 +304,27 @@ function SearchArea({ category }: any) {
 
                     <span className={cx('result-title')}>Search results</span>
                 </div>
-                <div className={cx('tools')}>
-                    <div className={cx('tools-result')}>
-                        <span className={cx('tools-name')}>
-                            {query.length > 0
-                                ? `${query} - search results`
-                                : category !== undefined
-                                ? newKey
-                                : 'Category'}
-                        </span>
-                        <div className={cx('tools-quantity')}>
-                            {query.length > 0 ? (
-                                <>
-                                    {api.length} results for:{' '}
-                                    <span className={cx('toolsQuantity-name')}>"{query}"</span>
-                                </>
-                            ) : (
-                                `${api.length} products`
-                            )}
+                {pc && (
+                    <div className={cx('tools')}>
+                        <div className={cx('tools-result')}>
+                            <span className={cx('tools-name')}>
+                                {query.length > 0
+                                    ? `${query} - search results`
+                                    : category !== undefined
+                                    ? newKey
+                                    : 'Category'}
+                            </span>
+                            <div className={cx('tools-quantity')}>
+                                {query.length > 0 ? (
+                                    <>
+                                        {api.length} results for:{' '}
+                                        <span className={cx('toolsQuantity-name')}>"{query}"</span>
+                                    </>
+                                ) : (
+                                    `${api.length} products`
+                                )}
+                            </div>
                         </div>
-                    </div>
-                    {pc && (
                         <div className={cx('tools-actions')}>
                             <div onClick={() => setView(0)} className={cx('actions-view')}>
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14px" height="14px">
@@ -408,8 +409,8 @@ function SearchArea({ category }: any) {
                                 </HeadLessTippy>
                             </div>
                         </div>
-                    )}
-                </div>
+                    </div>
+                )}
                 <SearchArea1
                     loading={loading}
                     setPriceMin={setPriceMin}
@@ -419,7 +420,7 @@ function SearchArea({ category }: any) {
                     view={view}
                 />
                 {!pc && (
-                    <div className={cx('filterSort')}>
+                    <div onClick={() => setShowFilter(true)} className={cx('filterSort')}>
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 24 24"
@@ -430,15 +431,86 @@ function SearchArea({ category }: any) {
                         >
                             <path
                                 fill="none"
-                                stroke-miterlimit="10"
+                                strokeMiterlimit="10"
                                 d="M22 4l-8 8v8l-4 2V12L2 4V1h20v3z"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
                                 stroke="currentColor"
                             ></path>
                         </svg>
                         Filter & sort
+                    </div>
+                )}
+                {showFilter && !pc && (
+                    <div className={cx('subFilter')}>
+                        <div onClick={() => setShowFilter(false)} className={cx('close')}>
+                            <svg
+                                viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="25px"
+                                height="25px"
+                                fill="currentColor"
+                            >
+                                <path
+                                    d="M16 8l-8 8M16 16L8 8"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    strokeMiterlimit="10"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                ></path>
+                            </svg>
+                        </div>
+                        <span className={cx('sort-title')}>Sort by</span>
+                        <div className={cx('sort-box')}>
+                            <HeadLessTippy
+                                onClickOutside={() => setSortOption(false)}
+                                visible
+                                interactive
+                                placement="bottom-start"
+                                offset={[1, 0]}
+                                className="tippy"
+                                render={() => (
+                                    <div className={cx('sort-option', sortOption && 'show')}>
+                                        {sorts.map((item, index) => (
+                                            <div
+                                                onClick={() => handleSortItem(item, index)}
+                                                key={index}
+                                                className={cx('sortOption-item', countSort === index && 'active')}
+                                            >
+                                                {item}
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            >
+                                <div
+                                    onClick={() => setSortOption(!sortOption)}
+                                    className={cx('sort-select', sortOption && 'disable')}
+                                >
+                                    {valueSort}
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 24 24"
+                                        width="25px"
+                                        height="25px"
+                                        fill="currentColor"
+                                        className={cx('arrown-down', sortOption && 'rotate')}
+                                    >
+                                        <path
+                                            fill="none"
+                                            strokeMiterlimit="10"
+                                            d="M8 14l4-4 4 4"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth="2"
+                                            stroke="currentColor"
+                                        ></path>
+                                    </svg>
+                                </div>
+                            </HeadLessTippy>
+                        </div>
                     </div>
                 )}
             </div>

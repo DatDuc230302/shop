@@ -7,6 +7,33 @@
     display: flex;
     flex-direction: column;
     padding-bottom: 60px;
+
+    &.tb,
+    &.mb {
+        .sort-title {
+            font-size: 2rem;
+        }
+
+        .sort-select {
+            margin-top: 14px;
+            width: 100%;
+            height: 50px;
+            font-size: 1.4rem;
+        }
+
+        .sort-option {
+            position: absolute;
+            width: 100%;
+        }
+
+        .sortOption-item {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            height: 40px;
+            font-size: 1.3rem;
+        }
+    }
 }
 
 .result {
@@ -121,6 +148,7 @@
     background: rgb(255, 255, 255);
     margin-top: 1px;
     cursor: pointer;
+    position: relative;
 
     &:active {
         border-color: rgb(144, 199, 255);
@@ -144,7 +172,8 @@
     background-color: white;
     border-radius: 3px;
     left: -0.6px;
-    width: 174.6px;
+    min-width: 174.6px;
+    width: 100%;
     transition: all linear 0.2s;
     opacity: 0;
     visibility: hidden;
@@ -204,4 +233,21 @@
     bottom: 15px;
     right: 15px;
     cursor: pointer;
+}
+
+.subFilter {
+    background-color: white;
+    position: fixed;
+    bottom: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    padding: 136px 16px 16px 16px;
+
+    .close {
+        width: 100%;
+        display: flex;
+        justify-content: flex-end;
+    }
 }
