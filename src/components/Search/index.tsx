@@ -31,6 +31,7 @@ function Search() {
     const [loading, setLoading] = useState(false);
     const [apiSelling, setApiSelling] = useState([]);
     const [apiProducts, setApiProducts] = useState([]);
+    const [apiPopularSearch, setApiPopularSearch] = useState([]);
     const [recentSearch, setRecentSearch] = useState(
         JSON.parse(`${localStorage.getItem('recentSearch')}`) !== null
             ? JSON.parse(`${localStorage.getItem('recentSearch')}`)
@@ -39,6 +40,7 @@ function Search() {
 
     // Effect
     useEffect(() => {
+        getPopularSearch();
         if (valueInput.length === 0) {
             show && getApiSelling();
             setApiProducts([]);
@@ -62,19 +64,28 @@ function Search() {
     }, [valueInput]);
 
     // Function
-    const handleSearch = () => {
+    const handleSearch = async () => {
         const value = valueInput.normalize('NFD').replace(/[\u0300-\u036F]/g, '');
-        const newData = JSON.parse(`${localStorage.getItem('recentSearch')}`);
-        let data = [];
-        if (newData !== null) {
-            data = newData;
+        if (value.length > 0) {
+            const dataLocal = JSON.parse(`${localStorage.getItem('recentSearch')}`);
+            let data = [];
+            if (dataLocal !== null) {
+                data = dataLocal;
+                if (data.length < 5) {
+                    data.push(value);
+                } else {
+                    data.pop();
+                    data.unshift(value);
+                }
+            } else {
+                data.push(value);
+            }
+            setRecentSearch(data);
+            localStorage.setItem('recentSearch', JSON.stringify(data));
+            check !== 0 ? navigate(`/category/${cateSearch}?query=${value}`) : navigate(`/search?query=${value}`);
         }
-        data.push(value);
-        setRecentSearch(data);
-        localStorage.setItem('recentSearch', JSON.stringify(data));
-        valueInput.length > 0 &&
-            (check !== 0 ? navigate(`/category/${cateSearch}?query=${value}`) : navigate(`/search?query=${value}`));
         setShow(false);
+        await axios.post(`${ServerURL}/products/popularSearch/add`, { name: value });
     };
 
     const handleItem = (id: number, title: string, slug?: string) => {
@@ -103,6 +114,11 @@ function Search() {
         setApiProducts(data.data);
     }, setLoading);
 
+    const getPopularSearch = loadingApi(async () => {
+        const data = await axios.get(`${ServerURL}/products/popularSearch/get`);
+        setApiPopularSearch(data.data);
+    }, setLoading);
+
     // Event
     document.onkeydown = (e) => {
         if (e.which === 13 && valueInput.length > 0) {
@@ -114,6 +130,27 @@ function Search() {
         <div className={cx('wrapper', tb && 'tb', mb && 'mb')}>
             <div className={cx('inner')}>
                 <div className={cx('search')}>
+                    {!pc && show && (
+                        <div className={cx('arrown-back')}>
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                width="29px"
+                                height="29px"
+                                fill="currentColor"
+                            >
+                                <path
+                                    fill="none"
+                                    strokeMiterlimit="10"
+                                    d="M14 16l-4-4 4-4"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
+                                    stroke="white"
+                                ></path>
+                            </svg>
+                        </div>
+                    )}
                     <div className={cx('search-control')}>
                         <input
                             onClick={() => setShow(true)}
@@ -146,22 +183,54 @@ function Search() {
                         )}
                     </div>
                     {pc && (
-                        <>
-                            <HeadlessTippy
-                                appendTo={'parent'}
-                                placement="bottom-start"
-                                interactive
-                                offset={[0, 2.4]}
-                                visible={turnCate}
-                                onClickOutside={() => setTurnCate(false)}
-                                render={() => (
-                                    <div className={cx('categories')}>
+                        <HeadlessTippy
+                            appendTo={'parent'}
+                            placement="bottom-start"
+                            interactive
+                            offset={[0, 2.4]}
+                            visible={turnCate}
+                            onClickOutside={() => setTurnCate(false)}
+                            render={() => (
+                                <div className={cx('categories')}>
+                                    <div
+                                        onClick={() => handleItem(0, 'All categories')}
+                                        className={cx('categories-item')}
+                                    >
+                                        <div className={cx('item-check')}>
+                                            {check === 0 && (
+                                                <svg
+                                                    widths={21}
+                                                    height={21}
+                                                    viewBox="0 0 24 24"
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    fill="currentColor"
+                                                >
+                                                    <path
+                                                        d="M6 12l4 4 8-8"
+                                                        stroke="currentColor"
+                                                        strokeWidth="2"
+                                                        strokeMiterlimit="10"
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        fill="none"
+                                                    ></path>
+                                                </svg>
+                                            )}
+                                        </div>
+                                        <span className={cx('item-title')}>All categories</span>
+                                    </div>
+                                    <div className={cx('categories-line')}>
+                                        <div className={cx('line')}></div>
+                                        <span className={cx('line-title')}>Categories</span>
+                                    </div>
+                                    {categories.map((item, index) => (
                                         <div
-                                            onClick={() => handleItem(0, 'All categories')}
+                                            onClick={() => handleItem(item.id, item.title, item.slug)}
+                                            key={index}
                                             className={cx('categories-item')}
                                         >
                                             <div className={cx('item-check')}>
-                                                {check === 0 && (
+                                                {check === item.id && (
                                                     <svg
                                                         widths={21}
                                                         height={21}
@@ -181,92 +250,58 @@ function Search() {
                                                     </svg>
                                                 )}
                                             </div>
-                                            <span className={cx('item-title')}>All categories</span>
+                                            <span className={cx('item-title')}>{item.title}</span>
                                         </div>
-                                        <div className={cx('categories-line')}>
-                                            <div className={cx('line')}></div>
-                                            <span className={cx('line-title')}>Categories</span>
-                                        </div>
-                                        {categories.map((item, index) => (
-                                            <div
-                                                onClick={() => handleItem(item.id, item.title, item.slug)}
-                                                key={index}
-                                                className={cx('categories-item')}
-                                            >
-                                                <div className={cx('item-check')}>
-                                                    {check === item.id && (
-                                                        <svg
-                                                            widths={21}
-                                                            height={21}
-                                                            viewBox="0 0 24 24"
-                                                            xmlns="http://www.w3.org/2000/svg"
-                                                            fill="currentColor"
-                                                        >
-                                                            <path
-                                                                d="M6 12l4 4 8-8"
-                                                                stroke="currentColor"
-                                                                strokeWidth="2"
-                                                                strokeMiterlimit="10"
-                                                                strokeLinecap="round"
-                                                                strokeLinejoin="round"
-                                                                fill="none"
-                                                            ></path>
-                                                        </svg>
-                                                    )}
-                                                </div>
-                                                <span className={cx('item-title')}>{item.title}</span>
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
-                            >
-                                <div
-                                    onClick={() => (turnCate ? setTurnCate(false) : setTurnCate(true))}
-                                    className={cx('search-category')}
-                                >
-                                    <span className={cx('searchCategory-title')}>{cateTitle}</span>
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        viewBox="0 0 24 24"
-                                        width="2rem"
-                                        height="2rem"
-                                        fill="currentColor"
-                                    >
-                                        <path
-                                            fill="none"
-                                            strokeMiterlimit="10"
-                                            d="M16 10l-4 4-4-4"
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth="2"
-                                            stroke="currentColor"
-                                        ></path>
-                                    </svg>
+                                    ))}
                                 </div>
-                            </HeadlessTippy>
-                            <div onClick={() => handleSearch()} className={cx('search-btn')}>
+                            )}
+                        >
+                            <div
+                                onClick={() => (turnCate ? setTurnCate(false) : setTurnCate(true))}
+                                className={cx('search-category')}
+                            >
+                                <span className={cx('searchCategory-title')}>{cateTitle}</span>
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 24 24"
-                                    width="1.7rem"
-                                    height="1.7rem"
+                                    width="2rem"
+                                    height="2rem"
                                     fill="currentColor"
                                 >
-                                    <g
+                                    <path
+                                        fill="none"
+                                        strokeMiterlimit="10"
+                                        d="M16 10l-4 4-4-4"
                                         strokeLinecap="round"
                                         strokeLinejoin="round"
                                         strokeWidth="2"
-                                        stroke="white"
-                                        fill="none"
-                                        strokeMiterlimit="10"
-                                    >
-                                        <path d="M22 22l-6.344-6.344"></path>
-                                        <circle cx="10" cy="10" r="8"></circle>
-                                    </g>
+                                        stroke="currentColor"
+                                    ></path>
                                 </svg>
                             </div>
-                        </>
+                        </HeadlessTippy>
                     )}
+                    <div onClick={() => handleSearch()} className={cx('search-btn')}>
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            width="1.7rem"
+                            height="1.7rem"
+                            fill="currentColor"
+                        >
+                            <g
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                stroke="white"
+                                fill="none"
+                                strokeMiterlimit="10"
+                            >
+                                <path d="M22 22l-6.344-6.344"></path>
+                                <circle cx="10" cy="10" r="8"></circle>
+                            </g>
+                        </svg>
+                    </div>
                 </div>
                 {show && (
                     <div className={cx('sub-search')}>
@@ -365,12 +400,15 @@ function Search() {
                                 <div className={cx('right')}>
                                     <div className={cx('right-box')}>
                                         <span className={cx('right-title')}>Popular searches</span>
-                                        <span className={cx('right-item')}>call of duty</span>
-                                        <span className={cx('right-item')}>call</span>
-                                        <span className={cx('right-item')}>call of</span>
-                                        <span className={cx('right-item')}>call of duty modern warfare</span>
-                                        <span className={cx('right-item')}>call of duty black ops</span>
-                                        <span className={cx('right-item')}>call of duty modern</span>
+                                        {apiPopularSearch.map((item: any, index: number) => (
+                                            <Link
+                                                to={`/search?query=${item.name}`}
+                                                key={index}
+                                                className={cx('right-item')}
+                                            >
+                                                {item.name}
+                                            </Link>
+                                        ))}
                                     </div>
                                     {recentSearch.length > 0 && (
                                         <div className={cx('right-box')}>
@@ -380,9 +418,13 @@ function Search() {
                                             {recentSearch.map(
                                                 (item: string, index: number) =>
                                                     index < 5 && (
-                                                        <span key={index} className={cx('right-item')}>
+                                                        <Link
+                                                            to={`/search?query=${item}`}
+                                                            key={index}
+                                                            className={cx('right-item')}
+                                                        >
                                                             {item}
-                                                        </span>
+                                                        </Link>
                                                     ),
                                             )}
                                         </div>

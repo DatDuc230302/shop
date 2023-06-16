@@ -91,6 +91,7 @@ function Auth() {
         dispath(authAction('LOGIN'));
         setShow(false);
     };
+
     const loginFailure = (res: any) => {
         console.log('LOGIN FAILED! res: ', res);
     };

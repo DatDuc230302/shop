@@ -24,14 +24,13 @@
         .sort-option {
             position: absolute;
             width: 100%;
+            bottom: -165px;
         }
 
         .sortOption-item {
-            flex: 1;
             display: flex;
-            align-items: center;
             height: 40px;
-            font-size: 1.3rem;
+            align-items: center;
         }
     }
 }
@@ -250,4 +249,51 @@
         display: flex;
         justify-content: flex-end;
     }
+}
+
+.price {
+    margin-top: 40px;
+    padding-bottom: 15px;
+}
+
+.price-title {
+    font-size: 1.4rem;
+    margin-top: 10px;
+    margin-bottom: 9.2px;
+}
+
+.price-control {
+    display: flex;
+    width: 100%;
+    height: 44px;
+}
+
+.price-input {
+    width: 100%;
+    border: 1px solid #e0e0e0;
+    padding: 10.2px 12px 9.2px 12px;
+    border-radius: 2px;
+    transition: all linear 0.2s;
+
+    &:focus {
+        border-color: #2f82fb;
+    }
+}
+
+.apply {
+    width: 40%;
+    background-color: #2f82fb;
+    z-index: 9;
+    font-size: 14px;
+    color: rgb(255, 255, 255);
+    height: 42px;
+    border-radius: 3px;
+    display: flex;
+    gap: 3px;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    bottom: 15px;
+    right: 15px;
+    cursor: pointer;
 }
