@@ -5,6 +5,7 @@ export const routePath: {
     cart: string;
     detail: string;
     payment: string;
+    bestDeals: string;
     //
     homeAdmin: string;
 } = {
@@ -14,6 +15,7 @@ export const routePath: {
     cart: '/page/cart',
     detail: '/detail/:key',
     payment: '/payment',
+    bestDeals: '/best-deals',
     //
     homeAdmin: '/admin/home',
 };

@@ -46,7 +46,7 @@ function Detail() {
 
     // Function
     const getApi = loadingApi(async () => {
-        const data = await axios.post(`${ServerURL}/products/findId`, { id: String(params.key) });
+        const data = await axios.post(`${ServerURL}/products/findAndUpdateViews`, { id: String(params.key) });
         setApi(data.data);
     }, setLoading);
 

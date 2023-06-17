@@ -152,6 +152,7 @@
 }
 
 .sub-search {
+    z-index: 200000;
     left: 0;
     transform: translateY(1px);
     position: absolute;

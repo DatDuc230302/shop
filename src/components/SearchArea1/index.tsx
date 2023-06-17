@@ -162,10 +162,10 @@ function SearchArea1({ loading, query, view, api, setPriceMin, setPriceMax }: an
                     )}
                     {!loading ? (
                         api.length > 0 ? (
-                            view === 1 ? (
-                                <Layout1 api={api} />
-                            ) : (
+                            view === 0 ? (
                                 <Layout2 api={api} />
+                            ) : (
+                                <Layout1 api={api} />
                             )
                         ) : (
                             <div className={cx('empty')}>

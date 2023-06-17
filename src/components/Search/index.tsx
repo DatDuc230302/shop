@@ -105,7 +105,7 @@ function Search() {
     };
 
     const getApiSelling = loadingApi(async () => {
-        const data = await axios.get(`${ServerURL}/products/getSelling`);
+        const data = await axios.post(`${ServerURL}/products/getSelling`, { quantity: 4 });
         setApiSelling(data.data);
     }, setLoading);
 

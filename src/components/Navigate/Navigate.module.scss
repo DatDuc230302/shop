@@ -41,7 +41,7 @@
 
 .list {
     width: 270px;
-    min-height: 50px;
+    height: 450px;
     background-color: white;
     position: relative;
 
@@ -54,7 +54,7 @@
         height: 0;
         border-left: 8px solid transparent;
         border-right: 8px solid transparent;
-        border-top: 6px solid black;
+        border-top: 6px solid #424242;
         transform: translateY(-1px);
     }
 }

@@ -1,0 +1,256 @@
+.wrapper {
+    width: 100%;
+    margin-top: 58px;
+}
+
+.inner {
+    width: 100%;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+
+    .header-row {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .header-title {
+        font-size: 2.6rem;
+        color: #212121;
+        font-weight: bold;
+    }
+
+    .header-content {
+        margin-top: 2.4px;
+        font-size: 1.4rem;
+        color: #757575;
+    }
+
+    .header-all {
+        margin-top: 3.6px;
+        width: 110px;
+        height: 26.4px;
+        padding-bottom: 0.4px;
+        background-color: #267df6;
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1;
+        font-size: 12px;
+        font-weight: 700;
+        color: #fff;
+        border: 1px solid 2f82fb;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all linear 0.2s;
+
+        &:hover {
+            background-color: #1e67cc;
+        }
+    }
+}
+
+.body {
+    margin-top: 19.4px;
+    width: 100%;
+    display: flex;
+    gap: 3rem;
+    flex-wrap: wrap;
+
+    &.tb,
+    &.mb {
+        flex-wrap: nowrap;
+        overflow-x: scroll;
+    }
+
+    &::-webkit-scrollbar {
+        width: 0;
+    }
+
+    /* Track */
+    &::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    /* Handle */
+    &::-webkit-scrollbar-thumb {
+        background: transparent;
+    }
+
+    /* Handle on hover */
+    &::-webkit-scrollbar-thumb:hover {
+        background: transparent;
+    }
+}
+
+.item {
+    width: 170px;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.base {
+    flex-shrink: 0;
+    display: flex;
+    font-size: 1rem;
+    color: #b8b8b8;
+    margin-bottom: 6px;
+    white-space: nowrap;
+}
+
+.product {
+    transition: all linear 0.15s;
+
+    &:hover {
+        box-shadow: rgba(0, 0, 0, 0.06) 0px 3.5px 5.1px, rgba(0, 0, 0, 0.106) 0px 4px 4.4px,
+            rgba(0, 0, 0, 0.2) 0px 7px 17px;
+        border-radius: 4px;
+        transform: translateY(-2px);
+    }
+}
+
+.product-img {
+    border-radius: 4px 4px 0px 0px;
+    overflow: hidden;
+    img {
+        width: 100%;
+        height: 228px;
+        object-fit: cover;
+        transform: translateY(-0.7px);
+    }
+}
+
+.product-detail {
+    padding: 16px 8px 17px 16px;
+    border: 1px solid #e0e0e0;
+    border-top: none;
+    margin-top: -3.2px;
+    height: 193.4px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-radius: 0 0 4px 4px;
+    background-color: #ffffff;
+}
+
+.product-name {
+    max-width: 132.11px;
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #212121;
+    border-radius: 0px 0px 4px 4px;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    line-height: 20px;
+}
+
+.product-price {
+    display: flex;
+    flex-direction: column;
+}
+
+.price {
+    font-size: 1.8rem;
+    color: #212121;
+    height: 21px;
+}
+
+.price-old {
+    display: block;
+    width: max-content;
+    color: #757575;
+    font-size: 1.2rem;
+    line-height: 20px;
+    position: relative;
+    margin-top: 1.4px;
+
+    &::after {
+        content: '';
+        left: 20px;
+        position: absolute;
+        width: 100%;
+        height: 0.4px;
+        background-color: #8e8e8e;
+        top: 50%;
+        transform: translateX(-50%);
+    }
+}
+
+.price-discount {
+    transform: translateY(0.4px);
+    width: max-content;
+    border: 1px solid rgb(221, 48, 28);
+    background: rgba(221, 48, 28, 0.1);
+    color: rgb(221, 48, 28);
+    font-size: 1.1rem;
+    padding: 3px 6px 1px;
+    font-weight: bold;
+    border-radius: 4px;
+    padding-bottom: 2px;
+    display: flex;
+}
+
+.more {
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    color: #2f82fb;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 35px;
+    font-family: Arial;
+
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
+.cheap-title {
+    font-size: 2.5rem;
+    color: #212121;
+    font-weight: bold;
+    margin-top: 9px;
+    margin-bottom: 6px;
+    display: flex;
+    letter-spacing: -0.4px;
+}
+
+.body-cheaps {
+    display: flex;
+    gap: 3rem;
+    margin-top: 19px;
+
+    &.tb,
+    &.mb {
+        flex-wrap: wrap;
+    }
+}
+
+.cheap-item {
+    font-family: Roboto, sans-serif;
+    color: #212121;
+    font-size: 1.8rem;
+    width: 170px;
+    height: 90px;
+    height: 90px;
+    width: 100%;
+    background-color: rgb(255, 255, 255);
+    border: 1px solid rgb(224, 224, 224);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all linear 0.2s;
+    cursor: pointer;
+    font-weight: bold;
+
+    &:hover {
+        box-shadow: rgba(0, 0, 0, 0.28) 0px 0px 10px 0px;
+    }
+}

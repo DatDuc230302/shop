@@ -1,6 +1,6 @@
 import classNames from 'classnames/bind';
 import style from './SearchArea.module.scss';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useLocation, useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { sorts } from '../../apiLocal/sorts';
 import HeadLessTippy from '@tippyjs/react/headless';
@@ -10,51 +10,56 @@ import { useMediaQuery } from 'react-responsive';
 import { ServerURL } from '../../connect';
 import axios from 'axios';
 import { loadingApi } from '../Loading';
+import queryString from 'query-string';
 
 const cx = classNames.bind(style);
 
-function SearchArea({ category }: any) {
-    const url = window.location.href;
-    const params = useParams();
-    let str = url.indexOf('query=');
-    let key = '';
-    key = key + params.key;
-    const [query, setQuery] = useState('');
-    useEffect(() => {
-        setQuery('');
-    }, [params.key]);
-    const newKey = key.charAt(0).toUpperCase() + key.slice(1);
-
+function SearchArea({ category, categoryDefault }: any) {
     // Responsive
     const pc = useMediaQuery({ minWidth: 992 });
     const tb = useMediaQuery({ minWidth: 768, maxWidth: 991 });
     const mb = useMediaQuery({ maxWidth: 767 });
 
     // State
+    const [query, setQuery] = useState('');
     const [api, setApi] = useState([]);
     const [sortOption, setSortOption] = useState(false);
     const [valueSort, setValueSort] = useState('Best match');
     const [countSort, setCountSort] = useState(-1);
-    const [view, setView] = useState(1);
+    const [view, setView] = useState(0);
     const [priceMin, setPriceMin] = useState(0);
     const [priceMax, setPriceMax] = useState(100000000);
     const [loading, setLoading] = useState(false);
     const [showFilter, setShowFilter] = useState(false);
     const [valueMin, setValueMin] = useState(0);
     const [valueMax, setValueMax] = useState(100000000);
+    const [resultKey, setResultKey] = useState('');
+
+    // Location
+    const location = useLocation();
+    const params = useParams();
 
     // Effect
     useEffect(() => {
-        if (str !== -1) {
-            let temp = url.slice(str + 6);
-            temp = temp.replace(/%/g, ' ');
-            temp = temp.replace(/20/g, '');
-            setQuery(temp);
+        const queryParams = queryString.parse(location.search);
+
+        const resultKey = String(params.key).charAt(0).toUpperCase() + String(params.key).slice(1);
+        setResultKey(resultKey);
+
+        // Find query in URL after query=
+        if (queryParams.query !== undefined) {
+            setQuery(String(queryParams.query));
+        } else {
+            setQuery('');
         }
-    }, [params]);
+    }, [location, params.key]);
 
     useEffect(() => {
-        setView(0);
+        if (tb || mb) {
+            setView(0);
+        } else {
+            setView(1);
+        }
     }, [tb, mb]);
 
     useEffect(() => {
@@ -67,34 +72,21 @@ function SearchArea({ category }: any) {
         } else {
             if (query.length > 0) {
                 findName();
-            } else {
-                findAll();
             }
         }
-        // if (category !== undefined && query.length > 0) {
-        //     findNameCateAndQuery();
-        //     return;
-        // }
-        // if (category === undefined) {
-        //     if (query.length > 0) {
-        //         findName();
-        //     } else {
-        //         findAll();
-        //     }
-        // } else {
-        //     findNameCate();
-        // }
-    }, [category, query]);
+    }, [category, query.length]);
+
+    useEffect(() => {
+        if (categoryDefault === 'category') {
+            findAll();
+            return;
+        }
+    }, [categoryDefault]);
 
     useEffect(() => {
         setValueSort('Best match');
         setCountSort(-1);
-    }, [query]);
-
-    useEffect(() => {
-        setValueSort('Best match');
-        setCountSort(-1);
-    }, [category]);
+    }, [query, category]);
 
     useEffect(() => {
         const debounceTimer = setTimeout(() => {
@@ -308,9 +300,11 @@ function SearchArea({ category }: any) {
                         G2A
                     </Link>
                     <span className={cx('result-character')}> › </span>
-                    {newKey !== 'Search' && (
+                    {resultKey !== 'Search' && (
                         <>
-                            <span className={cx('result-title')}>{category !== undefined ? newKey : 'Category'}</span>
+                            <span className={cx('result-title')}>
+                                {category !== undefined ? resultKey : 'Category'}
+                            </span>
                             <span className={cx('result-character')}> › </span>
                         </>
                     )}
@@ -323,7 +317,7 @@ function SearchArea({ category }: any) {
                             {query.length > 0
                                 ? `${query} - search results`
                                 : category !== undefined
-                                ? newKey
+                                ? resultKey
                                 : 'Category'}
                         </span>
                         <div className={cx('tools-quantity')}>

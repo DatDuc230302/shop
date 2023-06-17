@@ -9,6 +9,7 @@ import Detail from '../pages/Detail';
 import Payment from '../pages/Payment';
 //
 import HomeAdmin from '../admin/pages/HomeAdmin';
+import BestDeals from '../pages/BestDeals';
 
 interface route {
     path: string;
@@ -25,6 +26,8 @@ export const routes: route[] = [
     { path: path.cart, component: <Cart />, layout: DefautlLayout },
     { path: path.detail, component: <Detail />, layout: DefautlLayout },
     { path: path.payment, component: <Payment />, layout: DefautlLayout },
+    { path: `${path.bestDeals}/:key`, component: <BestDeals />, layout: DefautlLayout },
+    { path: path.bestDeals, component: <BestDeals />, layout: DefautlLayout },
 
     // Admin
     { path: path.homeAdmin, component: <HomeAdmin />, layout: SecondLayout },

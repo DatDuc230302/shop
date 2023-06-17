@@ -2,7 +2,7 @@ import classNames from 'classnames/bind';
 import style from './DefaultLayout.module.scss';
 import Header from '../../components/Header';
 import { useMediaQuery } from 'react-responsive';
-import Navigate from '../../components/Navigate';
+import Footer from '../../components/Footer';
 
 const cx = classNames.bind(style);
 
@@ -23,6 +23,7 @@ function DefautlLayout({ children }: MyComponentProps): JSX.Element {
                 <div className={cx('body', tb && 'tb', mb && 'mb')}>
                     <div className={cx('body-inner')}>{children}</div>
                 </div>
+                <Footer />
             </div>
         </div>
     );

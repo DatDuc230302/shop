@@ -1,5 +1,10 @@
 export const categories = [
     {
+        title: 'Category',
+        id: 8,
+        slug: 'category',
+    },
+    {
         title: 'Gaming',
         id: 1,
         slug: 'gaming',

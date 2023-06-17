@@ -91,6 +91,8 @@ function AddProduct() {
             description: description,
             category: category,
             img: downloadURL,
+            sold: 0,
+            views: 0,
         });
         if (data.data.status) {
             alert('Uploaded');

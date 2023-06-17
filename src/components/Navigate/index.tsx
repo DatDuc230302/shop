@@ -3,18 +3,48 @@ import style from './Navigate.module.scss';
 import HeadlessTippy from '@tippyjs/react/headless';
 import 'tippy.js/dist/tippy.css';
 import { categories } from '../../apiLocal/categories';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 
 const cx = classNames.bind(style);
 function Navigate() {
-    const [showList, setShowList] = useState(false);
+    // State
+    const [showList, setShowList] = useState(window.location.pathname === '/' ? true : false);
     const [showOverlay, setShowOverlay] = useState(false);
 
+    // React Router
     const navigate = useNavigate();
 
+    // Effect
+    useEffect(() => {
+        if (window.location.pathname === '/') {
+            setShowList(true);
+            const handleScroll = () => {
+                const scrollY = window.scrollY;
+                if (scrollY > 0) {
+                    setShowList(false);
+                    setShowOverlay(false);
+                } else {
+                    setShowList(true);
+                }
+            };
+            window.addEventListener('scroll', handleScroll);
+            return () => {
+                window.removeEventListener('scroll', handleScroll);
+            };
+        } else {
+            setShowList(false);
+        }
+    }, [window.location.pathname]);
+
+    // Function
     const handleItem = (slug: string) => {
-        navigate(`/category/${slug}`);
+        if (slug !== 'category') {
+            navigate(`/category/${slug}`);
+        } else {
+            navigate(`/category`);
+        }
+        setShowOverlay(false);
     };
 
     return (
@@ -23,7 +53,7 @@ function Navigate() {
                 <HeadlessTippy
                     appendTo={'parent'}
                     visible={showList}
-                    onClickOutside={() => setShowList(false)}
+                    onClickOutside={() => (window.location.pathname === '/' ? setShowList(true) : setShowList(false))}
                     interactive
                     placement="bottom-start"
                     offset={[0, 0]}
