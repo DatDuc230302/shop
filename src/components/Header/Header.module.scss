@@ -7,6 +7,13 @@
     position: fixed;
     user-select: none;
     z-index: 1000;
+
+    &.tb,
+    &.mb {
+        .control {
+            height: 64px;
+        }
+    }
 }
 
 .inner {
@@ -46,4 +53,102 @@
     display: flex;
     justify-content: flex-end;
     align-items: center;
+}
+
+.menu-area {
+    width: 100%;
+    position: fixed;
+    color: rgba(0, 0, 0, 0.87);
+    height: 100%;
+    left: 0px;
+    top: 0px;
+    z-index: 999999;
+    transform: translate(0px);
+    overflow: hidden;
+    visibility: hidden;
+    opacity: 0;
+    transition: all linear 0.2s;
+
+    &.show {
+        visibility: visible;
+        opacity: 1;
+        .menu-body {
+            transform: translateX(0);
+        }
+    }
+
+    .menu-body {
+        width: 290px;
+        height: 100%;
+        position: absolute;
+        z-index: 10;
+        transform: translateX(-200px);
+        transition: all linear 0.2s;
+        background-color: black;
+
+        .menu-header {
+            padding-left: 11px;
+            height: 50px;
+            background-color: black;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: white;
+            font-size: 1.4rem;
+            font-weight: bold;
+
+            .menuHeader-title {
+                transform: translateY(-0.6px);
+            }
+        }
+
+        .menu-list {
+            width: 100%;
+            display: flex;
+            background-color: white;
+            flex-direction: column;
+            height: 440px;
+
+            .menuList-item {
+                width: 100%;
+                height: 40px;
+                font-size: 1.4rem;
+                color: #000000de;
+                display: flex;
+                align-items: center;
+                padding-left: 16px;
+            }
+        }
+
+        .menu-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+
+            .menuNav-item {
+                width: 100%;
+                height: 40px;
+                display: flex;
+                align-items: center;
+                color: white;
+                font-weight: bold;
+                justify-content: center;
+                border-radius: 0px 0px 8px 8px;
+                font-size: 1.2rem;
+                padding-bottom: 1px;
+                background-color: #212121;
+
+                &.active {
+                    background-color: #6202ea;
+                }
+            }
+        }
+    }
+
+    .menu-overlay {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+    }
 }

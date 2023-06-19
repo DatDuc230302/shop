@@ -6,6 +6,7 @@ export const routePath: {
     detail: string;
     payment: string;
     bestDeals: string;
+    plus: string;
     //
     homeAdmin: string;
 } = {
@@ -16,6 +17,7 @@ export const routePath: {
     detail: '/detail/:key',
     payment: '/payment',
     bestDeals: '/best-deals',
+    plus: '/plus',
     //
     homeAdmin: '/admin/home',
 };

@@ -1,0 +1,132 @@
+.wrapper {
+    margin-top: 140px;
+    width: 100%;
+}
+
+.inner {
+    width: 100%;
+}
+
+.present {
+    padding: 10px 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    background-color: #212121;
+
+    .present-box {
+        min-height: 292px;
+        padding-top: 50px;
+        width: 1170px;
+        display: flex;
+        flex-wrap: wrap;
+
+        &.tb,
+        &.mb {
+            gap: 3rem;
+            padding: 0 15px;
+            .present-item {
+                width: 100%;
+                padding-left: 0;
+
+                &.active {
+                    border-left: none;
+                    border-right: none;
+                    border-top: 1px solid #3d3d3d;
+                    border-bottom: 1px solid #3d3d3d;
+
+                    &:last-child {
+                        border-top: none;
+                        border-bottom: none;
+                    }
+                }
+            }
+        }
+    }
+
+    .present-item {
+        width: 32.65%;
+        padding-right: 30px;
+        height: 192px;
+
+        &.active {
+            width: calc(32.65% + 5px);
+            padding-right: 4px;
+            padding-left: 15px;
+            border-left: 1px solid #3d3d3d;
+            border-right: 1px solid #3d3d3d;
+
+            .present-poster {
+                transform: translateY(-45px);
+            }
+
+            &:last-child {
+                border-left: none;
+                border-right: none;
+            }
+            .present-img {
+                padding-left: 0;
+
+                img {
+                    object-fit: cover;
+                }
+            }
+
+            .present-info {
+                width: 59.95%;
+                height: 175.55px;
+                padding-left: 3px;
+            }
+        }
+    }
+
+    .present-img {
+        padding-left: 15px;
+
+        img {
+            flex-shrink: 0;
+        }
+    }
+
+    .present-detail {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .present-info {
+        width: 232px;
+        padding-top: 18px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding-bottom: 28px;
+    }
+
+    .present-title {
+        color: white;
+        font-size: 1.4rem;
+        line-height: 20px;
+    }
+
+    .present-btn {
+        cursor: pointer;
+        color: #fff;
+        background-color: #2f82fb;
+        display: inline-flex;
+        width: 162px;
+        height: 41.6px;
+        font-size: 14px;
+        align-items: center;
+        justify-content: center;
+        border-radius: 3px;
+        padding: 0 5px;
+        margin: 0;
+        font-weight: bold;
+    }
+
+    .present-poster {
+        transform: translateY(-35px);
+        img {
+        }
+    }
+}

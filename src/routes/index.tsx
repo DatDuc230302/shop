@@ -10,6 +10,7 @@ import Payment from '../pages/Payment';
 //
 import HomeAdmin from '../admin/pages/HomeAdmin';
 import BestDeals from '../pages/BestDeals';
+import Plus from '../pages/Plus';
 
 interface route {
     path: string;
@@ -28,6 +29,7 @@ export const routes: route[] = [
     { path: path.payment, component: <Payment />, layout: DefautlLayout },
     { path: `${path.bestDeals}/:key`, component: <BestDeals />, layout: DefautlLayout },
     { path: path.bestDeals, component: <BestDeals />, layout: DefautlLayout },
+    { path: path.plus, component: <Plus />, layout: SecondLayout },
 
     // Admin
     { path: path.homeAdmin, component: <HomeAdmin />, layout: SecondLayout },

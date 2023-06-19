@@ -86,7 +86,9 @@ function Navigate() {
                         <span className={cx('categories-title')}>CATEGORIES</span>
                     </div>
                 </HeadlessTippy>
-                <div className={cx('item')}>Steam Gift Cards</div>
+                <Link to={'best-deals'} className={cx('item')}>
+                    Steam Gift Cards
+                </Link>
                 <div className={cx('item')}>Bestsellers</div>
                 <Link to="/editor/1" className={cx('item')}>
                     Random Keys
@@ -94,7 +96,9 @@ function Navigate() {
                 <Link to={'/admin/home'} className={cx('item')}>
                     Software
                 </Link>
-                <div className={cx('plus')}>Save more with G2A Plus</div>
+                <Link to={'/plus'} className={cx('plus')}>
+                    Save more with G2A Plus
+                </Link>
             </div>
             <div className={cx('overlay', showOverlay && 'show')}></div>
         </div>

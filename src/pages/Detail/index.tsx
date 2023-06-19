@@ -83,7 +83,7 @@ function Detail() {
     };
 
     return (
-        <div className={cx('wrapper')}>
+        <div className={cx('wrapper', tb && 'tb', mb && 'mb')}>
             <div className={cx('inner')}>
                 <div className={cx('result')}>
                     <div onClick={backUrl} className={cx('result-back')}>
@@ -107,19 +107,21 @@ function Detail() {
                         </svg>
                         Search results
                     </div>
-                    <Link to={'/'} className={cx('result-link')}>
-                        G2A
-                    </Link>
-                    <span className={cx('result-character')}> › </span>
-                    {api.map((item: any, index: number) => (
-                        <div key={index}>
-                            <span className={cx('result-title')}>
-                                {item.category.charAt(0).toUpperCase() + item.category.slice(1)}
-                            </span>
-                            <span className={cx('result-character')}> › </span>
-                        </div>
-                    ))}
-                    <span className={cx('result-title')}>Search results</span>
+                    <div className={cx('result-box')}>
+                        <Link to={'/'} className={cx('result-link')}>
+                            G2A
+                        </Link>
+                        <span className={cx('result-character')}> › </span>
+                        {api.map((item: any, index: number) => (
+                            <div style={{ height: 14.4, display: 'flex', alignItems: 'center' }} key={index}>
+                                <span className={cx('result-title')}>
+                                    {item.category.charAt(0).toUpperCase() + item.category.slice(1)}
+                                </span>
+                                <div className={cx('result-character')}> › </div>
+                            </div>
+                        ))}
+                        <span className={cx('result-title')}>Search results</span>
+                    </div>
                 </div>
                 <img className={cx('advert')} src={require('./../../assets/imgs/advert.avif')} alt="" />
                 {loading ? (

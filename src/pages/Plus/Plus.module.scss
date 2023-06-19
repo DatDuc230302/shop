@@ -1,0 +1,124 @@
+.wrapper {
+    width: 100%;
+}
+
+.inner {
+    width: 100%;
+
+    &.tb,
+    &.mb {
+        .poster {
+            .poster-box {
+                flex-direction: column;
+                max-height: max-content;
+
+                .poster-introduce {
+                    width: 100%;
+                    align-items: center;
+                }
+
+                .poster-cost {
+                    width: 100%;
+                    align-items: center;
+                    gap: 3rem;
+                }
+            }
+        }
+    }
+}
+
+.poster {
+    width: 100%;
+    background-color: #6202ea;
+    display: flex;
+    justify-content: center;
+
+    .poster-box {
+        max-height: 176px;
+        width: 1170px;
+        display: flex;
+
+        .poster-img {
+            img {
+                width: 100%;
+                object-fit: cover;
+            }
+        }
+
+        .poster-introduce {
+            width: 25.812%;
+            display: flex;
+            flex-direction: column;
+            padding-top: 27px;
+            padding-bottom: 30px;
+            color: white;
+            font-weight: bold;
+            justify-content: space-between;
+
+            .poster-title {
+                font-size: 34px;
+                line-height: 40px;
+            }
+
+            .poster-content {
+                font-size: 1.4rem;
+                line-height: 20px;
+            }
+        }
+
+        .poster-cost {
+            padding-top: 25.5px;
+            padding-bottom: 27px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+
+            .poster-price {
+                color: white;
+                display: flex;
+                flex-direction: column;
+
+                .price-main {
+                    height: 38px;
+                    font-weight: bold;
+                    font-size: 32px;
+                    line-height: 40px;
+                }
+
+                .price-old {
+                    margin-top: 1px;
+                    height: 14px;
+                    font-size: 1.2rem;
+                    text-decoration: line-through;
+                }
+            }
+
+            .poster-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 217px;
+                height: 42.4px;
+                border-radius: 3px;
+                font-size: 1.4rem;
+                font-weight: bold;
+                color: black;
+                background-color: rgb(255, 255, 255);
+                cursor: pointer;
+            }
+        }
+    }
+}
+
+.session {
+    width: 100%;
+
+    .session-bg {
+        display: flex;
+
+        img {
+            width: 100%;
+            object-fit: cover;
+        }
+    }
+}

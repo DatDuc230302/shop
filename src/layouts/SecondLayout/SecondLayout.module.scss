@@ -1,0 +1,24 @@
+.wrapper {
+    width: 100%;
+    background-color: #f9f9f9;
+}
+
+.body {
+    padding-top: 120px;
+    min-height: 790px;
+    width: 100%;
+    display: flex;
+    padding: 120px 0 0 0;
+    justify-content: center;
+
+    &.tb,
+    &.mb {
+        padding-top: 126px;
+    }
+}
+
+.body-inner {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}

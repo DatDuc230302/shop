@@ -59,6 +59,13 @@ function RenderProducts({ type }: any) {
                     'Are you low on cash or just want to score a great bargain? G2A offers a selection of great video games that can be bought for a whole lot less, even under one euro!',
                 );
                 break;
+            case 'other':
+                getOther();
+                setTitle('Cryptocurrencies');
+                setContent(
+                    'Want to invest in BitCoin or another cryptocurrency? Browse through our wide selection of gift cards for a fast, comfortable, and safe purchase.',
+                );
+                break;
             default:
                 return;
         }
@@ -89,6 +96,11 @@ function RenderProducts({ type }: any) {
 
     const getBestCateSoftware = async () => {
         const data = await axios.post(`${ServerURL}/products/findBestCate`, { category: 'software', quantity: 12 });
+        setApi(data.data);
+    };
+
+    const getOther = async () => {
+        const data = await axios.post(`${ServerURL}/products/findNameCate`, { category: 'other' });
         setApi(data.data);
     };
 

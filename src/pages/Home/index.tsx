@@ -86,6 +86,7 @@ function Home() {
                         <RenderProducts type={'bestSoftware'} />
                         <br></br>
                         <RenderProducts type={'cheap'} />
+                        <RenderProducts type={'other'} />
                     </div>
                 )}
                 {params.key !== 'search' && (

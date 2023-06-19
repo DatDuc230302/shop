@@ -14,7 +14,7 @@ import queryString from 'query-string';
 
 const cx = classNames.bind(style);
 
-function SearchArea({ category, categoryDefault }: any) {
+function SearchArea({ category, categoryDefault, priceMaxUrl }: any) {
     // Responsive
     const pc = useMediaQuery({ minWidth: 992 });
     const tb = useMediaQuery({ minWidth: 768, maxWidth: 991 });
@@ -77,9 +77,20 @@ function SearchArea({ category, categoryDefault }: any) {
     }, [category, query.length]);
 
     useEffect(() => {
+        if (priceMaxUrl > 0) {
+            setPriceMax(priceMaxUrl);
+        } else {
+            setPriceMax(100000000);
+        }
+    }, [priceMaxUrl]);
+
+    useEffect(() => {
         if (categoryDefault === 'category') {
-            findAll();
-            return;
+            if (priceMax > 0) {
+                sortBetweenPrice();
+            } else {
+                findAll();
+            }
         }
     }, [categoryDefault]);
 
