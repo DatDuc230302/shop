@@ -27,8 +27,8 @@ export const routes: route[] = [
     { path: path.cart, component: <Cart />, layout: DefautlLayout },
     { path: path.detail, component: <Detail />, layout: DefautlLayout },
     { path: path.payment, component: <Payment />, layout: DefautlLayout },
-    { path: `${path.bestDeals}/:key`, component: <BestDeals />, layout: DefautlLayout },
-    { path: path.bestDeals, component: <BestDeals />, layout: DefautlLayout },
+    { path: `${path.bestDeals}/:key`, component: <BestDeals />, layout: SecondLayout },
+    { path: path.bestDeals, component: <BestDeals />, layout: SecondLayout },
     { path: path.plus, component: <Plus />, layout: SecondLayout },
 
     // Admin

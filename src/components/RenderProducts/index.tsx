@@ -9,6 +9,8 @@ import { useMediaQuery } from 'react-responsive';
 const cx = classNames.bind(style);
 
 const cheaps = [1, 2, 5, 10, 20, 30];
+
+const topgames = ['Steam Games', 'Origin Games', 'Xbox Live Games', 'GOG Games', 'Ubisoft Connect', 'PSN Games'];
 function RenderProducts({ type }: any) {
     // Responsive
     const pc = useMediaQuery({ minWidth: 992 });
@@ -66,6 +68,12 @@ function RenderProducts({ type }: any) {
                     'Want to invest in BitCoin or another cryptocurrency? Browse through our wide selection of gift cards for a fast, comfortable, and safe purchase.',
                 );
                 break;
+            case 'topgame':
+                setTitle('TOP Game Platforms');
+                setContent(
+                    'Are you low on cash or just want to score a great bargain? G2A offers a selection of great video games for all major gaming platforms!',
+                );
+                break;
             default:
                 return;
         }
@@ -106,7 +114,7 @@ function RenderProducts({ type }: any) {
 
     return (
         <div className={cx('wrapper')}>
-            {type !== 'cheap' ? (
+            {type !== 'cheap' && type !== 'topgame' && (
                 <div className={cx('inner')}>
                     <div className={cx('header')}>
                         <div className={cx('header-row')}>
@@ -152,7 +160,9 @@ function RenderProducts({ type }: any) {
                         </span>
                     )}
                 </div>
-            ) : (
+            )}
+
+            {type === 'cheap' && (
                 <div className={cx('inner')}>
                     <div className={cx('header')}>
                         <div className={cx('header-row')}>
@@ -164,6 +174,24 @@ function RenderProducts({ type }: any) {
                         {cheaps.map((item: number, index: number) => (
                             <Link to={`/category?priceMax=${item}`} key={index} className={cx('cheap-item')}>
                                 Up to {item} EUR
+                            </Link>
+                        ))}
+                    </div>
+                </div>
+            )}
+
+            {type === 'topgame' && (
+                <div className={cx('inner')}>
+                    <div className={cx('header')}>
+                        <div className={cx('header-row')}>
+                            <span className={cx('cheap-title')}>{title}</span>
+                        </div>
+                        <span className={cx('header-content')}>{content}</span>
+                    </div>
+                    <div className={cx('body-cheaps', tb && 'tb', mb && 'mb')}>
+                        {topgames.map((item: string, index: number) => (
+                            <Link to={`/category?priceMax=${item}`} key={index} className={cx('cheap-item')}>
+                                {item}
                             </Link>
                         ))}
                     </div>

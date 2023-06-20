@@ -1,7 +1,7 @@
 import classNames from 'classnames/bind';
 import style from './SecondLayout.module.scss';
 import Header from '../../components/Header';
-import Present from '../../components/Present';
+import Footer from '../../components/Footer';
 
 const cx = classNames.bind(style);
 
@@ -17,7 +17,7 @@ function SecondLayout({ children }: MyComponentProps): JSX.Element {
                 <div className={cx('body')}>
                     <div className={cx('body-inner')}>{children}</div>
                 </div>
-                <Present />
+                <Footer />
             </div>
         </div>
     );

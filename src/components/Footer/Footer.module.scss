@@ -1,6 +1,11 @@
 .wrapper {
     width: 100%;
-    height: 573px;
+    height: 512.5px;
+
+    &.tb,
+    &.mb {
+        height: max-content;
+    }
 }
 
 .inner {
@@ -13,6 +18,99 @@
     width: 1170px;
     display: flex;
     flex-direction: column;
+
+    &.tb,
+    &.mb {
+        .payment {
+            flex-direction: column-reverse;
+            justify-content: flex-start;
+            height: max-content;
+            border-bottom: none;
+
+            .payment-methods {
+                width: 100%;
+                padding: 0 15px;
+
+                .paymentMethods-list {
+                    border-top: 1px solid #e0e0e0;
+                    min-height: 46px;
+                    height: max-content;
+                    padding: 10px 0;
+                    flex-wrap: wrap;
+                }
+            }
+
+            .payment-languages {
+                padding-right: 15px;
+                width: 100%;
+                display: flex;
+                justify-content: flex-end;
+                height: 60px;
+            }
+        }
+
+        .info {
+            padding: 10px 0;
+            gap: 2rem;
+            flex-direction: column;
+            height: max-content;
+            .info-list {
+                flex-direction: column;
+                gap: 0;
+                border-bottom: 1px solid #e0e0e0;
+
+                .info-item {
+                    max-height: 49px;
+                    transition: max-height linear 0.3s;
+                    overflow: hidden;
+
+                    &.active {
+                        max-height: 400px;
+                    }
+                    .infoItem-title {
+                        flex-shrink: 0;
+                        cursor: pointer;
+                        padding: 0 15px;
+                        height: 49px;
+                        display: flex;
+                        align-items: center;
+                        margin-bottom: 0;
+                        border-top: 1px solid #e0e0e0;
+                        display: flex;
+                        justify-content: space-between;
+                    }
+
+                    .infoItem-content {
+                        flex-shrink: 0;
+                        transition: max-height linear 0.2s;
+                        padding-left: 15px;
+                        height: 30px;
+                    }
+                }
+            }
+
+            .location-socials {
+                display: flex;
+                gap: 0.5rem;
+                margin-left: 15px;
+            }
+
+            .info-contact {
+                padding-left: 15px;
+            }
+        }
+
+        .location {
+            padding: 10px 15px;
+            .location-detail {
+                flex-direction: column;
+            }
+        }
+
+        .privacy {
+            padding: 10px 15px;
+        }
+    }
 
     .payment {
         width: 100%;

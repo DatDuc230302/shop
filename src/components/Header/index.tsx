@@ -102,7 +102,9 @@ function Header() {
                         <div className={cx('menuNav-item')}>Software</div>
                         <div className={cx('menuNav-item')}>Random Keys</div>
                         <div className={cx('menuNav-item')}>Bestsellers</div>
-                        <div className={cx('menuNav-item')}>Steam Gift Cards</div>
+                        <Link to={'/best-deals/steam-gift-cards'} className={cx('menuNav-item')}>
+                            Steam Gift Cards
+                        </Link>
                     </div>
                 </div>
                 <div onClick={() => handleMenu()} className={cx('menu-overlay')}></div>

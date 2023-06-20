@@ -1,5 +1,7 @@
 import classNames from 'classnames/bind';
 import style from './Footer.module.scss';
+import { useMediaQuery } from 'react-responsive';
+import { useState } from 'react';
 
 const infoLists = [
     {
@@ -46,13 +48,30 @@ const locationLists = [
 
 const cx = classNames.bind(style);
 function Footer() {
+    // Responsive
+    const pc = useMediaQuery({ minWidth: 992 });
+    const tb = useMediaQuery({ minWidth: 768, maxWidth: 991 });
+    const mb = useMediaQuery({ maxWidth: 767 });
+
+    // State
+    const [activeItems, setActiveItems] = useState<number[]>([]);
+
+    // Function
+    const handleItemClick = (index: number) => {
+        if (activeItems.includes(index)) {
+            setActiveItems(activeItems.filter((item) => item !== index));
+        } else {
+            setActiveItems([...activeItems, index]);
+        }
+    };
+
     return (
-        <div className={cx('wrapper')}>
+        <div className={cx('wrapper', tb && 'tb', mb && 'mb')}>
             <div className={cx('inner')}>
-                <div className={cx('body')}>
+                <div className={cx('body', tb && 'tb', mb && 'mb')}>
                     <div className={cx('payment')}>
                         <div className={cx('payment-methods')}>
-                            <div className={cx('paymentMethods-title')}>Payment methods:</div>
+                            {pc && <div className={cx('paymentMethods-title')}>Payment methods:</div>}
                             <div className={cx('paymentMethods-list')}>
                                 <img src="https://www.g2a.com/static/assets/payment-methods/visa.svg" alt="" />
                                 <img src="https://www.g2a.com/static/assets/payment-methods/mastercard.svg" alt="" />
@@ -67,30 +86,49 @@ function Footer() {
                                 <img src="https://www.g2a.com/static/assets/flags/englishus.svg" alt="" />
                             </div>
                             <span className={cx('paymentLanguages-title')}>United States (English) / USD</span>
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 24 24"
-                                width="18px"
-                                height="18px"
-                                fill="currentColor"
-                            >
-                                <path
-                                    fill="none"
-                                    strokeMiterlimit="10"
-                                    d="M16 10l-4 4-4-4"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth="2"
-                                    stroke="currentColor"
-                                ></path>
-                            </svg>
+                            {pc && (
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                    width="18px"
+                                    height="18px"
+                                    fill="currentColor"
+                                >
+                                    <path
+                                        fill="none"
+                                        strokeMiterlimit="10"
+                                        d="M16 10l-4 4-4-4"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth="2"
+                                        stroke="currentColor"
+                                    ></path>
+                                </svg>
+                            )}
                         </div>
                     </div>
                     <div className={cx('info')}>
                         <div className={cx('info-list')}>
                             {infoLists.map((item: any, index: number) => (
-                                <div key={index} className={cx('info-item')}>
-                                    <span className={cx('infoItem-title')}>{item.title}</span>
+                                <div
+                                    onClick={() => handleItemClick(index)}
+                                    key={index}
+                                    className={cx('info-item', activeItems.includes(index) ? 'active' : '')}
+                                >
+                                    <span className={cx('infoItem-title')}>
+                                        {item.title}
+                                        {!pc && (
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                viewBox="0 0 24 24"
+                                                width="24px"
+                                                height="24px"
+                                                fill="#999999"
+                                            >
+                                                <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"></path>
+                                            </svg>
+                                        )}
+                                    </span>
                                     {item.contents.map((content: any, index: number) => (
                                         <span key={index} className={cx('infoItem-content')}>
                                             {content}
@@ -99,6 +137,38 @@ function Footer() {
                                 </div>
                             ))}
                         </div>
+                        {!pc && (
+                            <div className={cx('location-socials')}>
+                                <img
+                                    src="https://images.g2a.com/facebook/28x28/1x1x1/8e99c08cdbda/605ae42d7e696c259961a462"
+                                    alt=""
+                                />
+                                <img
+                                    src="https://images.g2a.com/twitter/28x28/1x1x1/225a9ced8d38/605ae47e46177c04b511d712"
+                                    alt=""
+                                />
+                                <img
+                                    src="https://images.g2a.com/youtube/28x28/1x1x1/6624e20dfc20/605ae4d746177c471a610dd2"
+                                    alt=""
+                                />
+                                <img
+                                    src="https://images.g2a.com/instagram/28x28/1x1x1/a28f82123e6b/605ae4aa7e696c2a5346b672"
+                                    alt=""
+                                />
+                                <img
+                                    src="https://images.g2a.com/linkedin/28x28/1x1x1/8223483aa633/605ae5127e696c2efa512f62"
+                                    alt=""
+                                />
+                                <img
+                                    src="https://images.g2a.com/twitch/28x28/1x1x1/9422ab6d9c45/605ae53646177c7b1b4eb952"
+                                    alt=""
+                                />
+                                <img
+                                    src="https://images.g2a.com/reddit/28x28/1x1x1/8a5840c01a34/605ae17746177c6d930f11c2"
+                                    alt=""
+                                />
+                            </div>
+                        )}
                         <div className={cx('info-contact')}>
                             <span className={cx('infoContact-title')}>Install the G2A app</span>
                             <span className={cx('infoContact-content')}>Get great deals on games wherever you go!</span>
@@ -201,36 +271,38 @@ function Footer() {
                                 </div>
                             ))}
                         </div>
-                        <div className={cx('location-socials')}>
-                            <img
-                                src="https://images.g2a.com/facebook/28x28/1x1x1/8e99c08cdbda/605ae42d7e696c259961a462"
-                                alt=""
-                            />
-                            <img
-                                src="https://images.g2a.com/twitter/28x28/1x1x1/225a9ced8d38/605ae47e46177c04b511d712"
-                                alt=""
-                            />
-                            <img
-                                src="https://images.g2a.com/youtube/28x28/1x1x1/6624e20dfc20/605ae4d746177c471a610dd2"
-                                alt=""
-                            />
-                            <img
-                                src="https://images.g2a.com/instagram/28x28/1x1x1/a28f82123e6b/605ae4aa7e696c2a5346b672"
-                                alt=""
-                            />
-                            <img
-                                src="https://images.g2a.com/linkedin/28x28/1x1x1/8223483aa633/605ae5127e696c2efa512f62"
-                                alt=""
-                            />
-                            <img
-                                src="https://images.g2a.com/twitch/28x28/1x1x1/9422ab6d9c45/605ae53646177c7b1b4eb952"
-                                alt=""
-                            />
-                            <img
-                                src="https://images.g2a.com/reddit/28x28/1x1x1/8a5840c01a34/605ae17746177c6d930f11c2"
-                                alt=""
-                            />
-                        </div>
+                        {pc && (
+                            <div className={cx('location-socials')}>
+                                <img
+                                    src="https://images.g2a.com/facebook/28x28/1x1x1/8e99c08cdbda/605ae42d7e696c259961a462"
+                                    alt=""
+                                />
+                                <img
+                                    src="https://images.g2a.com/twitter/28x28/1x1x1/225a9ced8d38/605ae47e46177c04b511d712"
+                                    alt=""
+                                />
+                                <img
+                                    src="https://images.g2a.com/youtube/28x28/1x1x1/6624e20dfc20/605ae4d746177c471a610dd2"
+                                    alt=""
+                                />
+                                <img
+                                    src="https://images.g2a.com/instagram/28x28/1x1x1/a28f82123e6b/605ae4aa7e696c2a5346b672"
+                                    alt=""
+                                />
+                                <img
+                                    src="https://images.g2a.com/linkedin/28x28/1x1x1/8223483aa633/605ae5127e696c2efa512f62"
+                                    alt=""
+                                />
+                                <img
+                                    src="https://images.g2a.com/twitch/28x28/1x1x1/9422ab6d9c45/605ae53646177c7b1b4eb952"
+                                    alt=""
+                                />
+                                <img
+                                    src="https://images.g2a.com/reddit/28x28/1x1x1/8a5840c01a34/605ae17746177c6d930f11c2"
+                                    alt=""
+                                />
+                            </div>
+                        )}
                     </div>
                     <div className={cx('privacy')}>
                         Use of this Web site constitutes acceptance of the

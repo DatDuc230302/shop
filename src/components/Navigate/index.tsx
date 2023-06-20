@@ -86,10 +86,12 @@ function Navigate() {
                         <span className={cx('categories-title')}>CATEGORIES</span>
                     </div>
                 </HeadlessTippy>
-                <Link to={'best-deals'} className={cx('item')}>
+                <Link to={'/best-deals/steam-gift-cards'} className={cx('item')}>
                     Steam Gift Cards
                 </Link>
-                <div className={cx('item')}>Bestsellers</div>
+                <Link to={'/best-deals/best-gamers-choice'} className={cx('item')}>
+                    Bestsellers
+                </Link>
                 <Link to="/editor/1" className={cx('item')}>
                     Random Keys
                 </Link>
