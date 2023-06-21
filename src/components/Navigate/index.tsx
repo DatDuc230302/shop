@@ -89,7 +89,7 @@ function Navigate() {
                 <Link to={'/best-deals/steam-gift-cards'} className={cx('item')}>
                     Steam Gift Cards
                 </Link>
-                <Link to={'/best-deals/best-gamers-choice'} className={cx('item')}>
+                <Link to={'/best-deals/best-games-choice'} className={cx('item')}>
                     Bestsellers
                 </Link>
                 <Link to="/editor/1" className={cx('item')}>

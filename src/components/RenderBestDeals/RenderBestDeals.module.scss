@@ -175,5 +175,13 @@
 
     .session-body {
         width: 1170px;
+
+        .advert {
+            img {
+                margin-top: 30px;
+                width: 100%;
+                object-fit: cover;
+            }
+        }
     }
 }

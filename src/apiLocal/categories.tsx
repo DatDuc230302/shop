@@ -35,8 +35,13 @@ export const categories = [
         slug: 'charity',
     },
     {
-        title: 'Other',
+        title: 'Keys',
         id: 7,
+        slug: 'keys',
+    },
+    {
+        title: 'Other',
+        id: 8,
         slug: 'other',
     },
 ];

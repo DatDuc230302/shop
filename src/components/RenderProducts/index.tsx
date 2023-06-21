@@ -190,9 +190,9 @@ function RenderProducts({ type }: any) {
                     </div>
                     <div className={cx('body-cheaps', tb && 'tb', mb && 'mb')}>
                         {topgames.map((item: string, index: number) => (
-                            <Link to={`/category?priceMax=${item}`} key={index} className={cx('cheap-item')}>
+                            <div key={index} className={cx('cheap-item')}>
                                 {item}
-                            </Link>
+                            </div>
                         ))}
                     </div>
                 </div>
