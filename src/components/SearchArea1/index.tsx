@@ -35,6 +35,10 @@ const list = [
         category: 'Charity',
     },
     {
+        title: 'keys',
+        category: 'Keys',
+    },
+    {
         title: 'other',
         category: 'Other',
     },

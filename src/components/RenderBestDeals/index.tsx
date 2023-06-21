@@ -8,11 +8,12 @@ import RenderProducts from '../RenderProducts';
 import { useMediaQuery } from 'react-responsive';
 import Loading from '../Loading';
 import { loadingApi } from '../Loading';
-import RenderKeys from '../RenderKeys';
+import RenderCustom from '../RenderCustom';
 
 const bestDealsBG = [
     'https://firebasestorage.googleapis.com/v0/b/shop-g2a-d5524.appspot.com/o/SteamGiftCards%2Fbg1.avif?alt=media&token=2b885803-4c02-4b96-bf4a-83b86d181355',
     'https://firebasestorage.googleapis.com/v0/b/shop-g2a-d5524.appspot.com/o/BestGamesChoice%2Fbg1.avif?alt=media&token=f3443e4a-6ac8-4af2-817a-cef53094d3cd',
+    'https://firebasestorage.googleapis.com/v0/b/shop-g2a-d5524.appspot.com/o/RanDomKeys%2FRanDomKeys.avif?alt=media&token=eea1b183-abe1-42d4-8d1e-54e80b6cf260',
 ];
 
 const cx = classNames.bind(style);
@@ -52,6 +53,11 @@ function RenderBestDeals() {
                 setBackGround(bestDealsBG[1]);
                 setComponentId(1);
                 break;
+            case 'random-keys':
+                getApiRanDomKeys();
+                setBackGround(bestDealsBG[2]);
+                setComponentId(2);
+                break;
             default:
                 break;
         }
@@ -65,6 +71,11 @@ function RenderBestDeals() {
 
     const getApiBestGamesChoice = loadingApi(async () => {
         const data = await axios.post(`${ServerURL}/products/findSoldCate`, { category: 'gaming' });
+        setApi(data.data);
+    }, setLoading);
+
+    const getApiRanDomKeys = loadingApi(async () => {
+        const data = await axios.post(`${ServerURL}/products/findSoldCate`, { category: 'keys' });
         setApi(data.data);
     }, setLoading);
 
@@ -128,7 +139,8 @@ function RenderBestDeals() {
                                     />
                                 </div>
                             )}
-                            {componentId === 1 && <RenderKeys />}
+                            {componentId === 1 && <RenderCustom type={'RanDomKeys'} />}
+                            {componentId === 2 && <RenderCustom type={'Csgo'} />}
                         </div>
                     </div>
                 </div>

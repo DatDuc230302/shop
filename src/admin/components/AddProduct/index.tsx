@@ -34,7 +34,7 @@ function AddProduct() {
             if (file && file.size < 100000000) {
                 console.log(file);
                 const name = file.name;
-                const storageRef = ref(storage, `images/${name}`);
+                const storageRef = ref(storage, `${category}/${name}`);
                 const uploadTask = uploadBytesResumable(storageRef, file);
                 uploadTask.on(
                     'state_changed',
@@ -169,6 +169,9 @@ function AddProduct() {
                     </option>
                     <option value={'charity'} className={cx('option')}>
                         Charity
+                    </option>
+                    <option value={'keys'} className={cx('option')}>
+                        Keys
                     </option>
                     <option value={'other'} className={cx('option')}>
                         Other
