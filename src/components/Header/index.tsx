@@ -100,8 +100,12 @@ function Header() {
                             Save more with G2A Plus
                         </Link>
                         <div className={cx('menuNav-item')}>Software</div>
-                        <div className={cx('menuNav-item')}>Random Keys</div>
-                        <div className={cx('menuNav-item')}>Bestsellers</div>
+                        <Link to={'/best-deals/random-keys'} className={cx('menuNav-item')}>
+                            Random Keys
+                        </Link>
+                        <Link to={'/best-deals/best-games-choice'} className={cx('menuNav-item')}>
+                            Bestsellers
+                        </Link>
                         <Link to={'/best-deals/steam-gift-cards'} className={cx('menuNav-item')}>
                             Steam Gift Cards
                         </Link>

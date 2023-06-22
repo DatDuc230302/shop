@@ -1,7 +1,7 @@
 export const categories = [
     {
         title: 'Category',
-        id: 8,
+        id: 9,
         slug: 'category',
     },
     {

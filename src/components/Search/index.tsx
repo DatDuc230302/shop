@@ -105,12 +105,12 @@ function Search() {
     };
 
     const getApiSelling = loadingApi(async () => {
-        const data = await axios.post(`${ServerURL}/products/getSelling`, { quantity: 4 });
+        const data = await axios.get(`${ServerURL}/products/querySelling?quantity=${4}`);
         setApiSelling(data.data);
     }, setLoading);
 
     const getApiProducts = loadingApi(async () => {
-        const data = await axios.post(`${ServerURL}/products/findName`, { key: valueSearch });
+        const data = await axios.get(`${ServerURL}/products/queryName?query=${valueSearch}`);
         setApiProducts(data.data);
     }, setLoading);
 
@@ -223,36 +223,39 @@ function Search() {
                                         <div className={cx('line')}></div>
                                         <span className={cx('line-title')}>Categories</span>
                                     </div>
-                                    {categories.map((item, index) => (
-                                        <div
-                                            onClick={() => handleItem(item.id, item.title, item.slug)}
-                                            key={index}
-                                            className={cx('categories-item')}
-                                        >
-                                            <div className={cx('item-check')}>
-                                                {check === item.id && (
-                                                    <svg
-                                                        widths={21}
-                                                        height={21}
-                                                        viewBox="0 0 24 24"
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        fill="currentColor"
-                                                    >
-                                                        <path
-                                                            d="M6 12l4 4 8-8"
-                                                            stroke="currentColor"
-                                                            strokeWidth="2"
-                                                            strokeMiterlimit="10"
-                                                            strokeLinecap="round"
-                                                            strokeLinejoin="round"
-                                                            fill="none"
-                                                        ></path>
-                                                    </svg>
-                                                )}
-                                            </div>
-                                            <span className={cx('item-title')}>{item.title}</span>
-                                        </div>
-                                    ))}
+                                    {categories.map(
+                                        (item, index) =>
+                                            item.slug !== 'category' && (
+                                                <div
+                                                    onClick={() => handleItem(item.id, item.title, item.slug)}
+                                                    key={index}
+                                                    className={cx('categories-item')}
+                                                >
+                                                    <div className={cx('item-check')}>
+                                                        {check === item.id && (
+                                                            <svg
+                                                                widths={21}
+                                                                height={21}
+                                                                viewBox="0 0 24 24"
+                                                                xmlns="http://www.w3.org/2000/svg"
+                                                                fill="currentColor"
+                                                            >
+                                                                <path
+                                                                    d="M6 12l4 4 8-8"
+                                                                    stroke="currentColor"
+                                                                    strokeWidth="2"
+                                                                    strokeMiterlimit="10"
+                                                                    strokeLinecap="round"
+                                                                    strokeLinejoin="round"
+                                                                    fill="none"
+                                                                ></path>
+                                                            </svg>
+                                                        )}
+                                                    </div>
+                                                    <span className={cx('item-title')}>{item.title}</span>
+                                                </div>
+                                            ),
+                                    )}
                                 </div>
                             )}
                         >

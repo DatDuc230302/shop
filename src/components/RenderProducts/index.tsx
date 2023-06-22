@@ -87,28 +87,28 @@ function RenderProducts({ type }: any) {
         }
     }, [mb, tb, pc]);
 
-    const getApiTrending = async () => {
-        const data = await axios.get(`${ServerURL}/products/getTrending`);
+    const getApiBestSell = async () => {
+        const data = await axios.get(`${ServerURL}/products/querySelling?quantity=${12}`);
         setApi(data.data);
     };
 
-    const getApiBestSell = async () => {
-        const data = await axios.post(`${ServerURL}/products/getSelling`, { quantity: 12 });
+    const getApiTrending = async () => {
+        const data = await axios.get(`${ServerURL}/products/queryTrending?quantity=${12}`);
         setApi(data.data);
     };
 
     const getApiGiftcard = async () => {
-        const data = await axios.post(`${ServerURL}/products/findNameCate`, { category: 'gift cards' });
+        const data = await axios.get(`${ServerURL}/products/queryCate?category=${'gift cards'}`);
         setApi(data.data);
     };
 
     const getBestCateSoftware = async () => {
-        const data = await axios.post(`${ServerURL}/products/findBestCate`, { category: 'software', quantity: 12 });
+        const data = await axios.get(`${ServerURL}/products/querySoldCate?category=${'software'}&quantity=${12}`);
         setApi(data.data);
     };
 
     const getOther = async () => {
-        const data = await axios.post(`${ServerURL}/products/findNameCate`, { category: 'other' });
+        const data = await axios.get(`${ServerURL}/products/queryCate?category=${'other'}`);
         setApi(data.data);
     };
 

@@ -1,6 +1,6 @@
 import classNames from 'classnames/bind';
 import style from './BestDeals.module.scss';
-import SteamGiftCard from '../../components/RenderBestDeals';
+import RenderBestDeals from '../../components/RenderBestDeals';
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
@@ -15,7 +15,7 @@ function BestDeals() {
     return (
         <div className={cx('wrapper')}>
             <div className={cx('inner')}>
-                <SteamGiftCard />
+                <RenderBestDeals />
             </div>
         </div>
     );

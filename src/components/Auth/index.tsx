@@ -56,7 +56,7 @@ function Auth() {
 
     // Function
     const getUser = async (idUser: any) => {
-        const data = await axios.post(`${ServerURL}/users/findId`, { id: idUser });
+        const data = await axios.get(`${ServerURL}/users/queryId?id=${idUser}`);
         const cartsUser = data.data[0].carts;
         setCartsLocal(cartsUser);
     };
@@ -65,7 +65,7 @@ function Auth() {
     const loginSuccess = async (res: any) => {
         const api = res.profileObj;
         setIdUser(api.googleId);
-        const resData = await axios.post(`${ServerURL}/users/findId`, { id: api.googleId });
+        const resData = await axios.get(`${ServerURL}/users/queryId?id=${api.googleId}`);
         const data = resData.data[0];
         setOldvatar(api.imageUrl);
         if (data !== undefined) {

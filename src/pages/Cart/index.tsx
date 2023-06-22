@@ -50,7 +50,7 @@ function Cart() {
     const getApi = loadingApi(async () => {
         if (currentUser) {
             const idUser = localStorage.getItem('currentUser');
-            const cartsUser = await axios.post(`${ServerURL}/users/findId`, { id: idUser });
+            const cartsUser = await axios.post(`${ServerURL}/users/queryId?id=${idUser}`);
             const data = await axios.post(`${ServerURL}/products/findAllById`, { arrId: cartsUser.data[0].carts });
             setApi(data.data);
         } else {

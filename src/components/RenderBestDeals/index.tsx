@@ -65,17 +65,17 @@ function RenderBestDeals() {
 
     // Function
     const getApiSteamGiftCards = loadingApi(async () => {
-        const data = await axios.post(`${ServerURL}/products/sortDateCate`, { category: 'gift cards' });
+        const data = await axios.get(`${ServerURL}/products/sortDateCate?category=${'gift cards'}`);
         setApi(data.data);
     }, setLoading);
 
     const getApiBestGamesChoice = loadingApi(async () => {
-        const data = await axios.post(`${ServerURL}/products/findSoldCate`, { category: 'gaming' });
+        const data = await axios.get(`${ServerURL}/products/querySoldCate?category=${'gaming'}`);
         setApi(data.data);
     }, setLoading);
 
     const getApiRanDomKeys = loadingApi(async () => {
-        const data = await axios.post(`${ServerURL}/products/findSoldCate`, { category: 'keys' });
+        const data = await axios.get(`${ServerURL}/products/querySoldCate?category=${'keys'}`);
         setApi(data.data);
     }, setLoading);
 

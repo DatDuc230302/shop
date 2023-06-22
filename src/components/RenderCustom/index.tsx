@@ -34,12 +34,12 @@ function RenderCustom({ type }: any) {
 
     // Function
     const getApiKeys = async () => {
-        const data = await axios.post(`${ServerURL}/products/findNameCate`, { category: 'keys' });
+        const data = await axios.get(`${ServerURL}/products/queryCate?category=${'keys'}`);
         setApi(data.data);
     };
 
     const getApiCsgo = async () => {
-        const data = await axios.post(`${ServerURL}/products/findNote`, { note: 'csgo' });
+        const data = await axios.get(`${ServerURL}/products/queryNote?note=${'csgo'}`);
         setApi(data.data);
     };
 

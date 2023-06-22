@@ -1,6 +1,6 @@
 import classNames from 'classnames/bind';
 import style from './SearchArea.module.scss';
-import { Link, useLocation, useParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { sorts } from '../../apiLocal/sorts';
 import HeadLessTippy from '@tippyjs/react/headless';
@@ -20,8 +20,11 @@ function SearchArea({ category, categoryDefault, priceMaxUrl }: any) {
     const tb = useMediaQuery({ minWidth: 768, maxWidth: 991 });
     const mb = useMediaQuery({ maxWidth: 767 });
 
+    // Variable
+    const pageSize = 9;
+
     // State
-    const [query, setQuery] = useState('');
+    const [name, setName] = useState('');
     const [api, setApi] = useState([]);
     const [sortOption, setSortOption] = useState(false);
     const [valueSort, setValueSort] = useState('Best match');
@@ -34,26 +37,32 @@ function SearchArea({ category, categoryDefault, priceMaxUrl }: any) {
     const [valueMin, setValueMin] = useState(0);
     const [valueMax, setValueMax] = useState(100000000);
     const [resultKey, setResultKey] = useState('');
+    const [lenProducts, setLenProducts] = useState(0);
+    const [listPage, setListPage] = useState<number[]>([]);
 
     // Location
     const location = useLocation();
     const params = useParams();
+    const navigate = useNavigate();
+
+    // Query String
+    const queryParams = queryString.parse(location.search);
 
     // Effect
+    // Set Name from the URL
     useEffect(() => {
         const queryParams = queryString.parse(location.search);
-
         const resultKey = String(params.key).charAt(0).toUpperCase() + String(params.key).slice(1);
         setResultKey(resultKey);
-
         // Find query in URL after query=
         if (queryParams.query !== undefined) {
-            setQuery(String(queryParams.query));
+            setName(String(queryParams.query));
         } else {
-            setQuery('');
+            setName('');
         }
     }, [location, params.key]);
 
+    // SetView by tb & mb
     useEffect(() => {
         if (tb || mb) {
             setView(0);
@@ -62,20 +71,22 @@ function SearchArea({ category, categoryDefault, priceMaxUrl }: any) {
         }
     }, [tb, mb]);
 
+    // Logic call Api
     useEffect(() => {
         if (category !== undefined) {
-            if (query.length > 0) {
-                findNameCateAndQuery();
+            if (name.length > 0) {
+                queryNameCate();
             } else {
-                findNameCate();
+                queryCate();
             }
         } else {
-            if (query.length > 0) {
-                findName();
+            if (name.length > 0) {
+                queryName();
             }
         }
-    }, [category, query.length]);
+    }, [category, name.length]);
 
+    // PriceMax
     useEffect(() => {
         if (priceMaxUrl > 0) {
             setPriceMax(priceMaxUrl);
@@ -84,43 +95,49 @@ function SearchArea({ category, categoryDefault, priceMaxUrl }: any) {
         }
     }, [priceMaxUrl]);
 
+    // QueryAll when Category === category
     useEffect(() => {
         if (categoryDefault === 'category') {
-            if (priceMax > 0) {
-                sortBetweenPrice();
+            if (priceMax > 0 && priceMax !== 100000000) {
+                sortBetweenPriceName();
             } else {
-                findAll();
+                if (!Number(queryParams.page)) {
+                    queryAll(1, pageSize);
+                } else {
+                    queryAll(Number(queryParams.page), pageSize);
+                }
             }
         }
-    }, [categoryDefault]);
+    }, [categoryDefault, location]);
 
     useEffect(() => {
         setValueSort('Best match');
         setCountSort(-1);
-    }, [query, category]);
+    }, [name, category]);
 
+    // Sort Price Between
     useEffect(() => {
         const debounceTimer = setTimeout(() => {
             // Xử lý logic sau thời gian debounce
             if (priceMax !== 100000000 && priceMax !== 0) {
-                if (category !== undefined && query.length > 0) {
-                    sortBetweenPriceCateAndQuery();
+                if (category !== undefined && name.length > 0) {
+                    sortBetweenPriceNameCate();
                     return;
                 }
                 if (category === undefined) {
-                    sortBetweenPrice();
+                    sortBetweenPriceName();
                 } else {
                     sortBetweenPriceCate();
                 }
             } else if (priceMin === 0 && priceMax === 0) {
-                if (category !== undefined && query.length > 0) {
-                    findNameCateAndQuery();
+                if (category !== undefined && name.length > 0) {
+                    queryNameCate();
                     return;
                 }
                 if (category === undefined) {
-                    findName();
+                    queryName();
                 } else {
-                    findNameCate();
+                    queryCate();
                 }
             }
         }, 1000); // Thời gian debounce, 500ms trong ví dụ này}
@@ -130,44 +147,45 @@ function SearchArea({ category, categoryDefault, priceMaxUrl }: any) {
         };
     }, [priceMin, priceMax]);
 
+    // Sort Methods
     useEffect(() => {
         switch (countSort) {
             case 0:
-                if (category !== undefined && query.length > 0) {
-                    findNameCateAndQuery();
+                if (category !== undefined && name.length > 0) {
+                    queryNameCate();
                     return;
                 }
                 if (category === undefined) {
-                    findName();
+                    queryName();
                 } else {
-                    findNameCate();
+                    queryCate();
                 }
                 break;
             case 1:
-                if (category !== undefined && query.length > 0) {
-                    sortDateCateAndQuery();
+                if (category !== undefined && name.length > 0) {
+                    sortDateNameCate();
                     return;
                 }
                 if (category === undefined) {
-                    sortDate();
+                    sortDateName();
                 } else {
                     sortDateCate();
                 }
                 break;
             case 2:
-                if (category !== undefined && query.length > 0) {
-                    sortLowestCateAndQuery();
+                if (category !== undefined && name.length > 0) {
+                    sortLowestNameCate();
                     return;
                 }
                 if (category === undefined) {
-                    sortLowest();
+                    sortLowestName();
                 } else {
                     sortLowestCate();
                 }
                 break;
             case 3:
-                if (category !== undefined && query.length > 0) {
-                    sortHighestCateAndQuery();
+                if (category !== undefined && name.length > 0) {
+                    sortHighestNameCate();
                     return;
                 }
                 if (category === undefined) {
@@ -177,113 +195,104 @@ function SearchArea({ category, categoryDefault, priceMaxUrl }: any) {
                 }
                 break;
             default:
-                return;
+                break;
         }
     }, [countSort]);
 
+    // Set Limit ListPage
+    useEffect(() => {
+        const number = Math.ceil(lenProducts / pageSize);
+        if (number > 0) {
+            const newListPage = Array.from({ length: number }, (_, i) => i);
+            setListPage(newListPage);
+        }
+    }, [lenProducts]);
+
     // Function
-    const findAll = loadingApi(async () => {
-        const data = await axios.get(`${ServerURL}/products/get`);
+    // Get All Api Products
+    const queryAll = loadingApi(async (pageNum: number, pageSize: number) => {
+        const data = await axios.get(`${ServerURL}/products/get?pageNum=${pageNum}&pageSize=${pageSize}`);
+        setApi(data.data.data);
+        setLenProducts(data.data.totalProducts);
+    }, setLoading);
+
+    // Get Name Products
+    const queryName = loadingApi(async () => {
+        const data = await axios.get(`${ServerURL}/products/queryName?query=${name}`);
+        setApi(data.data);
+    }, setLoading); // Done
+
+    // Get Category Products
+    const queryCate = loadingApi(async () => {
+        const data = await axios.get(`${ServerURL}/products/queryCate?category=${category}`);
         setApi(data.data);
     }, setLoading);
 
-    const findName = loadingApi(async () => {
-        const data = await axios.post(`${ServerURL}/products/findName`, { key: String(query) });
+    // Get Name And Category Products
+    const queryNameCate = loadingApi(async () => {
+        const data = await axios.get(`${ServerURL}/products/queryNameCate?name=${name}&category=${category}`);
         setApi(data.data);
     }, setLoading);
 
-    const findNameCate = loadingApi(async () => {
-        const data = await axios.post(`${ServerURL}/products/findNameCate`, { category: category });
+    // Sort Date
+    const sortDateName = loadingApi(async () => {
+        const data = await axios.get(`${ServerURL}/products/sortDateName?name=${name}`);
         setApi(data.data);
     }, setLoading);
-
-    const findNameCateAndQuery = loadingApi(async () => {
-        const data = await axios.post(`${ServerURL}/products/findNameCateAndQuery`, {
-            category: category,
-            key: String(query),
-        });
-        setApi(data.data);
-    }, setLoading);
-
-    const sortDate = loadingApi(async () => {
-        const data = await axios.post(`${ServerURL}/products/sortDate`, { key: String(query) });
-        setApi(data.data);
-    }, setLoading);
-
     const sortDateCate = loadingApi(async () => {
-        const data = await axios.post(`${ServerURL}/products/sortDateCate`, { category: category });
+        const data = await axios.get(`${ServerURL}/products/sortDateCate?category=${category}`);
+        setApi(data.data);
+    }, setLoading);
+    const sortDateNameCate = loadingApi(async () => {
+        const data = await axios.get(`${ServerURL}/products/sortDateNameCate?name=${name}&category=${category}`);
         setApi(data.data);
     }, setLoading);
 
-    const sortDateCateAndQuery = loadingApi(async () => {
-        const data = await axios.post(`${ServerURL}/products/sortDateCateAndQuery`, {
-            category: category,
-            key: String(query),
-        });
+    // Sort Price Lowest
+    const sortLowestName = loadingApi(async () => {
+        const data = await axios.get(`${ServerURL}/products/sortLowestName?name=${name}`);
         setApi(data.data);
     }, setLoading);
-
-    const sortLowest = loadingApi(async () => {
-        const data = await axios.post(`${ServerURL}/products/sortLowest`, { key: String(query) });
-        setApi(data.data);
-    }, setLoading);
-
     const sortLowestCate = loadingApi(async () => {
-        const data = await axios.post(`${ServerURL}/products/sortLowestCate`, { category: category });
+        const data = await axios.get(`${ServerURL}/products/sortLowestCate?category=${category}`);
+        setApi(data.data);
+    }, setLoading);
+    const sortLowestNameCate = loadingApi(async () => {
+        const data = await axios.get(`${ServerURL}/products/sortLowestNameCate?name=${name}&category=${category}`);
         setApi(data.data);
     }, setLoading);
 
-    const sortLowestCateAndQuery = loadingApi(async () => {
-        const data = await axios.post(`${ServerURL}/products/sortLowestCateAndQuery`, {
-            category: category,
-            key: String(query),
-        });
-        setApi(data.data);
-    }, setLoading);
-
+    // Sort Price Highest
     const sortHighest = loadingApi(async () => {
-        const data = await axios.post(`${ServerURL}/products/sortHighest`, { key: String(query) });
+        const data = await axios.get(`${ServerURL}/products/sortHighestName?name=${name}`);
         setApi(data.data);
     }, setLoading);
-
     const sortHighestCate = loadingApi(async () => {
-        const data = await axios.post(`${ServerURL}/products/sortHighestCate`, { category: category });
+        const data = await axios.get(`${ServerURL}/products/sortHighestCate?category=${category}`);
+        setApi(data.data);
+    }, setLoading);
+    const sortHighestNameCate = loadingApi(async () => {
+        const data = await axios.get(`${ServerURL}/products/sortHighestNameCate?name=${name}&category=${category}`);
         setApi(data.data);
     }, setLoading);
 
-    const sortHighestCateAndQuery = loadingApi(async () => {
-        const data = await axios.post(`${ServerURL}/products/sortHighestCateAndQuery`, {
-            category: category,
-            key: String(query),
-        });
+    // Sort Between Price
+    const sortBetweenPriceName = loadingApi(async () => {
+        const data = await axios.get(
+            `${ServerURL}/products/sortBetweenPriceName?name=${name}&priceMin=${priceMin}&priceMax=${priceMax}`,
+        );
         setApi(data.data);
     }, setLoading);
-
-    const sortBetweenPrice = loadingApi(async () => {
-        const data = await axios.post(`${ServerURL}/products/sortBetweenPrice`, {
-            priceMin: priceMin,
-            priceMax: priceMax,
-            key: String(query),
-        });
-        setApi(data.data);
-    }, setLoading);
-
     const sortBetweenPriceCate = loadingApi(async () => {
-        const data = await axios.post(`${ServerURL}/products/sortBetweenPriceCate`, {
-            priceMin: priceMin,
-            priceMax: priceMax,
-            category: category,
-        });
+        const data = await axios.get(
+            `${ServerURL}/products/sortBetweenPriceCate?category=${category}&priceMin=${priceMin}&priceMax=${priceMax}`,
+        );
         setApi(data.data);
     }, setLoading);
-
-    const sortBetweenPriceCateAndQuery = loadingApi(async () => {
-        const data = await axios.post(`${ServerURL}/products/sortBetweenPriceCateAndQuery`, {
-            priceMin: priceMin,
-            priceMax: priceMax,
-            category: category,
-            key: String(query),
-        });
+    const sortBetweenPriceNameCate = loadingApi(async () => {
+        const data = await axios.get(
+            `${ServerURL}/products/sortBetweenPriceNameCate?name=${name}&category=${category}&priceMin=${priceMin}&priceMax=${priceMax}`,
+        );
         setApi(data.data);
     }, setLoading);
 
@@ -301,6 +310,10 @@ function SearchArea({ category, categoryDefault, priceMaxUrl }: any) {
             setPriceMax(value);
             setValueMax(value);
         }
+    };
+
+    const handlePageNum = (item: number) => {
+        navigate(`?page=${item}`);
     };
 
     return (
@@ -325,20 +338,19 @@ function SearchArea({ category, categoryDefault, priceMaxUrl }: any) {
                 <div className={cx('tools')}>
                     <div className={cx('tools-result')}>
                         <span className={cx('tools-name')}>
-                            {query.length > 0
-                                ? `${query} - search results`
+                            {name.length > 0
+                                ? `${name} - search results`
                                 : category !== undefined
                                 ? resultKey
                                 : 'Category'}
                         </span>
                         <div className={cx('tools-quantity')}>
-                            {query.length > 0 ? (
+                            {name.length > 0 ? (
                                 <>
-                                    {api.length} results for:{' '}
-                                    <span className={cx('toolsQuantity-name')}>"{query}"</span>
+                                    {api.length} results for: <span className={cx('toolsQuantity-name')}>"{name}"</span>
                                 </>
                             ) : (
-                                `${api.length} products`
+                                `${lenProducts} products`
                             )}
                         </div>
                     </div>
@@ -434,9 +446,29 @@ function SearchArea({ category, categoryDefault, priceMaxUrl }: any) {
                     setPriceMin={setPriceMin}
                     setPriceMax={setPriceMax}
                     api={api}
-                    query={query}
+                    query={name}
                     view={view}
                 />
+                <div className={cx('pagination')}>
+                    <div className={cx('pagination-list')}>
+                        {listPage.map(
+                            (item: any, index: any) =>
+                                index > 0 && (
+                                    <div
+                                        onClick={() => handlePageNum(item)}
+                                        key={index}
+                                        className={cx(
+                                            'pagination-item',
+                                            (!Number(queryParams.page) ? 1 : Number(queryParams.page)) === index &&
+                                                'active',
+                                        )}
+                                    >
+                                        {item}
+                                    </div>
+                                ),
+                        )}
+                    </div>
+                </div>
                 {!pc && (
                     <div onClick={() => setShowFilter(true)} className={cx('filterSort')}>
                         <svg
