@@ -20,8 +20,13 @@ function SearchArea({ category, categoryDefault, priceMaxUrl }: any) {
     const tb = useMediaQuery({ minWidth: 768, maxWidth: 991 });
     const mb = useMediaQuery({ maxWidth: 767 });
 
-    // Variable
-    const pageSize = 9;
+    // React Router
+    const location = useLocation();
+    const params = useParams();
+    const navigate = useNavigate();
+
+    // Query String
+    const queryParams = queryString.parse(location.search);
 
     // State
     const [name, setName] = useState('');
@@ -37,16 +42,14 @@ function SearchArea({ category, categoryDefault, priceMaxUrl }: any) {
     const [valueMin, setValueMin] = useState(0);
     const [valueMax, setValueMax] = useState(100000000);
     const [resultKey, setResultKey] = useState('');
-    const [lenProducts, setLenProducts] = useState(0);
+    const [lenProducts, setLenProducts] = useState([]);
     const [listPage, setListPage] = useState<number[]>([]);
+    const [pageNum, setPageNum] = useState(!Number(queryParams.page) ? 1 : Number(queryParams.page));
 
-    // Location
-    const location = useLocation();
-    const params = useParams();
-    const navigate = useNavigate();
-
-    // Query String
-    const queryParams = queryString.parse(location.search);
+    // Variable Pagination
+    const pageSize = 3;
+    const pagination = `&pageNum=${pageNum}&pageSize=${pageSize}`;
+    const sort = !queryParams.sort ? 'best-match' : queryParams.sort;
 
     // Effect
     // Set Name from the URL
@@ -71,21 +74,6 @@ function SearchArea({ category, categoryDefault, priceMaxUrl }: any) {
         }
     }, [tb, mb]);
 
-    // Logic call Api
-    useEffect(() => {
-        if (category !== undefined) {
-            if (name.length > 0) {
-                queryNameCate();
-            } else {
-                queryCate();
-            }
-        } else {
-            if (name.length > 0) {
-                queryName();
-            }
-        }
-    }, [category, name.length]);
-
     // PriceMax
     useEffect(() => {
         if (priceMaxUrl > 0) {
@@ -94,21 +82,6 @@ function SearchArea({ category, categoryDefault, priceMaxUrl }: any) {
             setPriceMax(100000000);
         }
     }, [priceMaxUrl]);
-
-    // QueryAll when Category === category
-    useEffect(() => {
-        if (categoryDefault === 'category') {
-            if (priceMax > 0 && priceMax !== 100000000) {
-                sortBetweenPriceName();
-            } else {
-                if (!Number(queryParams.page)) {
-                    queryAll(1, pageSize);
-                } else {
-                    queryAll(Number(queryParams.page), pageSize);
-                }
-            }
-        }
-    }, [categoryDefault, location]);
 
     useEffect(() => {
         setValueSort('Best match');
@@ -148,103 +121,142 @@ function SearchArea({ category, categoryDefault, priceMaxUrl }: any) {
     }, [priceMin, priceMax]);
 
     // Sort Methods
+    // useEffect(() => {
+    //     switch (countSort) {
+    //         case 0:
+    //             if (category !== undefined && name.length > 0) {
+    //                 queryNameCate();
+    //                 return;
+    //             }
+    //             if (category === undefined) {
+    //                 queryName();
+    //             } else {
+    //                 queryCate();
+    //             }
+    //             break;
+    //         case 1:
+    //             if (category !== undefined && name.length > 0) {
+    //                 sortDateNameCate();
+    //                 return;
+    //             }
+    //             if (category === undefined) {
+    //                 sortDateName();
+    //             } else {
+    //                 sortDateCate();
+    //             }
+    //             break;
+    //         case 2:
+    //             if (category !== undefined && name.length > 0) {
+    //                 sortLowestNameCate();
+    //                 return;
+    //             }
+    //             if (category === undefined) {
+    //                 sortLowestName();
+    //             } else {
+    //                 sortLowestCate();
+    //             }
+    //             break;
+    //         case 3:
+    //             if (category !== undefined && name.length > 0) {
+    //                 sortHighestNameCate();
+    //                 return;
+    //             }
+    //             if (category === undefined) {
+    //                 sortHighest();
+    //             } else {
+    //                 sortHighestCate();
+    //             }
+    //             break;
+    //         default:
+    //             break;
+    //     }
+    // }, [countSort]);
+    useEffect(() => {}, [pageNum, location]);
+
+    // When search then setPageNume(1)
     useEffect(() => {
-        switch (countSort) {
-            case 0:
-                if (category !== undefined && name.length > 0) {
-                    queryNameCate();
-                    return;
-                }
-                if (category === undefined) {
-                    queryName();
-                } else {
-                    queryCate();
-                }
-                break;
-            case 1:
-                if (category !== undefined && name.length > 0) {
-                    sortDateNameCate();
-                    return;
-                }
-                if (category === undefined) {
-                    sortDateName();
-                } else {
-                    sortDateCate();
-                }
-                break;
-            case 2:
-                if (category !== undefined && name.length > 0) {
-                    sortLowestNameCate();
-                    return;
-                }
-                if (category === undefined) {
-                    sortLowestName();
-                } else {
-                    sortLowestCate();
-                }
-                break;
-            case 3:
-                if (category !== undefined && name.length > 0) {
-                    sortHighestNameCate();
-                    return;
-                }
-                if (category === undefined) {
-                    sortHighest();
-                } else {
-                    sortHighestCate();
-                }
-                break;
-            default:
-                break;
-        }
-    }, [countSort]);
+        setPageNum(1);
+    }, [location.search]);
 
     // Set Limit ListPage
     useEffect(() => {
-        const number = Math.ceil(lenProducts / pageSize);
-        if (number > 0) {
-            const newListPage = Array.from({ length: number }, (_, i) => i);
-            setListPage(newListPage);
+        const endNumber = Math.ceil(lenProducts.length / pageSize);
+        const startNumber = 1;
+        const paginationList = [];
+        for (let i = startNumber; i <= endNumber; i++) {
+            paginationList.push(i);
         }
+        setListPage(paginationList);
     }, [lenProducts]);
+
+    // QueryNameCate and queryName by Logic
+    useEffect(() => {
+        category !== undefined && name.length > 0 && queryNameCate();
+        category === undefined && name.length > 0 && queryName();
+    }, [category, name, pageNum]);
+
+    // QueryAll by logic
+    useEffect(() => {
+        if (categoryDefault === 'category') {
+            if (priceMax > 0 && priceMax !== 100000000) {
+                sortBetweenPriceName();
+            } else {
+                queryAll();
+            }
+        }
+    }, [categoryDefault, pageNum]);
+
+    // QueryCate by logic
+    useEffect(() => {
+        category !== undefined && name.length === 0 && queryCate();
+    }, [category, pageNum]);
 
     // Function
     // Get All Api Products
-    const queryAll = loadingApi(async (pageNum: number, pageSize: number) => {
-        const data = await axios.get(`${ServerURL}/products/get?pageNum=${pageNum}&pageSize=${pageSize}`);
-        setApi(data.data.data);
-        setLenProducts(data.data.totalProducts);
-    }, setLoading);
+    const queryAll = loadingApi(async () => {
+        const api = await axios.get(`${ServerURL}/products/get?${pagination}`);
+        setApi(api.data.result);
+        setLenProducts(api.data.totalProducts);
+    }, setLoading); // Completed Panigation
 
     // Get Name Products
     const queryName = loadingApi(async () => {
-        const data = await axios.get(`${ServerURL}/products/queryName?query=${name}`);
-        setApi(data.data);
-    }, setLoading); // Done
+        const api = await axios.get(`${ServerURL}/products/queryName?name=${name}${pagination}`);
+        setApi(api.data.result);
+        setLenProducts(api.data.totalProducts);
+    }, setLoading);
 
     // Get Category Products
     const queryCate = loadingApi(async () => {
-        const data = await axios.get(`${ServerURL}/products/queryCate?category=${category}`);
-        setApi(data.data);
+        const api = await axios.get(`${ServerURL}/products/queryCate?category=${category}${pagination}`);
+        setApi(api.data.result);
+        setLenProducts(api.data.totalProducts);
     }, setLoading);
 
     // Get Name And Category Products
     const queryNameCate = loadingApi(async () => {
-        const data = await axios.get(`${ServerURL}/products/queryNameCate?name=${name}&category=${category}`);
-        setApi(data.data);
+        const api = await axios.get(
+            `${ServerURL}/products/queryNameCate?name=${name}&category=${category}${pagination}`,
+        );
+        setApi(api.data.result);
+        setLenProducts(api.data.totalProducts);
     }, setLoading);
 
     // Sort Date
     const sortDateName = loadingApi(async () => {
-        const data = await axios.get(`${ServerURL}/products/sortDateName?name=${name}`);
-        setApi(data.data);
+        const api = await axios.get(`${ServerURL}/products/sortDateName?name=${name}${pagination}`);
+        setApi(api.data.result);
+        setLenProducts(api.data.totalProducts);
     }, setLoading);
     const sortDateCate = loadingApi(async () => {
-        const data = await axios.get(`${ServerURL}/products/sortDateCate?category=${category}`);
-        setApi(data.data);
+        const api = await axios.get(`${ServerURL}/products/sortDateCate?category=${category}${pagination}`);
+        setApi(api.data.result);
+        setLenProducts(api.data.totalProducts);
     }, setLoading);
     const sortDateNameCate = loadingApi(async () => {
-        const data = await axios.get(`${ServerURL}/products/sortDateNameCate?name=${name}&category=${category}`);
+        const data = await axios.get(
+            `${ServerURL}/products/sortDateNameCate?name=${name}&category=${category}${pagination}`,
+        );
         setApi(data.data);
     }, setLoading);
 
@@ -296,9 +308,21 @@ function SearchArea({ category, categoryDefault, priceMaxUrl }: any) {
         setApi(data.data);
     }, setLoading);
 
-    const handleSortItem = (title: string, index: number) => {
+    const handleSortItem = (title: string, slug: string, index: number) => {
+        if (category !== undefined) {
+            if (name.length > 0) {
+                navigate(`?query=${name}&sort=${slug}`, { replace: true });
+            } else {
+                navigate(`?sort=${slug}`, { replace: true });
+            }
+        } else {
+            if (name.length > 0) {
+                navigate(`?query=${name}&sort=${slug}`, { replace: true });
+            } else {
+                navigate(`?sort=${slug}`, { replace: true });
+            }
+        }
         setValueSort(title);
-        setCountSort(index);
     };
 
     const handlePrice = (e: React.ChangeEvent<HTMLInputElement>, bool: boolean) => {
@@ -313,7 +337,11 @@ function SearchArea({ category, categoryDefault, priceMaxUrl }: any) {
     };
 
     const handlePageNum = (item: number) => {
-        navigate(`?page=${item}`);
+        const queryParams = queryString.parse(location.search);
+        queryParams.page = String(item);
+        const newURL = `${location.pathname}?${queryString.stringify(queryParams)}`;
+        window.history.pushState({ path: newURL }, '', newURL);
+        setPageNum(item);
     };
 
     return (
@@ -347,10 +375,11 @@ function SearchArea({ category, categoryDefault, priceMaxUrl }: any) {
                         <div className={cx('tools-quantity')}>
                             {name.length > 0 ? (
                                 <>
-                                    {api.length} results for: <span className={cx('toolsQuantity-name')}>"{name}"</span>
+                                    {lenProducts.length} results for:{' '}
+                                    <span className={cx('toolsQuantity-name')}>"{name}"</span>
                                 </>
                             ) : (
-                                `${lenProducts} products`
+                                `${lenProducts.length} products`
                             )}
                         </div>
                     </div>
@@ -400,13 +429,13 @@ function SearchArea({ category, categoryDefault, priceMaxUrl }: any) {
                                     zIndex={100}
                                     render={() => (
                                         <div className={cx('sort-option', sortOption && 'show')}>
-                                            {sorts.map((item, index) => (
+                                            {sorts.map((item: any, index: number) => (
                                                 <div
-                                                    onClick={() => handleSortItem(item, index)}
+                                                    onClick={() => handleSortItem(item.title, item.slug, index)}
                                                     key={index}
-                                                    className={cx('sortOption-item', countSort === index && 'active')}
+                                                    className={cx('sortOption-item', sort === item.slug && 'active')}
                                                 >
-                                                    {item}
+                                                    {item.title}
                                                 </div>
                                             ))}
                                         </div>
@@ -446,27 +475,21 @@ function SearchArea({ category, categoryDefault, priceMaxUrl }: any) {
                     setPriceMin={setPriceMin}
                     setPriceMax={setPriceMax}
                     api={api}
+                    lenProducts={lenProducts}
                     query={name}
                     view={view}
                 />
                 <div className={cx('pagination')}>
                     <div className={cx('pagination-list')}>
-                        {listPage.map(
-                            (item: any, index: any) =>
-                                index > 0 && (
-                                    <div
-                                        onClick={() => handlePageNum(item)}
-                                        key={index}
-                                        className={cx(
-                                            'pagination-item',
-                                            (!Number(queryParams.page) ? 1 : Number(queryParams.page)) === index &&
-                                                'active',
-                                        )}
-                                    >
-                                        {item}
-                                    </div>
-                                ),
-                        )}
+                        {listPage.map((item: number, index: number) => (
+                            <div
+                                onClick={() => handlePageNum(item)}
+                                key={index}
+                                className={cx('pagination-item', pageNum === item && 'active')}
+                            >
+                                {item}
+                            </div>
+                        ))}
                     </div>
                 </div>
                 {!pc && (
@@ -539,13 +562,13 @@ function SearchArea({ category, categoryDefault, priceMaxUrl }: any) {
                                 </svg>
                             </div>
                             <div className={cx('sort-option', sortOption && 'show')}>
-                                {sorts.map((item, index) => (
+                                {sorts.map((item: any, index: number) => (
                                     <div
-                                        onClick={() => handleSortItem(item, index)}
+                                        onClick={() => handleSortItem(item.title, item.slug, index)}
                                         key={index}
-                                        className={cx('sortOption-item', countSort === index && 'active')}
+                                        className={cx('sortOption-item', sort === item.slug && 'active')}
                                     >
-                                        {item}
+                                        {item.title}
                                     </div>
                                 ))}
                             </div>

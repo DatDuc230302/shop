@@ -44,7 +44,7 @@ const list = [
     },
 ];
 
-function SearchArea1({ loading, query, view, api, setPriceMin, setPriceMax }: any) {
+function SearchArea1({ loading, query, view, api, lenProducts, setPriceMin, setPriceMax }: any) {
     // Responsive
     const pc = useMediaQuery({ minWidth: 992 });
     const tb = useMediaQuery({ minWidth: 768, maxWidth: 991 });
@@ -103,7 +103,7 @@ function SearchArea1({ loading, query, view, api, setPriceMin, setPriceMax }: an
                             <span className={cx('categories-title')}>Categories</span>
                             {list.map(
                                 (item: any, index: number) =>
-                                    api.filter((it: any) => it.category === item.title).length > 0 && (
+                                    lenProducts.filter((it: any) => it.category === item.title).length > 0 && (
                                         <div
                                             onClick={() => handleCategories(item.title)}
                                             key={index}
@@ -111,7 +111,7 @@ function SearchArea1({ loading, query, view, api, setPriceMin, setPriceMax }: an
                                         >
                                             <span className={cx('categoriesItem-title')}>{item.category}</span>
                                             <span className={cx('categoriesItem-quantity')}>
-                                                {api.filter((it: any) => it.category === item.title).length}
+                                                {lenProducts.filter((it: any) => it.category === item.title).length}
                                             </span>
                                         </div>
                                     ),
