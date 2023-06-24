@@ -44,16 +44,28 @@ const list = [
     },
 ];
 
-function SearchArea1({ loading, query, view, api, lenProducts, setPriceMin, setPriceMax }: any) {
+function SearchArea1({
+    loading,
+    query,
+    view,
+    api,
+    lenProducts,
+    setPriceMin,
+    priceMin,
+    setPriceMax,
+    priceMax,
+    setSortPriceMin,
+    sortPriceMin,
+    setSortPriceMax,
+    sortPriceMax,
+}: any) {
     // Responsive
     const pc = useMediaQuery({ minWidth: 992 });
     const tb = useMediaQuery({ minWidth: 768, maxWidth: 991 });
     const mb = useMediaQuery({ maxWidth: 767 });
 
     // State
-    const [showFilterPrice, setFilterPricee] = useState(false);
-    const [valueMin, setValueMin] = useState(0);
-    const [valueMax, setValueMax] = useState(100000000);
+    const [showFilterPrice, setFilterPrice] = useState(false);
 
     // React Router
     const navigate = useNavigate();
@@ -61,37 +73,33 @@ function SearchArea1({ loading, query, view, api, lenProducts, setPriceMin, setP
     // Effect
 
     useEffect(() => {
-        if (valueMax !== 100000000 && valueMax !== 0) {
-            setFilterPricee(true);
+        if (sortPriceMin > 0 && sortPriceMax > 0 && sortPriceMax < 100000000) {
+            setFilterPrice(true);
         } else {
-            setFilterPricee(false);
+            setFilterPrice(false);
         }
-    }, [valueMin, valueMax]);
+    }, [sortPriceMin, sortPriceMax]);
 
     // Function
 
-    const handlePrice = (e: React.ChangeEvent<HTMLInputElement>, bool: boolean) => {
-        const value: number = Number(e.target.value);
+    const handleInput = (e: any, bool: boolean) => {
         if (bool) {
-            setPriceMin(value);
-            setValueMin(value);
+            setPriceMin(Number(e.target.value));
         } else {
-            setPriceMax(value);
-            setValueMax(value);
+            setPriceMax(Number(e.target.value));
         }
-    };
-
-    const handleClose = () => {
-        setFilterPricee(false);
-        setPriceMin(0);
-        setValueMin(0);
-        setPriceMax(0);
-        setValueMax(0);
     };
 
     const handleCategories = (title: string) => {
         const slug = title.toLowerCase();
         query.length > 0 ? navigate(`/category/${slug}?query=${query}`) : navigate(`/category/${slug}`);
+    };
+
+    const handleCloseTag = () => {
+        setPriceMin(0);
+        setPriceMax(0);
+        setSortPriceMin(0);
+        setSortPriceMax(100000000);
     };
 
     return (
@@ -123,8 +131,8 @@ function SearchArea1({ loading, query, view, api, lenProducts, setPriceMin, setP
                             </div>
                             <div className={cx('price-control')}>
                                 <input
-                                    onChange={(e) => handlePrice(e, true)}
-                                    value={valueMin === 0 ? '' : valueMin}
+                                    value={priceMin === 0 ? '' : priceMin}
+                                    onChange={(e) => handleInput(e, true)}
                                     placeholder="From"
                                     inputMode="numeric"
                                     type="number"
@@ -134,8 +142,8 @@ function SearchArea1({ loading, query, view, api, lenProducts, setPriceMin, setP
                                     -
                                 </span>
                                 <input
-                                    value={valueMax === 100000000 || valueMax === 0 ? '' : valueMax}
-                                    onChange={(e) => handlePrice(e, false)}
+                                    value={priceMax === 100000000 || priceMax === 0 ? '' : priceMax}
+                                    onChange={(e) => handleInput(e, false)}
                                     inputMode="numeric"
                                     type="number"
                                     placeholder="To"
@@ -147,9 +155,9 @@ function SearchArea1({ loading, query, view, api, lenProducts, setPriceMin, setP
                 )}
                 <div className={cx('body', tb && 'tb', mb && 'mb')}>
                     {showFilterPrice && (
-                        <div className={cx('tag')}>
-                            <div onClick={() => handleClose()} className={cx('tag-price')}>
-                                Price: {valueMin} - {valueMax} USD
+                        <div onClick={() => handleCloseTag()} className={cx('tag')}>
+                            <div className={cx('tag-price')}>
+                                Price: {sortPriceMin} - {sortPriceMax} USD
                                 <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="20px" height="20px">
                                     <path
                                         className={cx('filterPrice-icon')}

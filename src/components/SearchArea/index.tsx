@@ -33,15 +33,19 @@ function SearchArea({ category, categoryDefault, priceMaxUrl }: any) {
     const [sortOption, setSortOption] = useState(false);
     const [valueSort, setValueSort] = useState('Best match');
     const [view, setView] = useState(0);
-    const [priceMin, setPriceMin] = useState(!queryParams.priceMin ? 0 : Number(queryParams.priceMin));
-    const [priceMax, setPriceMax] = useState(100000000);
     const [loading, setLoading] = useState(false);
     const [showFilter, setShowFilter] = useState(false);
-    const [valueMin, setValueMin] = useState(0);
-    const [valueMax, setValueMax] = useState(100000000);
     const [resultKey, setResultKey] = useState('');
     const [lenProducts, setLenProducts] = useState([]);
     const [listPage, setListPage] = useState<number[]>([]);
+
+    //
+    const [priceMin, setPriceMin] = useState(0);
+    const [priceMax, setPriceMax] = useState(100000000);
+    const [sortPriceMin, setSortPriceMin] = useState(!Number(queryParams.priceMin) ? 0 : Number(queryParams.priceMin));
+    const [sortPriceMax, setSortPriceMax] = useState(
+        !Number(queryParams.priceMax) ? 100000000 : Number(queryParams.priceMax),
+    );
 
     // Set pageNum from URL
     const [pageNum, setPageNum] = useState(!Number(queryParams.page) ? 1 : Number(queryParams.page));
@@ -56,9 +60,26 @@ function SearchArea({ category, categoryDefault, priceMaxUrl }: any) {
     // Set QueryName from URL
     const name = queryParams.query !== undefined ? String(queryParams.query) : '';
 
-    // Set priceMin
-
     // Effect===========================================
+
+    useEffect(() => {
+        const debounceTimer = setTimeout(() => {
+            const queryParams = queryString.parse(location.search);
+            if (priceMin > 0) {
+                queryParams.priceMin = String(priceMin);
+            }
+            if (priceMax > 0 && priceMax < 100000000) {
+                queryParams.priceMax = String(priceMax);
+            }
+            const newURL = `${location.pathname}?${queryString.stringify(queryParams)}`;
+            window.history.pushState({ path: newURL }, '', newURL);
+            setSortPriceMin(priceMin);
+            setSortPriceMax(priceMax);
+        }, 1000); // Thời gian debounce, 1000ms trong ví dụ này
+        return () => {
+            clearTimeout(debounceTimer);
+        };
+    }, [priceMin, priceMax]);
 
     // Set resultKey
     useEffect(() => {
@@ -75,81 +96,39 @@ function SearchArea({ category, categoryDefault, priceMaxUrl }: any) {
         }
     }, [tb, mb]);
 
-    // PriceMax
-    useEffect(() => {
-        if (priceMaxUrl > 0) {
-            setPriceMax(priceMaxUrl);
-        } else {
-            setPriceMax(100000000);
-        }
-    }, [priceMaxUrl]);
-
-    // Sort Price Between
-    useEffect(() => {
-        // const debounceTimer = setTimeout(() => {
-        //     // Xử lý logic sau thời gian debounce
-        //     if (priceMax !== 100000000 && priceMax !== 0) {
-        //         if (category !== undefined && name.length > 0) {
-        //             sortBetweenPriceNameCate();
-        //             return;
-        //         }
-        //         if (category === undefined) {
-        //             sortBetweenPriceName();
-        //         } else {
-        //             sortBetweenPriceCate();
-        //         }
-        //     } else if (priceMin === 0 && priceMax === 0) {
-        //         if (category !== undefined && name.length > 0) {
-        //             queryNameCate();
-        //             return;
-        //         }
-        //         if (category === undefined) {
-        //             queryName();
-        //         } else {
-        //             queryCate();
-        //         }
-        //     }
-        // }, 1000); // Thời gian debounce, 500ms trong ví dụ này}
-
-        if (priceMin > 0) {
-            const debounceTimer = setTimeout(() => {
-                const queryParams = queryString.parse(location.search);
-                queryParams.priceMin = String(priceMin);
-                const newURL = `${location.pathname}?${queryString.stringify(queryParams)}`;
-                window.history.pushState({ path: newURL }, '', newURL);
-            }, 1000); // Thời gian debounce, 500ms trong ví dụ này}
-        }
-    }, [priceMin, priceMax]);
-
     // Sort Methods and Query Methods
     useEffect(() => {
         window.scrollTo(0, 0);
-        if (methodSort === 'best-match') {
-            if (category === undefined && name.length > 0) {
-                // Query Name
-                queryName();
-            } else if (category !== undefined && name.length > 0) {
-                // Query Name Cate
-                queryNameCate();
-            } else if (category !== undefined && name.length === 0) {
-                // Query Cate
-                queryCate();
-            } else if (categoryDefault === 'category') {
-                if (priceMax > 0 && priceMax !== 100000000) {
-                    sortBetweenPriceNameCate();
-                } else {
-                    // Query All
-                    queryAll();
+        if (sortPriceMin > 0 && sortPriceMax > 0) {
+            sortBetweenPriceNameCate();
+        } else {
+            if (methodSort === 'best-match') {
+                if (category === undefined && name.length > 0) {
+                    // Query Name
+                    queryName();
+                } else if (category !== undefined && name.length > 0) {
+                    // Query Name Cate
+                    queryNameCate();
+                } else if (category !== undefined && name.length === 0) {
+                    // Query Cate
+                    queryCate();
+                } else if (categoryDefault === 'category') {
+                    if (priceMax > 0 && priceMax !== 100000000) {
+                        sortBetweenPriceNameCate();
+                    } else {
+                        // Query All
+                        queryAll();
+                    }
                 }
+            } else if (methodSort === 'release-date') {
+                sortDateNameCate();
+            } else if (methodSort === 'lowest-price') {
+                sortLowestNameCate();
+            } else if (methodSort === 'highest-price') {
+                sortHighestNameCate();
             }
-        } else if (methodSort === 'release-date') {
-            sortDateNameCate();
-        } else if (methodSort === 'lowest-price') {
-            sortLowestNameCate();
-        } else if (methodSort === 'highest-price') {
-            sortHighestNameCate();
         }
-    }, [methodSort, name, category, categoryDefault, pageNum]);
+    }, [methodSort, name, category, categoryDefault, pageNum, sortPriceMin, sortPriceMax]);
 
     // Set Limit ListPage
     useEffect(() => {
@@ -228,10 +207,11 @@ function SearchArea({ category, categoryDefault, priceMaxUrl }: any) {
 
     // Sort Between Price
     const sortBetweenPriceNameCate = loadingApi(async () => {
-        const data = await axios.get(
-            `${ServerURL}/products/sortBetweenPriceNameCate?name=${name}&category=${category}&priceMin=${priceMin}&priceMax=${priceMax}${pagination}`,
+        const api = await axios.get(
+            `${ServerURL}/products/sortBetweenPriceNameCate?name=${name}&category=${category}&priceMin=${sortPriceMin}&priceMax=${sortPriceMax}${pagination}`,
         );
-        setApi(data.data);
+        setApi(api.data.result);
+        setLenProducts(api.data.totalProducts);
     }, setLoading);
 
     const handleSortItem = (title: string, slug: string, index: number) => {
@@ -251,23 +231,21 @@ function SearchArea({ category, categoryDefault, priceMaxUrl }: any) {
         setValueSort(title);
     };
 
+    const handleSortPrice = (e: React.ChangeEvent<HTMLInputElement>, bool: boolean) => {
+        const value: number = Number(e.target.value);
+        if (bool) {
+            setPriceMin(value);
+        } else {
+            setPriceMax(value);
+        }
+    };
+
     const handlePageNum = (item: number) => {
         const queryParams = queryString.parse(location.search);
         queryParams.page = String(item);
         const newURL = `${location.pathname}?${queryString.stringify(queryParams)}`;
         window.history.pushState({ path: newURL }, '', newURL);
         setPageNum(item);
-    };
-
-    const handleSortPrice = (e: React.ChangeEvent<HTMLInputElement>, bool: boolean) => {
-        const value: number = Number(e.target.value);
-        if (bool) {
-            setPriceMin(value);
-            setValueMin(value);
-        } else {
-            setPriceMax(value);
-            setValueMax(value);
-        }
     };
 
     return (
@@ -401,12 +379,18 @@ function SearchArea({ category, categoryDefault, priceMaxUrl }: any) {
                 </div>
                 <SearchArea1
                     loading={loading}
-                    setPriceMin={setPriceMin}
-                    setPriceMax={setPriceMax}
                     api={api}
                     lenProducts={lenProducts}
                     query={name}
                     view={view}
+                    setPriceMin={setPriceMin}
+                    priceMin={priceMin}
+                    setPriceMax={setPriceMax}
+                    priceMax={priceMax}
+                    setSortPriceMin={setSortPriceMin}
+                    sortPriceMin={sortPriceMin}
+                    setSortPriceMax={setSortPriceMax}
+                    sortPriceMax={sortPriceMax}
                 />
                 <div className={cx('pagination')}>
                     <div className={cx('pagination-list')}>
@@ -509,7 +493,7 @@ function SearchArea({ category, categoryDefault, priceMaxUrl }: any) {
                             <div className={cx('price-control')}>
                                 <input
                                     onChange={(e) => handleSortPrice(e, true)}
-                                    value={valueMin === 0 ? '' : valueMin}
+                                    value={priceMin === 0 ? '' : priceMin}
                                     placeholder="From"
                                     inputMode="numeric"
                                     type="number"
@@ -519,7 +503,7 @@ function SearchArea({ category, categoryDefault, priceMaxUrl }: any) {
                                     -
                                 </span>
                                 <input
-                                    value={valueMax === 100000000 || valueMax === 0 ? '' : valueMax}
+                                    value={priceMax === 100000000 || priceMax === 0 ? '' : priceMax}
                                     onChange={(e) => handleSortPrice(e, false)}
                                     inputMode="numeric"
                                     type="number"
