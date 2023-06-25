@@ -50,10 +50,6 @@ function SearchArea1({
     view,
     api,
     lenProducts,
-    setPriceMin,
-    priceMin,
-    setPriceMax,
-    priceMax,
     setSortPriceMin,
     sortPriceMin,
     setSortPriceMax,
@@ -66,6 +62,8 @@ function SearchArea1({
 
     // State
     const [showFilterPrice, setFilterPrice] = useState(false);
+    const [priceMin, setPriceMin] = useState(0);
+    const [priceMax, setPriceMax] = useState(0);
 
     // React Router
     const navigate = useNavigate();
@@ -80,8 +78,46 @@ function SearchArea1({
         }
     }, [sortPriceMin, sortPriceMax]);
 
-    // Function
+    useEffect(() => {
+        let debounceTimerMin: NodeJS.Timeout | null = null;
+        let debounceTimerMax: NodeJS.Timeout | null = null;
 
+        if (priceMin > 0) {
+            if (debounceTimerMin) {
+                clearTimeout(debounceTimerMin);
+            }
+
+            debounceTimerMin = setTimeout(() => {
+                setSortPriceMin(priceMin);
+            }, 500);
+        } else {
+            setSortPriceMin(0);
+        }
+
+        if (priceMax > 0) {
+            if (debounceTimerMax) {
+                clearTimeout(debounceTimerMax);
+            }
+
+            debounceTimerMax = setTimeout(() => {
+                setSortPriceMax(priceMax);
+            }, 500);
+        } else {
+            setSortPriceMax(100000000);
+        }
+
+        return () => {
+            if (debounceTimerMin) {
+                clearTimeout(debounceTimerMin);
+            }
+
+            if (debounceTimerMax) {
+                clearTimeout(debounceTimerMax);
+            }
+        };
+    }, [priceMin, priceMax]);
+
+    // Function
     const handleInput = (e: any, bool: boolean) => {
         if (bool) {
             setPriceMin(Number(e.target.value));
@@ -96,8 +132,10 @@ function SearchArea1({
     };
 
     const handleCloseTag = () => {
-        setPriceMin(0);
-        setPriceMax(0);
+        const url = new URL(window.location.href);
+        url.searchParams.delete('priceMin');
+        url.searchParams.delete('priceMax');
+        window.location.href = url.toString();
         setSortPriceMin(0);
         setSortPriceMax(100000000);
     };

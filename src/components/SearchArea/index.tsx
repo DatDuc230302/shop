@@ -40,8 +40,6 @@ function SearchArea({ category, categoryDefault, priceMaxUrl }: any) {
     const [listPage, setListPage] = useState<number[]>([]);
 
     //
-    const [priceMin, setPriceMin] = useState(0);
-    const [priceMax, setPriceMax] = useState(100000000);
     const [sortPriceMin, setSortPriceMin] = useState(!Number(queryParams.priceMin) ? 0 : Number(queryParams.priceMin));
     const [sortPriceMax, setSortPriceMax] = useState(
         !Number(queryParams.priceMax) ? 100000000 : Number(queryParams.priceMax),
@@ -61,25 +59,6 @@ function SearchArea({ category, categoryDefault, priceMaxUrl }: any) {
     const name = queryParams.query !== undefined ? String(queryParams.query) : '';
 
     // Effect===========================================
-
-    useEffect(() => {
-        const debounceTimer = setTimeout(() => {
-            const queryParams = queryString.parse(location.search);
-            if (priceMin > 0) {
-                queryParams.priceMin = String(priceMin);
-            }
-            if (priceMax > 0 && priceMax < 100000000) {
-                queryParams.priceMax = String(priceMax);
-            }
-            const newURL = `${location.pathname}?${queryString.stringify(queryParams)}`;
-            window.history.pushState({ path: newURL }, '', newURL);
-            setSortPriceMin(priceMin);
-            setSortPriceMax(priceMax);
-        }, 1000); // Thời gian debounce, 1000ms trong ví dụ này
-        return () => {
-            clearTimeout(debounceTimer);
-        };
-    }, [priceMin, priceMax]);
 
     // Set resultKey
     useEffect(() => {
@@ -113,12 +92,9 @@ function SearchArea({ category, categoryDefault, priceMaxUrl }: any) {
                     // Query Cate
                     queryCate();
                 } else if (categoryDefault === 'category') {
-                    if (priceMax > 0 && priceMax !== 100000000) {
-                        sortBetweenPriceNameCate();
-                    } else {
-                        // Query All
-                        queryAll();
-                    }
+                    // sortBetweenPriceNameCate();
+                    // Query All
+                    queryAll();
                 }
             } else if (methodSort === 'release-date') {
                 sortDateNameCate();
@@ -229,15 +205,6 @@ function SearchArea({ category, categoryDefault, priceMaxUrl }: any) {
             }
         }
         setValueSort(title);
-    };
-
-    const handleSortPrice = (e: React.ChangeEvent<HTMLInputElement>, bool: boolean) => {
-        const value: number = Number(e.target.value);
-        if (bool) {
-            setPriceMin(value);
-        } else {
-            setPriceMax(value);
-        }
     };
 
     const handlePageNum = (item: number) => {
@@ -383,10 +350,6 @@ function SearchArea({ category, categoryDefault, priceMaxUrl }: any) {
                     lenProducts={lenProducts}
                     query={name}
                     view={view}
-                    setPriceMin={setPriceMin}
-                    priceMin={priceMin}
-                    setPriceMax={setPriceMax}
-                    priceMax={priceMax}
                     setSortPriceMin={setSortPriceMin}
                     sortPriceMin={sortPriceMin}
                     setSortPriceMax={setSortPriceMax}
@@ -492,8 +455,6 @@ function SearchArea({ category, categoryDefault, priceMaxUrl }: any) {
                             </div>
                             <div className={cx('price-control')}>
                                 <input
-                                    onChange={(e) => handleSortPrice(e, true)}
-                                    value={priceMin === 0 ? '' : priceMin}
                                     placeholder="From"
                                     inputMode="numeric"
                                     type="number"
@@ -503,8 +464,6 @@ function SearchArea({ category, categoryDefault, priceMaxUrl }: any) {
                                     -
                                 </span>
                                 <input
-                                    value={priceMax === 100000000 || priceMax === 0 ? '' : priceMax}
-                                    onChange={(e) => handleSortPrice(e, false)}
                                     inputMode="numeric"
                                     type="number"
                                     placeholder="To"
