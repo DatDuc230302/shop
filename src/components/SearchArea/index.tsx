@@ -13,7 +13,6 @@ import { loadingApi } from '../Loading';
 import queryString from 'query-string';
 
 const cx = classNames.bind(style);
-
 function SearchArea({ category, categoryDefault, priceMaxUrl }: any) {
     // Responsive
     const pc = useMediaQuery({ minWidth: 992 });
@@ -38,17 +37,18 @@ function SearchArea({ category, categoryDefault, priceMaxUrl }: any) {
     const [resultKey, setResultKey] = useState('');
     const [lenProducts, setLenProducts] = useState([]);
     const [listPage, setListPage] = useState<number[]>([]);
+    const [valueMin, setValueMin] = useState(!Number(queryParams.priceMin) ? 0 : Number(queryParams.priceMin));
+    const [valueMax, setValueMax] = useState(!Number(queryParams.priceMax) ? 0 : Number(queryParams.priceMax));
 
-    //
-    const [sortPriceMin, setSortPriceMin] = useState(!Number(queryParams.priceMin) ? 0 : Number(queryParams.priceMin));
-    const [sortPriceMax, setSortPriceMax] = useState(
-        !Number(queryParams.priceMax) ? 100000000 : Number(queryParams.priceMax),
-    );
-
-    // Set pageNum from URL
-    const [pageNum, setPageNum] = useState(!Number(queryParams.page) ? 1 : Number(queryParams.page));
+    // Set PriceMin PriceMax
+    let priceMin: number = !Number(queryParams.priceMin) ? 0 : Number(queryParams.priceMin);
+    let priceMax: number = !Number(queryParams.priceMax) ? 0 : Number(queryParams.priceMax);
+    let betweenPrice: string = `&priceMin=${priceMin}&priceMax=${priceMax}`;
 
     // Variable Pagination
+    const [pageNum, setPageNum] = useState(
+        !Number(queryParams.page) ? 1 : Number(queryParams.page) <= 0 ? 1 : Number(queryParams.page),
+    );
     const pageSize = 3;
     const pagination = `&pageNum=${pageNum}&pageSize=${pageSize}`;
 
@@ -59,6 +59,67 @@ function SearchArea({ category, categoryDefault, priceMaxUrl }: any) {
     const name = queryParams.query !== undefined ? String(queryParams.query) : '';
 
     // Effect===========================================
+
+    // Sort Between Price
+    const updateSearchParams = (queryParams: { priceMin?: number; priceMax?: number }) => {
+        const searchString = queryString.stringify(queryParams, { encode: false });
+        const url =
+            name.length > 0
+                ? searchString.length > 0
+                    ? `?${searchString}&query=${name}`
+                    : `?query=${name}`
+                : `?${searchString}`;
+        navigate(url, { replace: true });
+    };
+
+    useEffect(() => {
+        const debounceTimer = setTimeout(() => {
+            const queryParams: { priceMin?: number; priceMax?: number } = {};
+            if (valueMin !== 0) {
+                queryParams.priceMin = valueMin;
+            }
+            if (valueMax !== 0) {
+                queryParams.priceMax = valueMax;
+            }
+            updateSearchParams(queryParams);
+        }, 1000);
+        return () => {
+            clearTimeout(debounceTimer);
+        };
+    }, [valueMin, valueMax]);
+
+    useEffect(() => {
+        if (pageNum > 1) {
+            setPageNum(1);
+        }
+    }, [category, categoryDefault, name]);
+
+    // Sort Methods and Query Methods
+    useEffect(() => {
+        window.scrollTo(0, 0);
+        if (methodSort === 'best-match') {
+            if (category === undefined && name.length > 0) {
+                // Query Name
+                queryName();
+            } else if (category !== undefined && name.length > 0) {
+                // Query Name Cate
+                queryNameCate();
+            } else if (category !== undefined && name.length === 0) {
+                // Query Cate
+                queryCate();
+            } else if (categoryDefault === 'category') {
+                // sortBetweenPriceNameCate();
+                // Query All
+                queryAll();
+            }
+        } else if (methodSort === 'release-date') {
+            sortDateNameCate();
+        } else if (methodSort === 'lowest-price') {
+            sortLowestNameCate();
+        } else if (methodSort === 'highest-price') {
+            sortHighestNameCate();
+        }
+    }, [methodSort, name, category, categoryDefault, pageNum, location.search]);
 
     // Set resultKey
     useEffect(() => {
@@ -75,37 +136,6 @@ function SearchArea({ category, categoryDefault, priceMaxUrl }: any) {
         }
     }, [tb, mb]);
 
-    // Sort Methods and Query Methods
-    useEffect(() => {
-        window.scrollTo(0, 0);
-        if (sortPriceMin > 0 && sortPriceMax > 0) {
-            sortBetweenPriceNameCate();
-        } else {
-            if (methodSort === 'best-match') {
-                if (category === undefined && name.length > 0) {
-                    // Query Name
-                    queryName();
-                } else if (category !== undefined && name.length > 0) {
-                    // Query Name Cate
-                    queryNameCate();
-                } else if (category !== undefined && name.length === 0) {
-                    // Query Cate
-                    queryCate();
-                } else if (categoryDefault === 'category') {
-                    // sortBetweenPriceNameCate();
-                    // Query All
-                    queryAll();
-                }
-            } else if (methodSort === 'release-date') {
-                sortDateNameCate();
-            } else if (methodSort === 'lowest-price') {
-                sortLowestNameCate();
-            } else if (methodSort === 'highest-price') {
-                sortHighestNameCate();
-            }
-        }
-    }, [methodSort, name, category, categoryDefault, pageNum, sortPriceMin, sortPriceMax]);
-
     // Set Limit ListPage
     useEffect(() => {
         const endNumber = Math.ceil(lenProducts.length / pageSize);
@@ -120,21 +150,21 @@ function SearchArea({ category, categoryDefault, priceMaxUrl }: any) {
     // Function ==============================================
     // Get All Api Products
     const queryAll = loadingApi(async () => {
-        const api = await axios.get(`${ServerURL}/products/get?${pagination}`);
+        const api = await axios.get(`${ServerURL}/products/queryAll?${pagination}${betweenPrice}`);
         setApi(api.data.result);
         setLenProducts(api.data.totalProducts);
     }, setLoading); // Completed Panigation
 
     // Get Name Products
     const queryName = loadingApi(async () => {
-        const api = await axios.get(`${ServerURL}/products/queryName?name=${name}${pagination}`);
+        const api = await axios.get(`${ServerURL}/products/queryName?name=${name}${pagination}${betweenPrice}`);
         setApi(api.data.result);
         setLenProducts(api.data.totalProducts);
     }, setLoading);
 
     // Get Category Products
     const queryCate = loadingApi(async () => {
-        const api = await axios.get(`${ServerURL}/products/queryCate?category=${category}${pagination}`);
+        const api = await axios.get(`${ServerURL}/products/queryCate?category=${category}${pagination}${betweenPrice}`);
         setApi(api.data.result);
         setLenProducts(api.data.totalProducts);
     }, setLoading);
@@ -142,7 +172,7 @@ function SearchArea({ category, categoryDefault, priceMaxUrl }: any) {
     // Get Name And Category Products
     const queryNameCate = loadingApi(async () => {
         const api = await axios.get(
-            `${ServerURL}/products/queryNameCate?name=${name}&category=${category}${pagination}`,
+            `${ServerURL}/products/queryNameCate?name=${name}&category=${category}${pagination}${betweenPrice}`,
         );
         setApi(api.data.result);
         setLenProducts(api.data.totalProducts);
@@ -151,7 +181,7 @@ function SearchArea({ category, categoryDefault, priceMaxUrl }: any) {
     // Sort Date
     const sortDateNameCate = loadingApi(async () => {
         const api = await axios.get(
-            `${ServerURL}/products/sortDateNameCate?name=${name}&category=${category}${pagination}`,
+            `${ServerURL}/products/sortDateNameCate?name=${name}&category=${category}${pagination}${betweenPrice}`,
         );
         if (api.data.result !== undefined && api.data.totalProducts !== undefined) {
             setApi(api.data.result);
@@ -162,7 +192,7 @@ function SearchArea({ category, categoryDefault, priceMaxUrl }: any) {
     // Sort Price Lowest
     const sortLowestNameCate = loadingApi(async () => {
         const api = await axios.get(
-            `${ServerURL}/products/sortLowestNameCate?name=${name}&category=${category}${pagination}`,
+            `${ServerURL}/products/sortLowestNameCate?name=${name}&category=${category}${pagination}${betweenPrice}`,
         );
         if (api.data.result !== undefined && api.data.totalProducts !== undefined) {
             setApi(api.data.result);
@@ -173,7 +203,7 @@ function SearchArea({ category, categoryDefault, priceMaxUrl }: any) {
     // Sort Price Highest
     const sortHighestNameCate = loadingApi(async () => {
         const api = await axios.get(
-            `${ServerURL}/products/sortHighestNameCate?name=${name}&category=${category}${pagination}`,
+            `${ServerURL}/products/sortHighestNameCate?name=${name}&category=${category}${pagination}${betweenPrice}`,
         );
         if (api.data.result !== undefined && api.data.totalProducts !== undefined) {
             setApi(api.data.result);
@@ -181,27 +211,22 @@ function SearchArea({ category, categoryDefault, priceMaxUrl }: any) {
         }
     }, setLoading);
 
-    // Sort Between Price
-    const sortBetweenPriceNameCate = loadingApi(async () => {
-        const api = await axios.get(
-            `${ServerURL}/products/sortBetweenPriceNameCate?name=${name}&category=${category}&priceMin=${sortPriceMin}&priceMax=${sortPriceMax}${pagination}`,
-        );
-        setApi(api.data.result);
-        setLenProducts(api.data.totalProducts);
-    }, setLoading);
-
     const handleSortItem = (title: string, slug: string, index: number) => {
         if (category !== undefined) {
             if (name.length > 0) {
-                navigate(`?query=${name}&sort=${slug}`, { replace: true });
+                navigate(`?query=${name}&sort=${slug}${priceMin > 0 || priceMax > 0 ? betweenPrice : ''}`, {
+                    replace: true,
+                });
             } else {
-                navigate(`?sort=${slug}`, { replace: true });
+                navigate(`?sort=${slug}${priceMin > 0 || priceMax > 0 ? betweenPrice : ''}`, { replace: true });
             }
         } else {
             if (name.length > 0) {
-                navigate(`?query=${name}&sort=${slug}`, { replace: true });
+                navigate(`?query=${name}&sort=${slug}${priceMin > 0 || priceMax > 0 ? betweenPrice : ''}`, {
+                    replace: true,
+                });
             } else {
-                navigate(`?sort=${slug}`, { replace: true });
+                navigate(`?sort=${slug}${priceMin > 0 || priceMax > 0 ? betweenPrice : ''}`, { replace: true });
             }
         }
         setValueSort(title);
@@ -213,6 +238,26 @@ function SearchArea({ category, categoryDefault, priceMaxUrl }: any) {
         const newURL = `${location.pathname}?${queryString.stringify(queryParams)}`;
         window.history.pushState({ path: newURL }, '', newURL);
         setPageNum(item);
+    };
+
+    const handleNavPagination = (bool: boolean) => {
+        if (bool) {
+            if (pageNum > 1) {
+                const queryParams = queryString.parse(location.search);
+                queryParams.page = String(pageNum - 1);
+                const newURL = `${location.pathname}?${queryString.stringify(queryParams)}`;
+                window.history.pushState({ path: newURL }, '', newURL);
+                setPageNum(pageNum - 1);
+            }
+        } else {
+            if (pageNum < listPage.length) {
+                const queryParams = queryString.parse(location.search);
+                queryParams.page = String(pageNum + 1);
+                const newURL = `${location.pathname}?${queryString.stringify(queryParams)}`;
+                window.history.pushState({ path: newURL }, '', newURL);
+                setPageNum(pageNum + 1);
+            }
+        }
     };
 
     return (
@@ -350,24 +395,83 @@ function SearchArea({ category, categoryDefault, priceMaxUrl }: any) {
                     lenProducts={lenProducts}
                     query={name}
                     view={view}
-                    setSortPriceMin={setSortPriceMin}
-                    sortPriceMin={sortPriceMin}
-                    setSortPriceMax={setSortPriceMax}
-                    sortPriceMax={sortPriceMax}
+                    valueMin={valueMin}
+                    setValueMin={setValueMin}
+                    valueMax={valueMax}
+                    setValueMax={setValueMax}
+                    priceMin={priceMin}
+                    priceMax={priceMax}
                 />
-                <div className={cx('pagination')}>
-                    <div className={cx('pagination-list')}>
-                        {listPage.map((item: number, index: number) => (
-                            <div
-                                onClick={() => handlePageNum(item)}
-                                key={index}
-                                className={cx('pagination-item', pageNum === item && 'active')}
+                {listPage.length > 0 && (
+                    <div className={cx('pagination')}>
+                        <div onClick={() => handleNavPagination(true)} className={cx('pagination-prev')}>
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                width="25px"
+                                height="25px"
+                                fill="currentColor"
                             >
-                                {item}
-                            </div>
-                        ))}
+                                <path
+                                    fill="none"
+                                    strokeMiterlimit="10"
+                                    d="M14 16l-4-4 4-4"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
+                                    stroke="currentColor"
+                                ></path>
+                            </svg>{' '}
+                            Prev
+                        </div>
+
+                        <>
+                            <div className={cx('pagination-first')}>1</div>
+                            <div className={cx('ellipsis')}>...</div>
+                        </>
+
+                        <div className={cx('pagination-list')}>
+                            {listPage.map((item: number, index: number) => (
+                                <div
+                                    onClick={() => handlePageNum(item)}
+                                    key={index}
+                                    className={cx('pagination-item', pageNum === item && 'active')}
+                                >
+                                    {item}
+                                </div>
+                            ))}
+                        </div>
+                        <>
+                            <div className={cx('ellipsis')}>...</div>
+                            <span
+                                onClick={() => handlePageNum(listPage.length - 1)}
+                                className={cx('last-page', pageNum === listPage.length && 'active')}
+                            >
+                                {listPage.length}
+                            </span>
+                        </>
+                        <div onClick={() => handleNavPagination(false)} className={cx('pagination-next')}>
+                            Next{' '}
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                width="25px"
+                                height="25px"
+                                fill="currentColor"
+                            >
+                                <path
+                                    fill="none"
+                                    strokeMiterlimit="10"
+                                    d="M10 8l4 4-4 4"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
+                                    stroke="currentColor"
+                                ></path>
+                            </svg>
+                        </div>
                     </div>
-                </div>
+                )}
                 {!pc && (
                     <div onClick={() => setShowFilter(true)} className={cx('filterSort')}>
                         <svg
@@ -459,6 +563,7 @@ function SearchArea({ category, categoryDefault, priceMaxUrl }: any) {
                                     inputMode="numeric"
                                     type="number"
                                     className={cx('price-input')}
+                                    onChange={(e) => setValueMin(Number(e.target.value))}
                                 />
                                 <span style={{ paddingRight: 9, paddingLeft: 9, paddingTop: 14.2, color: '#000' }}>
                                     -
@@ -468,6 +573,7 @@ function SearchArea({ category, categoryDefault, priceMaxUrl }: any) {
                                     type="number"
                                     placeholder="To"
                                     className={cx('price-input')}
+                                    onChange={(e) => setValueMax(Number(e.target.value))}
                                 />
                             </div>
                         </div>

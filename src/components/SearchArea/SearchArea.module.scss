@@ -305,34 +305,146 @@
     justify-content: flex-end;
     margin-top: 30px;
 
-    .pagination-list {
+    .pagination-first {
+        align-items: center;
+        justify-content: center;
         display: flex;
-        overflow: hidden;
-        border-radius: 3px;
-        width: max-content;
+        color: white;
+        font-size: 1.4rem;
+        width: 45px;
+        height: 42px;
+        color: #1d6ee8;
+        transition: all linear 0.2s;
+        cursor: pointer;
         border: 1px solid #2f82fb;
 
-        .pagination-item {
-            align-items: center;
-            justify-content: center;
-            display: flex;
+        &:hover {
+            background-color: rgb(62, 132, 237, 0.3);
+        }
+
+        &.active {
+            background-color: #2f82fb;
             color: white;
-            font-size: 1.4rem;
-            width: 45px;
-            height: 42px;
-            color: #1d6ee8;
-            transition: all linear 0.2s;
-
-            &:hover {
-                background-color: rgb(62, 132, 237, 0.3);
-            }
-
-            &.active {
-                background-color: #2f82fb;
-                color: white;
-            }
-
-            cursor: pointer;
         }
     }
+}
+
+.pagination-prev {
+    font-weight: bold;
+    border-radius: 3px;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    color: white;
+    font-size: 1.4rem;
+    height: 42px;
+    color: #1d6ee8;
+    transition: all linear 0.2s;
+    border: 1px solid #2f82fb;
+    margin-right: 20px;
+    padding-right: 10px;
+
+    &:hover {
+        background-color: rgb(62, 132, 237, 0.3);
+    }
+
+    &.active {
+        background-color: #2f82fb;
+        color: white;
+    }
+
+    cursor: pointer;
+}
+
+.pagination-list {
+    display: flex;
+    overflow: hidden;
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+    width: max-content;
+    border: 1px solid #2f82fb;
+
+    .pagination-item {
+        align-items: center;
+        justify-content: center;
+        display: flex;
+        color: white;
+        font-size: 1.4rem;
+        width: 45px;
+        height: 42px;
+        color: #1d6ee8;
+        transition: all linear 0.2s;
+        cursor: pointer;
+
+        &:hover {
+            background-color: rgb(62, 132, 237, 0.3);
+        }
+
+        &.active {
+            background-color: #2f82fb;
+            color: white;
+        }
+    }
+}
+
+.ellipsis {
+    padding: 0 10px;
+    height: 42px;
+    font-size: 1.8rem;
+    display: flex;
+    align-items: center;
+    color: #1d6ee8;
+}
+
+.last-page {
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    color: white;
+    font-size: 1.4rem;
+    width: 45px;
+    height: 42px;
+    color: #1d6ee8;
+    transition: all linear 0.2s;
+    border: 1px solid #2f82fb;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+
+    &:hover {
+        background-color: rgb(62, 132, 237, 0.3);
+    }
+
+    &.active {
+        background-color: #2f82fb;
+        color: white;
+    }
+
+    cursor: pointer;
+}
+
+.pagination-next {
+    font-weight: bold;
+    border-radius: 3px;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    color: white;
+    font-size: 1.4rem;
+    height: 42px;
+    color: #1d6ee8;
+    transition: all linear 0.2s;
+    border: 1px solid #2f82fb;
+    margin-left: 20px;
+    padding-left: 10px;
+
+    &:hover {
+        background-color: rgb(62, 132, 237, 0.3);
+    }
+
+    &.active {
+        background-color: #2f82fb;
+        color: white;
+    }
+
+    cursor: pointer;
 }

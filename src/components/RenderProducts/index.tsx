@@ -99,7 +99,7 @@ function RenderProducts({ type }: any) {
 
     const getApiGiftcard = async () => {
         const api = await axios.get(
-            `${ServerURL}/products/queryCate?category=${'gift cards'}&pageNum=${1}&pageSize=${12}`,
+            `${ServerURL}/products/queryCate?category=${'gift cards'}&pageNum=${1}&pageSize=${12}&priceMin=${0}&priceMax=${100000000}`,
         );
         setApi(api.data.result);
     };
@@ -110,7 +110,9 @@ function RenderProducts({ type }: any) {
     };
 
     const getOther = async () => {
-        const api = await axios.get(`${ServerURL}/products/queryCate?category=${'other'}&pageNum=${1}&pageSize=${12}`);
+        const api = await axios.get(
+            `${ServerURL}/products/queryCate?category=${'other'}&pageNum=${1}&pageSize=${12}&priceMin=${0}&priceMax=${100000000}`,
+        );
         setApi(api.data.result);
     };
 

@@ -7,8 +7,9 @@ import Layout1 from './Layout1';
 import Layout2 from './Layout2';
 import { emptySearch } from '../../assets/imgs/empty_search';
 import Loading from '../Loading';
-const cx = classNames.bind(style);
+import queryString from 'query-string';
 
+const cx = classNames.bind(style);
 const list = [
     {
         title: 'gaming',
@@ -50,10 +51,12 @@ function SearchArea1({
     view,
     api,
     lenProducts,
-    setSortPriceMin,
-    sortPriceMin,
-    setSortPriceMax,
-    sortPriceMax,
+    valueMin,
+    setValueMin,
+    valueMax,
+    setValueMax,
+    priceMin,
+    priceMax,
 }: any) {
     // Responsive
     const pc = useMediaQuery({ minWidth: 992 });
@@ -62,67 +65,25 @@ function SearchArea1({
 
     // State
     const [showFilterPrice, setFilterPrice] = useState(false);
-    const [priceMin, setPriceMin] = useState(0);
-    const [priceMax, setPriceMax] = useState(0);
 
     // React Router
     const navigate = useNavigate();
 
     // Effect
-
     useEffect(() => {
-        if (sortPriceMin > 0 && sortPriceMax > 0 && sortPriceMax < 100000000) {
+        if (priceMin > 0 || (priceMax > 0 && priceMax !== 100000000)) {
             setFilterPrice(true);
         } else {
             setFilterPrice(false);
         }
-    }, [sortPriceMin, sortPriceMax]);
-
-    useEffect(() => {
-        let debounceTimerMin: NodeJS.Timeout | null = null;
-        let debounceTimerMax: NodeJS.Timeout | null = null;
-
-        if (priceMin > 0) {
-            if (debounceTimerMin) {
-                clearTimeout(debounceTimerMin);
-            }
-
-            debounceTimerMin = setTimeout(() => {
-                setSortPriceMin(priceMin);
-            }, 500);
-        } else {
-            setSortPriceMin(0);
-        }
-
-        if (priceMax > 0) {
-            if (debounceTimerMax) {
-                clearTimeout(debounceTimerMax);
-            }
-
-            debounceTimerMax = setTimeout(() => {
-                setSortPriceMax(priceMax);
-            }, 500);
-        } else {
-            setSortPriceMax(100000000);
-        }
-
-        return () => {
-            if (debounceTimerMin) {
-                clearTimeout(debounceTimerMin);
-            }
-
-            if (debounceTimerMax) {
-                clearTimeout(debounceTimerMax);
-            }
-        };
     }, [priceMin, priceMax]);
 
     // Function
     const handleInput = (e: any, bool: boolean) => {
         if (bool) {
-            setPriceMin(Number(e.target.value));
+            setValueMin(Number(e.target.value));
         } else {
-            setPriceMax(Number(e.target.value));
+            setValueMax(Number(e.target.value));
         }
     };
 
@@ -132,12 +93,15 @@ function SearchArea1({
     };
 
     const handleCloseTag = () => {
-        const url = new URL(window.location.href);
-        url.searchParams.delete('priceMin');
-        url.searchParams.delete('priceMax');
-        window.location.href = url.toString();
-        setSortPriceMin(0);
-        setSortPriceMax(100000000);
+        const currentUrl = window.location.href;
+        const parsedUrl = queryString.parseUrl(currentUrl);
+
+        delete parsedUrl.query.priceMin;
+        delete parsedUrl.query.priceMax;
+
+        const newUrl = queryString.stringifyUrl(parsedUrl);
+
+        window.location.href = newUrl;
     };
 
     return (
@@ -169,7 +133,7 @@ function SearchArea1({
                             </div>
                             <div className={cx('price-control')}>
                                 <input
-                                    value={priceMin === 0 ? '' : priceMin}
+                                    value={valueMin === 0 ? '' : valueMin}
                                     onChange={(e) => handleInput(e, true)}
                                     placeholder="From"
                                     inputMode="numeric"
@@ -180,7 +144,7 @@ function SearchArea1({
                                     -
                                 </span>
                                 <input
-                                    value={priceMax === 100000000 || priceMax === 0 ? '' : priceMax}
+                                    value={valueMax === 100000000 || valueMax === 0 ? '' : valueMax}
                                     onChange={(e) => handleInput(e, false)}
                                     inputMode="numeric"
                                     type="number"
@@ -195,7 +159,7 @@ function SearchArea1({
                     {showFilterPrice && (
                         <div onClick={() => handleCloseTag()} className={cx('tag')}>
                             <div className={cx('tag-price')}>
-                                Price: {sortPriceMin} - {sortPriceMax} USD
+                                Price: {priceMin} - {priceMax} USD
                                 <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="20px" height="20px">
                                     <path
                                         className={cx('filterPrice-icon')}
