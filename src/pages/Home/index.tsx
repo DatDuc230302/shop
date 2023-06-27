@@ -9,8 +9,8 @@ import RenderProducts from '../../components/RenderProducts';
 import queryString from 'query-string';
 
 const posters = [
-    require('./../../assets/imgs/poster1.avif'),
-    require('./../../assets/imgs/poster2.avif'),
+    'https://firebasestorage.googleapis.com/v0/b/shop-g2a-d5524.appspot.com/o/Poster%2Fimg2.jpg?alt=media&token=4b76dd29-4f6b-4a62-ba07-e15d3191d439',
+    'https://firebasestorage.googleapis.com/v0/b/shop-g2a-d5524.appspot.com/o/Poster%2Fimg1.avif?alt=media&token=586b5c16-0307-41f6-8875-64bae0899e6a',
     require('./../../assets/imgs/poster3.avif'),
 ];
 
@@ -108,7 +108,7 @@ function Home() {
                     </div>
                 )}
             </div>
-            <Link to={'/admin/login'} className={cx('move-admin', viewAdmin && 'active')}>
+            <Link to={'/admin/signin'} className={cx('move-admin', viewAdmin && 'active')}>
                 Are you admin?
             </Link>
         </div>

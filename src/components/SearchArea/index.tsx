@@ -211,23 +211,23 @@ function SearchArea({ category, categoryDefault, priceMaxUrl }: any) {
     }, setLoading);
 
     const handleSortItem = (title: string, slug: string, index: number) => {
-        if (category !== undefined) {
-            if (name.length > 0) {
-                navigate(`?query=${name}&sort=${slug}${priceMin > 0 || priceMax > 0 ? betweenPrice : ''}`, {
-                    replace: true,
-                });
-            } else {
-                navigate(`?sort=${slug}${priceMin > 0 || priceMax > 0 ? betweenPrice : ''}`, { replace: true });
-            }
-        } else {
-            if (name.length > 0) {
-                navigate(`?query=${name}&sort=${slug}${priceMin > 0 || priceMax > 0 ? betweenPrice : ''}`, {
-                    replace: true,
-                });
-            } else {
-                navigate(`?sort=${slug}${priceMin > 0 || priceMax > 0 ? betweenPrice : ''}`, { replace: true });
-            }
+        const queryParams = [];
+        if (name.length > 0) {
+            queryParams.push(`query=${name}`);
         }
+
+        if (priceMin > 0 || priceMax > 0) {
+            queryParams.push(betweenPrice);
+        }
+
+        queryParams.push(`sort=${slug}`);
+
+        const queryString = queryParams.join('&');
+
+        navigate(`?${queryString}`, {
+            replace: true,
+        });
+
         setValueSort(title);
     };
 
@@ -409,34 +409,28 @@ function SearchArea({ category, categoryDefault, priceMaxUrl }: any) {
                 />
                 {listPage.length > 0 && (
                     <div className={cx('pagination')}>
-                        <div onClick={() => handleNavPagination(true)} className={cx('pagination-prev')}>
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 24 24"
-                                width="25px"
-                                height="25px"
-                                fill="currentColor"
-                            >
-                                <path
-                                    fill="none"
-                                    strokeMiterlimit="10"
-                                    d="M14 16l-4-4 4-4"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth="2"
-                                    stroke="currentColor"
-                                ></path>
-                            </svg>{' '}
-                            Prev
-                        </div>
-
-                        {false && (
-                            <>
-                                <div className={cx('pagination-first')}>1</div>
-                                <div className={cx('ellipsis')}>...</div>
-                            </>
+                        {pageNum > 1 && (
+                            <div onClick={() => handleNavPagination(true)} className={cx('pagination-prev')}>
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                    width="25px"
+                                    height="25px"
+                                    fill="currentColor"
+                                >
+                                    <path
+                                        fill="none"
+                                        strokeMiterlimit="10"
+                                        d="M14 16l-4-4 4-4"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth="2"
+                                        stroke="currentColor"
+                                    ></path>
+                                </svg>{' '}
+                                Prev
+                            </div>
                         )}
-
                         <div className={cx('pagination-list')}>
                             {listPage.map((item: number, index: number) => (
                                 <div
@@ -460,27 +454,28 @@ function SearchArea({ category, categoryDefault, priceMaxUrl }: any) {
                                 </span>
                             </>
                         )}
-
-                        <div onClick={() => handleNavPagination(false)} className={cx('pagination-next')}>
-                            Next{' '}
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 24 24"
-                                width="25px"
-                                height="25px"
-                                fill="currentColor"
-                            >
-                                <path
-                                    fill="none"
-                                    strokeMiterlimit="10"
-                                    d="M10 8l4 4-4 4"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth="2"
-                                    stroke="currentColor"
-                                ></path>
-                            </svg>
-                        </div>
+                        {maxPage !== pageNum && (
+                            <div onClick={() => handleNavPagination(false)} className={cx('pagination-next')}>
+                                Next{' '}
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                    width="25px"
+                                    height="25px"
+                                    fill="currentColor"
+                                >
+                                    <path
+                                        fill="none"
+                                        strokeMiterlimit="10"
+                                        d="M10 8l4 4-4 4"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth="2"
+                                        stroke="currentColor"
+                                    ></path>
+                                </svg>
+                            </div>
+                        )}
                     </div>
                 )}
                 {!pc && (

@@ -1,6 +1,8 @@
 import { routePath as path } from './routers';
 import DefautlLayout from '../layouts/DefaultLayout';
 import SecondLayout from '../layouts/SecondLayout';
+
+// Client
 import Home from '../pages/Home';
 import Editor from '../pages/Editor';
 import Category from '../pages/Category';
@@ -9,10 +11,10 @@ import Detail from '../pages/Detail';
 import Payment from '../pages/Payment';
 import BestDeals from '../pages/BestDeals';
 import Plus from '../pages/Plus';
-//
-import HomeAdmin from '../admin/pages/HomeAdmin';
-import LoginAdmin from '../admin/pages/LoginAdmin';
-
+// Admin
+import AdminHome from '../admin/pages/HomeAdmin';
+import SignInAdmin from '../admin/pages/SignInAdmin';
+import SignUpAdmin from '../admin/pages/SignUpAdmin';
 interface route {
     path: string;
     component: any;
@@ -33,6 +35,7 @@ export const routes: route[] = [
     { path: path.plus, component: <Plus />, layout: SecondLayout },
 
     // Admin
-    { path: path.homeAdmin, component: <HomeAdmin />, layout: SecondLayout },
-    { path: path.loginAdmin, component: <LoginAdmin /> },
+    { path: path.homeAdmin, component: <AdminHome /> },
+    { path: path.signInAdmin, component: <SignInAdmin /> },
+    { path: path.signUpAdmin, component: <SignUpAdmin /> },
 ];
