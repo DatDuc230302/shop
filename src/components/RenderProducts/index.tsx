@@ -98,10 +98,7 @@ function RenderProducts({ type }: any) {
     };
 
     const getApiGiftcard = async () => {
-        const api = await axios.get(
-            `${ServerURL}/products/queryCate?category=${'gift cards'}&pageNum=${1}&pageSize=${12}&priceMin=${0}&priceMax=${100000000}`,
-        );
-        setApi(api.data.result);
+        const api = await axios.get(`${ServerURL}/products/sortDateOnlyCate?category=${'gift cards'}`);
     };
 
     const getBestCateSoftware = async () => {
@@ -110,10 +107,8 @@ function RenderProducts({ type }: any) {
     };
 
     const getOther = async () => {
-        const api = await axios.get(
-            `${ServerURL}/products/queryCate?category=${'other'}&pageNum=${1}&pageSize=${12}&priceMin=${0}&priceMax=${100000000}`,
-        );
-        setApi(api.data.result);
+        const api = await axios.get(`${ServerURL}/products/queryOnlyCate?category=${'other'}`);
+        setApi(api.data);
     };
 
     return (

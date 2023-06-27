@@ -41,22 +41,26 @@ function RenderBestDeals() {
     }, [location]);
 
     // Effect
+
     useEffect(() => {
         switch (type) {
             case 'steam-gift-cards':
                 getApiSteamGiftCards();
                 setBackGround(bestDealsBG[0]);
                 setComponentId(0);
+                document.title = 'Steam Gift Cards';
                 break;
             case 'best-games-choice':
                 getApiBestGamesChoice();
                 setBackGround(bestDealsBG[1]);
                 setComponentId(1);
+                document.title = 'Best Games Choice';
                 break;
             case 'random-keys':
                 getApiRanDomKeys();
                 setBackGround(bestDealsBG[2]);
                 setComponentId(2);
+                document.title = 'Random Keys';
                 break;
             default:
                 break;
@@ -65,8 +69,8 @@ function RenderBestDeals() {
 
     // Function
     const getApiSteamGiftCards = loadingApi(async () => {
-        const data = await axios.get(`${ServerURL}/products/sortDateCate?category=${'gift cards'}`);
-        setApi(data.data);
+        const api = await axios.get(`${ServerURL}/products/queryOnlyCate?category=${'gift cards'}`);
+        setApi(api.data);
     }, setLoading);
 
     const getApiBestGamesChoice = loadingApi(async () => {

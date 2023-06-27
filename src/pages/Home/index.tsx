@@ -34,6 +34,11 @@ function Home() {
     const params = useParams();
     const location = useLocation();
 
+    //
+    useEffect(() => {
+        document.title = 'G2A Store';
+    }, []);
+
     // Effect
     useEffect(() => {
         const queryParams = queryString.parse(location.search);

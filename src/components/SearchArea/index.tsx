@@ -66,9 +66,9 @@ function SearchArea({ category, categoryDefault, priceMaxUrl }: any) {
         const url =
             name.length > 0
                 ? searchString.length > 0
-                    ? `?${searchString}&query=${name}`
+                    ? `?${searchString}&query=${name}&sort=${methodSort}`
                     : `?query=${name}`
-                : `?${searchString}`;
+                : `?${searchString}&sort=${methodSort}`;
         navigate(url, { replace: true });
     };
 
@@ -113,6 +113,7 @@ function SearchArea({ category, categoryDefault, priceMaxUrl }: any) {
                 queryAll();
             }
         } else if (methodSort === 'release-date') {
+            console.log('vao dya');
             sortDateNameCate();
         } else if (methodSort === 'lowest-price') {
             sortLowestNameCate();

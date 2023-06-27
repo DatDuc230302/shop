@@ -34,10 +34,8 @@ function RenderCustom({ type }: any) {
 
     // Function
     const getApiKeys = async () => {
-        const data = await axios.get(
-            `${ServerURL}/products/queryCate?category=${'keys'}&priceMin=${0}&priceMax=${100000000}`,
-        );
-        setApi(data.data);
+        const api = await axios.get(`${ServerURL}/products/queryOnlyCate?category=${'keys'}`);
+        setApi(api.data);
     };
 
     const getApiCsgo = async () => {

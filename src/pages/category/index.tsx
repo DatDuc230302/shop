@@ -13,6 +13,10 @@ function Category() {
     const [priceMaxUrl, setPriceMaxUrl] = useState(0);
 
     useEffect(() => {
+        document.title = 'G2A Category';
+    }, []);
+
+    useEffect(() => {
         if (location.pathname !== undefined) {
             setCategoryDefault(location.pathname.slice(1));
             const queryValues = queryString.parse(location.search);
