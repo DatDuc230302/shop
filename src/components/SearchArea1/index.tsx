@@ -57,6 +57,7 @@ function SearchArea1({
     setValueMax,
     priceMin,
     priceMax,
+    handleCloseTag,
 }: any) {
     // Responsive
     const pc = useMediaQuery({ minWidth: 992 });
@@ -90,18 +91,6 @@ function SearchArea1({
     const handleCategories = (title: string) => {
         const slug = title.toLowerCase();
         query.length > 0 ? navigate(`/category/${slug}?query=${query}`) : navigate(`/category/${slug}`);
-    };
-
-    const handleCloseTag = () => {
-        const currentUrl = window.location.href;
-        const parsedUrl = queryString.parseUrl(currentUrl);
-
-        delete parsedUrl.query.priceMin;
-        delete parsedUrl.query.priceMax;
-
-        const newUrl = queryString.stringifyUrl(parsedUrl);
-
-        window.location.href = newUrl;
     };
 
     return (

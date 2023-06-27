@@ -9,6 +9,7 @@ export const routePath: {
     plus: string;
     //
     homeAdmin: string;
+    loginAdmin: string;
 } = {
     home: '/',
     editor: '/editor/:key',
@@ -20,4 +21,5 @@ export const routePath: {
     plus: '/plus',
     //
     homeAdmin: '/admin/home',
+    loginAdmin: '/admin/login',
 };

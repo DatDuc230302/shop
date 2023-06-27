@@ -7,10 +7,11 @@ import Category from '../pages/Category';
 import Cart from '../pages/Cart';
 import Detail from '../pages/Detail';
 import Payment from '../pages/Payment';
-//
-import HomeAdmin from '../admin/pages/HomeAdmin';
 import BestDeals from '../pages/BestDeals';
 import Plus from '../pages/Plus';
+//
+import HomeAdmin from '../admin/pages/HomeAdmin';
+import LoginAdmin from '../admin/pages/LoginAdmin';
 
 interface route {
     path: string;
@@ -33,4 +34,5 @@ export const routes: route[] = [
 
     // Admin
     { path: path.homeAdmin, component: <HomeAdmin />, layout: SecondLayout },
+    { path: path.loginAdmin, component: <LoginAdmin /> },
 ];

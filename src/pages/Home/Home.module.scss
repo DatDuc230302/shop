@@ -156,3 +156,29 @@
         margin-right: 10px;
     }
 }
+
+.move-admin {
+    width: 120px;
+    height: 50px;
+    background-color: red;
+    position: fixed;
+    right: 25px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    background-color: #33d8f9;
+    color: black;
+    cursor: pointer;
+    transition: all linear 0.2s;
+    top: 70px;
+    visibility: hidden;
+    opacity: 0;
+
+    &.active {
+        visibility: visible;
+        opacity: 1;
+        top: 150px;
+    }
+}

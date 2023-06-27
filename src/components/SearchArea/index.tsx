@@ -37,6 +37,7 @@ function SearchArea({ category, categoryDefault, priceMaxUrl }: any) {
     const [resultKey, setResultKey] = useState('');
     const [lenProducts, setLenProducts] = useState([]);
     const [listPage, setListPage] = useState<number[]>([]);
+    const [maxPage, setMaxPage] = useState(0);
     const [valueMin, setValueMin] = useState(!Number(queryParams.priceMin) ? 0 : Number(queryParams.priceMin));
     const [valueMax, setValueMax] = useState(!Number(queryParams.priceMax) ? 0 : Number(queryParams.priceMax));
 
@@ -63,12 +64,14 @@ function SearchArea({ category, categoryDefault, priceMaxUrl }: any) {
     // Sort Between Price
     const updateSearchParams = (queryParams: { priceMin?: number; priceMax?: number }) => {
         const searchString = queryString.stringify(queryParams, { encode: false });
+        const sort = methodSort === 'best-match' ? '' : `&sort=${methodSort}`;
+        const page = pageNum === 1 ? '' : `&page=${pageNum}`;
         const url =
             name.length > 0
                 ? searchString.length > 0
-                    ? `?${searchString}&query=${name}&sort=${methodSort}`
+                    ? `?${searchString}&query=${name}${sort}${page}`
                     : `?query=${name}`
-                : `?${searchString}&sort=${methodSort}`;
+                : `?${searchString}${sort}${page}`;
         navigate(url, { replace: true });
     };
 
@@ -87,12 +90,6 @@ function SearchArea({ category, categoryDefault, priceMaxUrl }: any) {
             clearTimeout(debounceTimer);
         };
     }, [valueMin, valueMax]);
-
-    useEffect(() => {
-        if (pageNum > 1) {
-            setPageNum(1);
-        }
-    }, [category, categoryDefault, name]);
 
     // Sort Methods and Query Methods
     useEffect(() => {
@@ -145,7 +142,8 @@ function SearchArea({ category, categoryDefault, priceMaxUrl }: any) {
         for (let i = startNumber; i <= endNumber; i++) {
             paginationList.push(i);
         }
-        setListPage(paginationList);
+        setListPage(paginationList.slice(0, 3));
+        setMaxPage(Math.ceil(lenProducts.length / pageSize));
     }, [lenProducts]);
 
     // Function ==============================================
@@ -251,7 +249,7 @@ function SearchArea({ category, categoryDefault, priceMaxUrl }: any) {
                 setPageNum(pageNum - 1);
             }
         } else {
-            if (pageNum < listPage.length) {
+            if (pageNum < maxPage) {
                 const queryParams = queryString.parse(location.search);
                 queryParams.page = String(pageNum + 1);
                 const newURL = `${location.pathname}?${queryString.stringify(queryParams)}`;
@@ -259,6 +257,11 @@ function SearchArea({ category, categoryDefault, priceMaxUrl }: any) {
                 setPageNum(pageNum + 1);
             }
         }
+    };
+
+    const handleCloseTag = () => {
+        setValueMin(0);
+        setValueMax(0);
     };
 
     return (
@@ -402,6 +405,7 @@ function SearchArea({ category, categoryDefault, priceMaxUrl }: any) {
                     setValueMax={setValueMax}
                     priceMin={priceMin}
                     priceMax={priceMax}
+                    handleCloseTag={handleCloseTag}
                 />
                 {listPage.length > 0 && (
                     <div className={cx('pagination')}>
@@ -426,10 +430,12 @@ function SearchArea({ category, categoryDefault, priceMaxUrl }: any) {
                             Prev
                         </div>
 
-                        <>
-                            <div className={cx('pagination-first')}>1</div>
-                            <div className={cx('ellipsis')}>...</div>
-                        </>
+                        {false && (
+                            <>
+                                <div className={cx('pagination-first')}>1</div>
+                                <div className={cx('ellipsis')}>...</div>
+                            </>
+                        )}
 
                         <div className={cx('pagination-list')}>
                             {listPage.map((item: number, index: number) => (
@@ -442,15 +448,19 @@ function SearchArea({ category, categoryDefault, priceMaxUrl }: any) {
                                 </div>
                             ))}
                         </div>
-                        <>
-                            <div className={cx('ellipsis')}>...</div>
-                            <span
-                                onClick={() => handlePageNum(listPage.length - 1)}
-                                className={cx('last-page', pageNum === listPage.length && 'active')}
-                            >
-                                {listPage.length}
-                            </span>
-                        </>
+
+                        {maxPage > 3 && (
+                            <>
+                                <div className={cx('ellipsis')}>...</div>
+                                <span
+                                    onClick={() => handlePageNum(maxPage)}
+                                    className={cx('last-page', pageNum === maxPage && 'active')}
+                                >
+                                    {maxPage}
+                                </span>
+                            </>
+                        )}
+
                         <div onClick={() => handleNavPagination(false)} className={cx('pagination-next')}>
                             Next{' '}
                             <svg

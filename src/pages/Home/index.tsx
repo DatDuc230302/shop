@@ -1,6 +1,6 @@
 import classNames from 'classnames/bind';
 import style from './Home.module.scss';
-import { useParams, useLocation } from 'react-router-dom';
+import { useParams, useLocation, Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import SearchArea from '../../components/SearchArea';
 import { useMediaQuery } from 'react-responsive';
@@ -29,6 +29,7 @@ function Home() {
 
     // State
     const [query, setQuery] = useState('');
+    const [viewAdmin, setViewAdmin] = useState(false);
 
     //
     const params = useParams();
@@ -37,7 +38,13 @@ function Home() {
     //
     useEffect(() => {
         document.title = 'G2A Store';
+        setViewAdmin(true);
+        setTimeout(() => {
+            setViewAdmin(false);
+        }, 4000);
     }, []);
+
+    //
 
     // Effect
     useEffect(() => {
@@ -101,6 +108,9 @@ function Home() {
                     </div>
                 )}
             </div>
+            <Link to={'/admin/login'} className={cx('move-admin', viewAdmin && 'active')}>
+                Are you admin?
+            </Link>
         </div>
     );
 }
