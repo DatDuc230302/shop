@@ -16,21 +16,13 @@ import authAdminAction from '../../../redux/actions/authAdminAction';
 import { useDispatch } from 'react-redux';
 
 const defaultTheme = createTheme();
-export default function SignInAdmin() {
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        const data = new FormData(event.currentTarget);
-        console.log({
-            email: data.get('email'),
-            password: data.get('password'),
-        });
-    };
-
+export default function AdminSignin() {
+    // State
     const [uid, setUid] = React.useState('');
     const [password, setPassword] = React.useState('');
 
+    // React Router
     const dispath = useDispatch();
-
     const navigate = useNavigate();
 
     const handelPost = async () => {
@@ -45,6 +37,12 @@ export default function SignInAdmin() {
             }
         } else {
             alert('Ban nhap thieu du lieu');
+        }
+    };
+
+    document.onkeydown = (e: any) => {
+        if (e.which === 13) {
+            handelPost();
         }
     };
 
@@ -64,7 +62,7 @@ export default function SignInAdmin() {
                     <Typography component="h1" variant="h5">
                         Sign in
                     </Typography>
-                    <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+                    <Box component="form" noValidate sx={{ mt: 1 }}>
                         <TextField
                             margin="normal"
                             required

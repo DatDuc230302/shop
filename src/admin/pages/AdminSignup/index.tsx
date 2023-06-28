@@ -15,7 +15,7 @@ import { Link as LinkMove } from 'react-router-dom';
 
 const defaultTheme = createTheme();
 
-export default function SignUpAdmin() {
+export default function AdminSignup() {
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);

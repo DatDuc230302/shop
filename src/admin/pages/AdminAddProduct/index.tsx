@@ -1,5 +1,5 @@
 import classNames from 'classnames/bind';
-import style from './AddProduct.module.scss';
+import style from './AdminAddProduct.module.scss';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { storage } from '../../../App';
 import { useEffect, useState } from 'react';
@@ -8,7 +8,7 @@ import { ServerURL } from '../../../connect';
 
 const cx = classNames.bind(style);
 
-function AddProduct() {
+function AdminAddProduct() {
     // State
     const [selectedImage, setSelectedImage] = useState(null);
     const [name, setName] = useState('');
@@ -197,4 +197,4 @@ function AddProduct() {
     );
 }
 
-export default AddProduct;
+export default AdminAddProduct;

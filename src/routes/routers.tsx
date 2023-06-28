@@ -8,9 +8,15 @@ export const routePath: {
     bestDeals: string;
     plus: string;
     //
-    homeAdmin: string;
-    signInAdmin: string;
-    signUpAdmin: string;
+    adminHome: string;
+    adminSignin: string;
+    adminSignup: string;
+    //
+    adminManageProducts: string;
+    adminEditProduct: string;
+    adminAddProduct: string;
+    //
+    adminManageUsers: string;
 } = {
     home: '/',
     editor: '/editor/:key',
@@ -21,7 +27,13 @@ export const routePath: {
     bestDeals: '/best-deals',
     plus: '/plus',
     //
-    homeAdmin: '/admin/home',
-    signInAdmin: '/admin/signin',
-    signUpAdmin: '/admin/signup',
+    adminHome: '/admin/home',
+    adminSignin: '/admin/signin',
+    adminSignup: '/admin/signup',
+    //
+    adminManageProducts: '/admin/manage-products',
+    adminAddProduct: '/admin/manage-products/addProduct/:key',
+    adminEditProduct: '/admin/manage-products/editProduct/:key',
+    //
+    adminManageUsers: '/admin/manage-users',
 };

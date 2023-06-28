@@ -5,6 +5,7 @@ import { initializeApp } from 'firebase/app';
 import { getAnalytics } from 'firebase/analytics';
 import { getStorage } from 'firebase/storage';
 import NotFoundPage from './pages/NotFound';
+import DefautlLayout from './layouts/DefaultLayout';
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -36,7 +37,14 @@ function App() {
                         !!item.layout ? (Layout = item.layout) : (Layout = 'div');
                         return <Route path={item.path} key={index} element={<Layout>{Page}</Layout>} />;
                     })}
-                    <Route path="*" element={<NotFoundPage />} />
+                    <Route
+                        path="*"
+                        element={
+                            <DefautlLayout>
+                                <NotFoundPage />
+                            </DefautlLayout>
+                        }
+                    />
                 </Routes>
             </div>
         </BrowserRouter>

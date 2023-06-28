@@ -1,6 +1,10 @@
 import { routePath as path } from './routers';
+
+// DefaultLayout
 import DefautlLayout from '../layouts/DefaultLayout';
 import SecondLayout from '../layouts/SecondLayout';
+// DefaultLayoutAdmin
+import DefaultLayoutAdmin from '../admin/DefaulLayoutAdmin';
 
 // Client
 import Home from '../pages/Home';
@@ -12,9 +16,15 @@ import Payment from '../pages/Payment';
 import BestDeals from '../pages/BestDeals';
 import Plus from '../pages/Plus';
 // Admin
-import AdminHome from '../admin/pages/HomeAdmin';
-import SignInAdmin from '../admin/pages/SignInAdmin';
-import SignUpAdmin from '../admin/pages/SignUpAdmin';
+import AdminHome from '../admin/pages/AdminHome';
+import AdminSignin from '../admin/pages/AdminSignin';
+import AdminSignup from '../admin/pages/AdminSignup';
+import AdminManageProducts from '../admin/pages/AdminManageProducts';
+import AdminEditProduct from '../admin/pages/AdminEditProduct';
+import AdminAddProduct from '../admin/pages/AdminAddProduct';
+//
+import AdminManageUsers from '../admin/pages/AdminManageUsers';
+
 interface route {
     path: string;
     component: any;
@@ -35,7 +45,13 @@ export const routes: route[] = [
     { path: path.plus, component: <Plus />, layout: SecondLayout },
 
     // Admin
-    { path: path.homeAdmin, component: <AdminHome /> },
-    { path: path.signInAdmin, component: <SignInAdmin /> },
-    { path: path.signUpAdmin, component: <SignUpAdmin /> },
+    { path: path.adminHome, component: <AdminHome />, layout: DefaultLayoutAdmin },
+    { path: path.adminSignin, component: <AdminSignin /> },
+    { path: path.adminSignup, component: <AdminSignup /> },
+    //
+    { path: path.adminManageProducts, component: <AdminManageProducts />, layout: DefaultLayoutAdmin },
+    { path: path.adminEditProduct, component: <AdminEditProduct />, layout: DefaultLayoutAdmin },
+    { path: path.adminAddProduct, component: <AdminAddProduct />, layout: DefaultLayoutAdmin },
+    //
+    { path: path.adminManageUsers, component: <AdminManageUsers />, layout: DefaultLayoutAdmin },
 ];

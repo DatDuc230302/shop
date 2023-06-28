@@ -1,0 +1,42 @@
+.wrapper {
+    width: 100%;
+    padding-top: 75px;
+}
+
+.inner {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+
+    &.tb,
+    &.mb {
+        align-items: center;
+        flex-direction: column-reverse;
+    }
+
+    .info {
+        display: flex;
+        flex-direction: column;
+        gap: 3.2rem;
+
+        .title {
+            font-size: 4.2rem;
+            line-height: 48px;
+            letter-spacing: -0.5px;
+            font-weight: 500;
+            color: #202020;
+        }
+
+        .content {
+            font-size: 1.4rem;
+            color: #202020;
+        }
+    }
+
+    .img {
+        img {
+            height: 182px;
+        }
+        transform: translateY(-15px);
+    }
+}
