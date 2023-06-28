@@ -3,7 +3,6 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -14,31 +13,49 @@ import axios from 'axios';
 import { ServerURL } from '../../../connect';
 import authAdminAction from '../../../redux/actions/authAdminAction';
 import { useDispatch } from 'react-redux';
+import { Alert } from '@mui/material';
+import classNames from 'classnames/bind';
+import style from './AdminSignin.module.scss';
+import Loading, { loadingApi } from '../../../components/Loading';
 
+const cx = classNames.bind(style);
 const defaultTheme = createTheme();
 export default function AdminSignin() {
     // State
     const [uid, setUid] = React.useState('');
     const [password, setPassword] = React.useState('');
 
+    const [successful, setSuccessful] = React.useState(false);
+    const [failure, setFailure] = React.useState(false);
+    const [warn, setWarn] = React.useState(false);
+    const [loading, setLoading] = React.useState(false);
+
     // React Router
     const dispath = useDispatch();
     const navigate = useNavigate();
 
-    const handelPost = async () => {
+    const handelPost = loadingApi(async () => {
         if (uid.length > 0 && password.length > 0) {
             const api = await axios.get(`${ServerURL}/users/checkAdmin?uid=${uid}`);
             if (api.data.status) {
-                alert('Ban đã đăng nhập thành cong');
-                dispath(authAdminAction('LOGINADMIN'));
-                navigate('/admin/home');
+                setSuccessful(true);
+                setTimeout(() => {
+                    dispath(authAdminAction('LOGINADMIN'));
+                    navigate('/admin/home');
+                }, 1000);
             } else {
-                alert('Tai khoan cua ban khong du quyen truy cap');
+                setFailure(true);
+                setTimeout(() => {
+                    setFailure(false);
+                }, 1000);
             }
         } else {
-            alert('Ban nhap thieu du lieu');
+            setWarn(true);
+            setTimeout(() => {
+                setWarn(false);
+            }, 1000);
         }
-    };
+    }, setLoading);
 
     document.onkeydown = (e: any) => {
         if (e.which === 13) {
@@ -103,7 +120,7 @@ export default function AdminSignin() {
                             sx={{ mt: 3, mb: 2, fontSize: '1.4rem', padding: '10px 0' }}
                             onClick={() => handelPost()}
                         >
-                            Sign In
+                            {loading ? <Loading size={'2rem'} /> : 'Sign in'}
                         </Button>
                         <Grid container>
                             <Grid item xs>
@@ -118,6 +135,18 @@ export default function AdminSignin() {
                     </Box>
                 </Box>
             </Container>
+            <div className={cx('alert', successful && 'active')}>
+                <Alert severity="success" />
+                Successful login
+            </div>
+            <div className={cx('alert-fail', failure && 'active')}>
+                <Alert severity="error"></Alert>
+                You do not have access
+            </div>
+            <div className={cx('alert-warn', warn && 'active')}>
+                <Alert severity="warning"></Alert>
+                Please enter uid and password
+            </div>
         </ThemeProvider>
     );
 }

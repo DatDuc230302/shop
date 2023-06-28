@@ -110,8 +110,8 @@ function Search() {
     }, setLoading);
 
     const getApiProducts = loadingApi(async () => {
-        const data = await axios.get(`${ServerURL}/products/queryOnlyName?name=${valueSearch}`);
-        setApiProducts(data.data);
+        const api = await axios.get(`${ServerURL}/products/queryOnlyName?name=${valueSearch}`);
+        setApiProducts(api.data.result);
     }, setLoading);
 
     const getPopularSearch = loadingApi(async () => {

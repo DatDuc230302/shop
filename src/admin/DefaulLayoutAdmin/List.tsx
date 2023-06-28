@@ -16,42 +16,32 @@ const cx = classNames.bind(style);
 export const mainListItems = (
     <React.Fragment>
         <ListItemButton>
-            <ListItemIcon>
-                <DashboardIcon />
-            </ListItemIcon>
             <Link to={'/admin/home'} className={cx('list-item')}>
+                <DashboardIcon />
                 Dashboard
             </Link>
         </ListItemButton>
         <ListItemButton>
-            <ListItemIcon>
-                <ShoppingCartIcon />
-            </ListItemIcon>
             <Link to={'/admin/manage-users'} className={cx('list-item')}>
+                <ShoppingCartIcon />
                 Manage Users
             </Link>
         </ListItemButton>
         <ListItemButton>
-            <ListItemIcon>
-                <PeopleIcon />
-            </ListItemIcon>
             <Link to={'/admin/manage-products'} className={cx('list-item')}>
+                <PeopleIcon />
                 Manage Products
             </Link>
         </ListItemButton>
         <ListItemButton>
-            <ListItemIcon>
-                <BarChartIcon />
-            </ListItemIcon>
             <Link to={'/admin/manage-products'} className={cx('list-item')}>
+                <BarChartIcon />
                 Reports
             </Link>
         </ListItemButton>
         <ListItemButton>
-            <ListItemIcon>
-                <LayersIcon />
-            </ListItemIcon>
             <Link to={'/admin/manage-product/edit-product'} className={cx('list-item')}>
+                <LayersIcon />
                 Edit Product
             </Link>
         </ListItemButton>

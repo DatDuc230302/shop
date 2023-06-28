@@ -11,13 +11,14 @@ import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Badge from '@mui/material/Badge';
 import MenuIcon from '@mui/icons-material/Menu';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import { mainListItems } from './List';
 import { useSelector } from 'react-redux';
 import classNames from 'classnames/bind';
 import style from './DefaultLayoutAdmin.module.scss';
 import { Link as LinkMove } from 'react-router-dom';
+import { logo } from '../../assets/logo';
+import { Pagination } from '@mui/material';
 
 const cx = classNames.bind(style);
 const drawerWidth: number = 240;
@@ -85,53 +86,24 @@ export default function DefaultLayoutAdmin({ children }: MyComponentProps): JSX.
         <ThemeProvider theme={defaultTheme}>
             <Box sx={{ display: 'flex' }}>
                 <CssBaseline />
-                <AppBar position="absolute" open={open}>
-                    <Toolbar
-                        sx={{
-                            pr: '24px', // keep right padding when drawer closed
-                        }}
-                    >
-                        <IconButton
-                            edge="start"
-                            color="inherit"
-                            aria-label="open drawer"
-                            onClick={toggleDrawer}
-                            sx={{
-                                marginRight: '36px',
-                                ...(open && { display: 'none' }),
-                            }}
-                        >
-                            <MenuIcon />
-                        </IconButton>
-                        <Typography component="h1" variant="h6" color="inherit" noWrap sx={{ flexGrow: 1 }}>
-                            Dashboard
-                        </Typography>
+                <AppBar position="absolute">
+                    <div className={cx('header')}>
+                        <LinkMove className={cx('header-title')} to={'/'}>
+                            {logo}
+                        </LinkMove>
                         <IconButton color="inherit">
                             <Badge badgeContent={4} color="secondary">
                                 <NotificationsIcon />
                             </Badge>
                         </IconButton>
-                    </Toolbar>
+                    </div>
                 </AppBar>
-                <Drawer variant="permanent" open={open}>
-                    <Toolbar
-                        sx={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'flex-end',
-                            px: [1],
-                        }}
-                    >
-                        <IconButton onClick={toggleDrawer}>
-                            <ChevronLeftIcon />
-                        </IconButton>
-                    </Toolbar>
-                    <Divider />
+                <div className={cx('list')}>
                     <List component="nav">
                         {mainListItems}
-                        <Divider sx={{ my: 1 }} />
+                        <Divider />
                     </List>
-                </Drawer>
+                </div>
                 <Box
                     component="main"
                     sx={{
@@ -142,8 +114,7 @@ export default function DefaultLayoutAdmin({ children }: MyComponentProps): JSX.
                         overflow: 'auto',
                     }}
                 >
-                    <Toolbar />
-                    {children}
+                    <div className={cx('body')}>{children}</div>
                 </Box>
             </Box>
         </ThemeProvider>

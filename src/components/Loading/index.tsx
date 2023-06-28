@@ -17,11 +17,11 @@ export const loadingApi = (apiFunction: any, setLoading: any) => {
     };
 };
 
-function Loading() {
+function Loading({ size = '6rem' }) {
     return (
         <div className={cx('wrapper')}>
             <div className={cx('inner')}>
-                <div className={cx('loading')}></div>
+                <div style={{ width: `${size}`, height: `${size}` }} className={cx('loading')}></div>
             </div>
         </div>
     );
