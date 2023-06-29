@@ -5,6 +5,8 @@ import { storage } from '../../../App';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { ServerURL } from '../../../connect';
+import { Button } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 const cx = classNames.bind(style);
 
@@ -20,6 +22,8 @@ function AdminAddProduct() {
     const [imageFile, setImageFile] = useState<File>();
     const [downloadURL, setDownLoadURL] = useState('');
     const [progressUpload, setProgressUpload] = useState(0);
+
+    const navigate = useNavigate();
 
     const handleSubmit = () => {
         if (
@@ -144,12 +148,12 @@ function AdminAddProduct() {
                     type="text"
                     placeholder="Title"
                 />
-                <input
+                <textarea
+                    style={{ outline: 'none', resize: 'none' }}
                     onChange={(e) => setDescription(e.target.value)}
                     className={cx('input')}
-                    type="text"
                     placeholder="Description"
-                />
+                ></textarea>
                 <select onChange={(e) => handleOptionChange(e.target.value)} className={cx('select')}>
                     <option className={cx('option')}>Categories</option>
                     <option value={'gaming'} className={cx('option')}>
@@ -191,6 +195,13 @@ function AdminAddProduct() {
                 <button onClick={handleSubmit} className={cx('input')}>
                     Upload Data
                 </button>
+                <Button
+                    onClick={() => navigate('/admin/manage-products')}
+                    sx={{ height: 40, fontSize: 11, marginTop: 2 }}
+                    variant="contained"
+                >
+                    Back to Manage Products
+                </Button>
             </div>
             <input hidden id="fileImg" accept="image/png" type="file" onChange={handleFileChange} />
         </div>

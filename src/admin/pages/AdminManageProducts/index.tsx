@@ -7,6 +7,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useMediaQuery } from 'react-responsive';
 import Loading, { loadingApi } from '../../../components/Loading';
 import queryString from 'query-string';
+import { Button } from '@mui/material';
 
 const cx = classNames.bind(style);
 function AdminManageProducts() {
@@ -65,6 +66,7 @@ function AdminManageProducts() {
                 const urlName = name.length > 0 ? `?name=${name}` : '';
                 const page = `page=${pageNum - 1}`;
                 const url = name.length > 0 ? `${urlName}&${page}` : `${urlName}?${page}`;
+                setTotalProducts(totalProducts - api.length);
                 navigate(url);
             }
         } else {
@@ -72,6 +74,7 @@ function AdminManageProducts() {
                 const urlName = name.length > 0 ? `?name=${name}` : '';
                 const page = `page=${pageNum + 1}`;
                 const url = name.length > 0 ? `${urlName}&${page}` : `${urlName}?${page}`;
+                setTotalProducts(totalProducts + api.length);
                 navigate(url);
             }
         }
@@ -90,7 +93,7 @@ function AdminManageProducts() {
                         type="text"
                     />
                     <div className={cx('tools')}>
-                        {totalApi.length > 5 ? totalProducts : api.length} / {totalApi.length}
+                        {totalProducts} / {totalApi.length}
                     </div>
                     <div className={cx('btns')}>
                         <div onClick={() => handlePageNum(true)} className={cx('btn')}>
@@ -99,6 +102,15 @@ function AdminManageProducts() {
                         <div onClick={() => handlePageNum(false)} className={cx('btn')}>
                             Next
                         </div>
+                    </div>
+                    <div className={cx('btn-add')}>
+                        <Button
+                            onClick={() => navigate('/admin/manage-products/addProduct')}
+                            sx={{ padding: 0, fontSize: 12, width: 140 }}
+                            variant="contained"
+                        >
+                            Add Product
+                        </Button>
                     </div>
                 </div>
                 <div className={cx('body')}>

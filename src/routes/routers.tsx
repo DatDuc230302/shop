@@ -32,7 +32,7 @@ export const routePath: {
     adminSignup: '/admin/signup',
     //
     adminManageProducts: '/admin/manage-products',
-    adminAddProduct: '/admin/manage-products/addProduct/:key',
+    adminAddProduct: '/admin/manage-products/addProduct',
     adminEditProduct: '/admin/manage-products/editProduct/:key',
     //
     adminManageUsers: '/admin/manage-users',

@@ -24,7 +24,7 @@
     gap: 1rem;
 
     .search-input {
-        min-width: 200px;
+        min-width: 203px;
         border: 1px solid #ccc;
         padding: 10px;
         height: 40px;
@@ -52,6 +52,13 @@
                 background-color: #a59e9e;
             }
         }
+    }
+
+    .btn-add {
+        flex: 1;
+        height: 100%;
+        display: flex;
+        justify-content: flex-end;
     }
 }
 

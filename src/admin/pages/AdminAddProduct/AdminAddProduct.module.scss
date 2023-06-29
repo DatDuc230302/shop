@@ -1,5 +1,4 @@
 .wrapper {
-    position: fixed;
     left: 0;
     top: 0;
     bottom: 0;
@@ -10,10 +9,9 @@
 }
 
 .inner {
-    width: 40%;
     display: flex;
-
     flex-direction: column;
+    padding: 0 10px;
 }
 
 .row {

@@ -5,7 +5,7 @@ const authAdminReducer = (state = false, action: any) => {
         case 'LOGOUTADMIN':
             return false;
         default:
-            return true;
+            return state;
     }
 };
 

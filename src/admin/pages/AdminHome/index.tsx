@@ -4,12 +4,16 @@ import Paper from '@mui/material/Paper';
 import Chart from '../../DefaulLayoutAdmin/Chart';
 import Deposits from './Deposits';
 import Orders from './Orders';
+import { useMediaQuery } from 'react-responsive';
 
 function AdminHome() {
+    const pc = useMediaQuery({ minWidth: 992 });
+    const tb = useMediaQuery({ minWidth: 768, maxWidth: 991 });
+    const mb = useMediaQuery({ maxWidth: 767 });
+
     return (
         <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
             <Grid container spacing={3}>
-                {/* Chart */}
                 <Grid item xs={12} md={8} lg={9}>
                     <Paper
                         sx={{
@@ -22,7 +26,6 @@ function AdminHome() {
                         <Chart />
                     </Paper>
                 </Grid>
-                {/* Recent Deposits */}
                 <Grid item xs={12} md={4} lg={3}>
                     <Paper
                         sx={{
@@ -35,7 +38,6 @@ function AdminHome() {
                         <Deposits />
                     </Paper>
                 </Grid>
-                {/* Recent Orders */}
                 <Grid item xs={12}>
                     <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
                         <Orders />

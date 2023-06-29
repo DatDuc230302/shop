@@ -4,13 +4,10 @@ import CssBaseline from '@mui/material/CssBaseline';
 import MuiDrawer from '@mui/material/Drawer';
 import Box from '@mui/material/Box';
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
 import List from '@mui/material/List';
-import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Badge from '@mui/material/Badge';
-import MenuIcon from '@mui/icons-material/Menu';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import { mainListItems } from './List';
 import { useSelector } from 'react-redux';
@@ -18,7 +15,7 @@ import classNames from 'classnames/bind';
 import style from './DefaultLayoutAdmin.module.scss';
 import { Link as LinkMove } from 'react-router-dom';
 import { logo } from '../../assets/logo';
-import { Pagination } from '@mui/material';
+import { useMediaQuery } from 'react-responsive';
 
 const cx = classNames.bind(style);
 const drawerWidth: number = 240;
@@ -80,6 +77,10 @@ export default function DefaultLayoutAdmin({ children }: MyComponentProps): JSX.
         setOpen(!open);
     };
 
+    const pc = useMediaQuery({ minWidth: 992 });
+    const tb = useMediaQuery({ minWidth: 768, maxWidth: 991 });
+    const mb = useMediaQuery({ maxWidth: 767 });
+
     const authAdmin = useSelector((state: any) => state.authAdminReducer);
 
     return authAdmin ? (
@@ -98,12 +99,14 @@ export default function DefaultLayoutAdmin({ children }: MyComponentProps): JSX.
                         </IconButton>
                     </div>
                 </AppBar>
-                <div className={cx('list')}>
-                    <List component="nav">
-                        {mainListItems}
-                        <Divider />
-                    </List>
-                </div>
+                {pc && (
+                    <div className={cx('list')}>
+                        <List component="nav">
+                            {mainListItems}
+                            <Divider />
+                        </List>
+                    </div>
+                )}
                 <Box
                     component="main"
                     sx={{
