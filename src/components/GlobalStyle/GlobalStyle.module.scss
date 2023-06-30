@@ -34,6 +34,11 @@ a {
     text-decoration: none;
 }
 
+button {
+    outline: none;
+    border: none;
+}
+
 @font-face {
     font-family: Roboto;
     src: url('../../assets/fonts/Roboto-Bold.woff2');

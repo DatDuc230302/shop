@@ -1,0 +1,121 @@
+.wrapper {
+    width: 100%;
+    background-color: white;
+}
+
+.inner {
+    height: 100%;
+}
+
+.session {
+    .session-background {
+        transform: translateY(-5.2px);
+        flex-shrink: 0;
+        img {
+            width: 100%;
+            object-fit: cover;
+            transform: scale(1.27);
+            flex-shrink: 0;
+        }
+    }
+
+    .session-body {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        transform: translateY(-50px);
+
+        .session-row {
+            width: 1170px;
+            gap: 3rem;
+            display: flex;
+
+            .session-buy {
+                position: absolute;
+                bottom: 9px;
+                right: 9px;
+                width: 93.34px;
+                display: flex;
+                border-radius: 3px;
+                font-weight: bold;
+                font-size: 14px;
+                line-height: 42px;
+                color: rgb(255, 255, 255);
+                background-color: rgb(47, 130, 251);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding-bottom: 1px;
+                cursor: pointer;
+
+                &:hover {
+                    background-color: rgb(82, 149, 249);
+                }
+            }
+
+            &.tb,
+            &.mb {
+                flex-direction: column;
+                align-items: center;
+
+                .session-col1 {
+                    width: 100%;
+                    .sessionCol1-img {
+                        img {
+                            height: 100%;
+                        }
+                    }
+                }
+
+                .sessionCol2-row {
+                    flex-direction: column;
+                }
+            }
+            .session-col1 {
+                width: 48.72%;
+                .sessionCol1-img {
+                    position: relative;
+                    img {
+                        cursor: pointer;
+                        width: 100%;
+                        height: 538px;
+                        border-radius: 4px;
+                    }
+                }
+            }
+
+            .session-col2 {
+                gap: 2.75rem;
+                display: flex;
+                flex-direction: column;
+                .sessionCol2-img {
+                    position: relative;
+                    img {
+                        cursor: pointer;
+                        width: 100%;
+                        border-radius: 4px;
+                        object-fit: cover;
+                    }
+                }
+
+                .sessionCol2-row {
+                    display: flex;
+                    gap: 3rem;
+
+                    .sessionCol2-rowImg {
+                        position: relative;
+                        img {
+                            cursor: pointer;
+                            width: 100%;
+                            object-fit: cover;
+                            border-radius: 4px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+.region {
+}

@@ -99,7 +99,9 @@ function Header() {
                         <Link to={'/plus'} className={cx('menuNav-item', 'active')}>
                             Save more with G2A Plus
                         </Link>
-                        <div className={cx('menuNav-item')}>Software</div>
+                        <Link to={'/software-deals'} className={cx('menuNav-item')}>
+                            Software
+                        </Link>
                         <Link to={'/best-deals/random-keys'} className={cx('menuNav-item')}>
                             Random Keys
                         </Link>

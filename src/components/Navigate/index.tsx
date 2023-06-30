@@ -95,7 +95,7 @@ function Navigate() {
                 <Link to="/best-deals/random-keys" className={cx('item')}>
                     Random Keys
                 </Link>
-                <Link to={'/admin/home'} className={cx('item')}>
+                <Link to={'/software-deals'} className={cx('item')}>
                     Software
                 </Link>
                 <Link to={'/plus'} className={cx('plus')}>
