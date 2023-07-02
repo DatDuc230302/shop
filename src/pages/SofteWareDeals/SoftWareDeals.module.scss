@@ -1,6 +1,6 @@
 .wrapper {
     width: 100%;
-    background-color: white;
+    background-color: #f9f9f9;
 }
 
 .inner {
@@ -9,6 +9,7 @@
 }
 
 .session {
+    min-height: 500px;
     .session-background {
         transform: translateY(-5.2px);
         flex-shrink: 0;
@@ -175,6 +176,7 @@
     }
 
     .region-body {
+        padding: 0 16px;
         width: 100%;
         display: flex;
         justify-content: center;
@@ -292,6 +294,7 @@
         position: absolute;
         z-index: 10;
         top: 0;
+        padding: 0 16px;
 
         .security-box {
             width: 1170px;

@@ -6,12 +6,20 @@ import { ServerURL } from '../../../connect';
 import { useNavigate, useParams } from 'react-router-dom';
 import { loadingApi } from '../../../components/Loading';
 import Loading from '../../../components/Loading';
-import { Alert } from '@mui/material';
+import { Alert, Button } from '@mui/material';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { storage } from '../../../App';
+import { useMediaQuery } from 'react-responsive';
+import DeleteIcon from '@mui/icons-material/Delete';
+import CreateIcon from '@mui/icons-material/Create';
 
 const cx = classNames.bind(style);
 function AdminEditProduct() {
+    // Responsive
+    const pc = useMediaQuery({ minWidth: 992 });
+    const tb = useMediaQuery({ minWidth: 768, maxWidth: 991 });
+    const mb = useMediaQuery({ maxWidth: 767 });
+
     // React Router
     const params = useParams();
     const navigate = useNavigate();
@@ -34,6 +42,16 @@ function AdminEditProduct() {
     const idParams = params.key;
     const [submitImg, setSubmitImg] = useState(false);
     const [firstImg, setFirstImg] = useState('');
+    const [type, setType] = useState('');
+    const [views, setViews] = useState(0);
+    const [sold, setSold] = useState(0);
+    const [key, setKey] = useState('');
+    const [listKeys, setListKeys] = useState([]);
+    const [rerender, setRerender] = useState(false);
+
+    const [confirmDelete, setConfirmDelete] = useState(false);
+
+    const [keyDel, setKeyDel] = useState('');
 
     const handleFileChange = (event: any) => {
         const file = event.target.files[0];
@@ -67,6 +85,7 @@ function AdminEditProduct() {
                 priceDiscount: priceDiscount.toFixed(2),
                 title: title,
                 description: description,
+                type: type,
                 category: category,
                 img: downloadURL,
             };
@@ -137,7 +156,7 @@ function AdminEditProduct() {
 
     useEffect(() => {
         getApi();
-    }, []);
+    }, [rerender]);
 
     // Check downloadURL > 0 then post data update
 
@@ -155,80 +174,181 @@ function AdminEditProduct() {
         setSelectedImage(product.img);
         setDownLoadURL(product.img);
         setFirstImg(product.img);
+        setType(product.type);
+        setViews(product.views);
+        setSold(product.sold);
+        setListKeys(product.keys);
     }, setLoading);
+
+    const addKey = async () => {
+        if (key.length > 0) {
+            const api = await axios.post(`${ServerURL}/products/addKey`, { id: id, key: key });
+            if (api.data.status === 200) {
+                setRerender(!rerender);
+                setKey('');
+            }
+        }
+    };
+
+    const deleteKey = async () => {
+        const api = await axios.post(`${ServerURL}/products/deleteKey`, { id: id, key: keyDel });
+        if (api.data.status === 200) {
+            setRerender(!rerender);
+            setKey('');
+            setConfirmDelete(false);
+        }
+    };
 
     return (
         <div className={cx('wrapper')}>
             {loading ? (
                 <Loading />
             ) : (
-                <div className={cx('inner')}>
-                    <>
-                        <h1 className={cx('header')}>Edit Products </h1>
-                        <input
-                            onChange={(e) => setName(e.target.value)}
-                            className={cx('input')}
-                            type="text"
-                            placeholder="Name"
-                            value={name}
-                        />
+                <div className={cx('inner', tb && 'tb', mb && 'mb')}>
+                    <div className={cx('info')}>
+                        <span style={{ fontSize: 30, fontWeight: 'bold', textAlign: 'center' }}>Information</span>
                         <div className={cx('row')}>
+                            <div className={cx('col')}>
+                                <span className={cx('label-title')}>Sold</span>
+                                <div className={cx('input')}>{sold}</div>
+                            </div>
+                            <div className={cx('col')}>
+                                <span className={cx('label-title')}>Views</span>
+                                <div className={cx('input')}>{views}</div>
+                            </div>
+                        </div>
+                        <div className={cx('col')}>
+                            <span className={cx('label-title')}>List Keys</span>
+                            <div className={cx('keys-add')}>
+                                <input
+                                    onChange={(e) =>
+                                        String(e.target.value).length <= 6 && setKey(String(e.target.value))
+                                    }
+                                    className={cx('input')}
+                                    type="text"
+                                    placeholder="Add Key Here"
+                                    value={key}
+                                />
+                                <div onClick={() => addKey()} className={cx('keys-btn')}>
+                                    Add key
+                                </div>
+                            </div>
+                            <div className={cx('keys-box')}>
+                                {listKeys.map((item: string, index: number) => (
+                                    <div key={index} className={cx('keys-item')}>
+                                        <div>
+                                            <span className={cx('keys-quantity')}>{index} : </span>
+                                            <span className={cx('keys-name')}>{item}</span>
+                                        </div>
+                                        <div style={{ display: 'flex', gap: 10 }}>
+                                            <CreateIcon sx={{ cursor: 'pointer', fontSize: 20 }} />
+                                            <DeleteIcon
+                                                onClick={() => {
+                                                    setConfirmDelete(true);
+                                                    setKeyDel(String(item));
+                                                }}
+                                                sx={{ cursor: 'pointer', fontSize: 20 }}
+                                            />
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                    <div className={cx('edit')}>
+                        <h1 className={cx('header')}>Edit Products </h1>
+                        <div className={cx('col')}>
+                            <span className={cx('label-title')}>Name</span>
                             <input
-                                onChange={(e) => setPrice(Number(e.target.value))}
+                                onChange={(e) => setName(e.target.value)}
                                 className={cx('input')}
-                                type="number"
-                                placeholder="Price (USD)"
-                                value={price}
-                            />
-                            <input
-                                onChange={(e) => setDiscount(Number(e.target.value))}
-                                className={cx('input')}
-                                type="number"
-                                placeholder="Discount (%)"
-                                value={discount}
+                                type="text"
+                                placeholder="Name"
+                                value={name}
                             />
                         </div>
-                        <input
-                            onChange={(e) => setTitle(e.target.value)}
-                            className={cx('input')}
-                            type="text"
-                            placeholder="Title"
-                            value={title}
-                        />
-                        <textarea
-                            style={{ height: 100, outline: 'none', resize: 'none' }}
-                            onChange={(e) => setDescription(e.target.value)}
-                            className={cx('input')}
-                            placeholder="Description"
-                            value={description}
-                        ></textarea>
-                        <select onChange={(e) => handleOptionChange(e.target.value)} className={cx('select')}>
-                            <option className={cx('option')}>{category}</option>
-                            <option value={'gaming'} className={cx('option')}>
-                                Gaming
-                            </option>
-                            <option value={'software'} className={cx('option')}>
-                                Software
-                            </option>
-                            <option value={'gift cards'} className={cx('option')}>
-                                Gift Cards
-                            </option>
-                            <option value={'subscriptions'} className={cx('option')}>
-                                Subscriptions
-                            </option>
-                            <option value={'e - learning'} className={cx('option')}>
-                                E - Learning
-                            </option>
-                            <option value={'charity'} className={cx('option')}>
-                                Charity
-                            </option>
-                            <option value={'keys'} className={cx('option')}>
-                                Keys
-                            </option>
-                            <option value={'other'} className={cx('option')}>
-                                Other
-                            </option>
-                        </select>
+                        <div className={cx('row')}>
+                            <div className={cx('col')}>
+                                <span className={cx('label-title')}>Price</span>
+                                <input
+                                    onChange={(e) => setPrice(Number(e.target.value))}
+                                    className={cx('input')}
+                                    type="number"
+                                    placeholder="Price (USD)"
+                                    value={price}
+                                />
+                            </div>
+                            <div className={cx('col')}>
+                                <span className={cx('label-title')}>Discount</span>
+                                <input
+                                    onChange={(e) => setDiscount(Number(e.target.value))}
+                                    className={cx('input')}
+                                    type="number"
+                                    placeholder="Discount (%)"
+                                    value={discount}
+                                />
+                            </div>
+                        </div>
+                        <div className={cx('col')}>
+                            <span className={cx('label-title')}>Title</span>
+                            <input
+                                onChange={(e) => setTitle(e.target.value)}
+                                className={cx('input')}
+                                type="text"
+                                placeholder="Title"
+                                value={title}
+                            />
+                        </div>
+                        <div className={cx('col')}>
+                            <span className={cx('label-title')}>Description</span>
+                            <textarea
+                                style={{ height: 100, outline: 'none', resize: 'none' }}
+                                onChange={(e) => setDescription(e.target.value)}
+                                className={cx('input')}
+                                placeholder="Description"
+                                value={description}
+                            ></textarea>
+                        </div>
+                        <div className={cx('col')}>
+                            <span className={cx('label-title')}>Category</span>
+                            <select onChange={(e) => handleOptionChange(e.target.value)} className={cx('select')}>
+                                <option className={cx('option')}>{category}</option>
+                                <option value={'gaming'} className={cx('option')}>
+                                    Gaming
+                                </option>
+                                <option value={'software'} className={cx('option')}>
+                                    Software
+                                </option>
+                                <option value={'gift cards'} className={cx('option')}>
+                                    Gift Cards
+                                </option>
+                                <option value={'subscriptions'} className={cx('option')}>
+                                    Subscriptions
+                                </option>
+                                <option value={'e - learning'} className={cx('option')}>
+                                    E - Learning
+                                </option>
+                                <option value={'charity'} className={cx('option')}>
+                                    Charity
+                                </option>
+                                <option value={'keys'} className={cx('option')}>
+                                    Keys
+                                </option>
+                                <option value={'other'} className={cx('option')}>
+                                    Other
+                                </option>
+                            </select>
+                        </div>
+                        <div className={cx('col')}>
+                            <span className={cx('label-title')}>Type</span>
+                            <input
+                                onChange={(e) => setType(e.target.value)}
+                                className={cx('input')}
+                                type="text"
+                                placeholder="Type"
+                                value={type}
+                            />
+                        </div>
                         <img className={cx('view-img')} src={selectedImage} alt="Selected" />
                         <div className={cx('row')}>
                             <label className={cx('input')} htmlFor="fileImg">
@@ -241,11 +361,11 @@ function AdminEditProduct() {
                                 Submit Change Image
                             </label>
                         </div>
-                    </>
-                    <button onClick={() => postData()} className={cx('input')}>
-                        Update Data
-                    </button>
-                    <input hidden id="fileImg" accept="image/png" type="file" onChange={handleFileChange} />
+                        <button onClick={() => postData()} className={cx('input')}>
+                            Update Data
+                        </button>
+                        <input hidden id="fileImg" accept="image/png" type="file" onChange={handleFileChange} />
+                    </div>
                 </div>
             )}
             <div className={cx('warn', warn && 'active')}>
@@ -256,6 +376,17 @@ function AdminEditProduct() {
                 <Alert severity="success"></Alert>
                 Posted successfully
             </div>
+            {confirmDelete && (
+                <div className={cx('confirm-delKey')}>
+                    <div className={cx('confirmDelKey-header')}>Do you want to delete this key?</div>
+                    <Button onClick={() => deleteKey()} variant="contained">
+                        Yes
+                    </Button>
+                    <Button onClick={() => setConfirmDelete(false)} variant="outlined">
+                        No
+                    </Button>
+                </div>
+            )}
         </div>
     );
 }

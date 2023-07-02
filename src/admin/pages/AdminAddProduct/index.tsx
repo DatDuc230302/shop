@@ -19,6 +19,7 @@ function AdminAddProduct() {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [category, setCategory] = useState('Categories');
+    const [type, setType] = useState('');
     const [imageFile, setImageFile] = useState<File>();
     const [downloadURL, setDownLoadURL] = useState('');
     const [progressUpload, setProgressUpload] = useState(0);
@@ -93,6 +94,7 @@ function AdminAddProduct() {
             priceDiscount: priceDiscount.toFixed(2),
             title: title,
             description: description,
+            type: type,
             category: category,
             img: downloadURL,
             sold: 0,
@@ -181,6 +183,12 @@ function AdminAddProduct() {
                         Other
                     </option>
                 </select>
+                <input
+                    onChange={(e) => setType(String(e.target.value))}
+                    className={cx('input')}
+                    type="text"
+                    placeholder="Type"
+                />
                 <label className={cx('input')} htmlFor="fileImg">
                     Upload Image
                 </label>

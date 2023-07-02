@@ -2,6 +2,7 @@ import classNames from 'classnames/bind';
 import style from './NotFound.module.scss';
 import { useMediaQuery } from 'react-responsive';
 import RenderProducts from '../../components/RenderProducts';
+import { useEffect } from 'react';
 
 const cx = classNames.bind(style);
 function NotFoundPage() {
@@ -9,6 +10,10 @@ function NotFoundPage() {
     const pc = useMediaQuery({ minWidth: 992 });
     const tb = useMediaQuery({ minWidth: 768, maxWidth: 991 });
     const mb = useMediaQuery({ maxWidth: 767 });
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
 
     return (
         <div className={cx('wrapper')}>

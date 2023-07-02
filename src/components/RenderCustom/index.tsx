@@ -27,6 +27,10 @@ function RenderCustom({ type }: any) {
                 getApiCsgo();
                 setTitle('Need a new CS:GO skin?');
                 break;
+            case 'Antivirus':
+                getApiAntivirus();
+                setTitle('You may also like');
+                break;
             default:
                 break;
         }
@@ -39,8 +43,13 @@ function RenderCustom({ type }: any) {
     };
 
     const getApiCsgo = async () => {
-        const data = await axios.get(`${ServerURL}/products/queryNote?note=${'csgo'}`);
-        setApi(data.data);
+        const api = await axios.get(`${ServerURL}/products/queryType?type=${'csgo'}`);
+        setApi(api.data);
+    };
+
+    const getApiAntivirus = async () => {
+        const api = await axios.get(`${ServerURL}/products/queryType?type=${'antivirus'}`);
+        setApi(api.data);
     };
 
     return (

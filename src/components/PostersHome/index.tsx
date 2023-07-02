@@ -16,13 +16,13 @@ function PostersHome() {
                     <div className={cx('box1')}>
                         <div className={cx('box1-item')}>
                             <img
-                                src="https://firebasestorage.googleapis.com/v0/b/shop-g2a-d5524.appspot.com/o/Posters%2Fimg1.avif?alt=media&token=18345c23-a623-4b8d-acb9-9161d91b7cd4"
+                                src="https://firebasestorage.googleapis.com/v0/b/shop-g2a-d5524.appspot.com/o/Posters%2Fimg1.jpg?alt=media&token=581ea9cb-08aa-4ab9-a0d1-554c949e35af"
                                 alt=""
                             />
                         </div>
                         <div className={cx('box1-item')}>
                             <img
-                                src="https://firebasestorage.googleapis.com/v0/b/shop-g2a-d5524.appspot.com/o/Posters%2Fimg2.avif?alt=media&token=08d5f6ec-c685-4376-998a-b5ad9566723c"
+                                src="https://firebasestorage.googleapis.com/v0/b/shop-g2a-d5524.appspot.com/o/Posters%2Fimg2.png?alt=media&token=35d751ea-e03f-49ec-a68c-19efb032161e"
                                 alt=""
                             />
                         </div>
@@ -30,7 +30,7 @@ function PostersHome() {
                     <div className={cx('box2')}>
                         <div className={cx('box2-item')}>
                             <img
-                                src="https://firebasestorage.googleapis.com/v0/b/shop-g2a-d5524.appspot.com/o/Posters%2Fimg3.webp?alt=media&token=088c1b9a-98b6-4355-a4ea-85098270c43e"
+                                src="https://firebasestorage.googleapis.com/v0/b/shop-g2a-d5524.appspot.com/o/Posters%2Fimg3.png?alt=media&token=9ef6ce53-d6b6-4cbd-a05d-0a7e1dcd212b"
                                 alt=""
                             />
                         </div>
@@ -39,7 +39,7 @@ function PostersHome() {
                         <div className={cx('box3')}>
                             <div className={cx('box3-item')}>
                                 <img
-                                    src="https://firebasestorage.googleapis.com/v0/b/shop-g2a-d5524.appspot.com/o/Posters%2Fimg4.jpg?alt=media&token=33ecc62f-7e6a-4868-8cee-e627a7e4b700"
+                                    src="https://firebasestorage.googleapis.com/v0/b/shop-g2a-d5524.appspot.com/o/Posters%2Fimg4.avif?alt=media&token=b438e53b-c992-4878-beb3-6d260e103d89"
                                     alt=""
                                 />
                             </div>
@@ -51,7 +51,7 @@ function PostersHome() {
                         <div className={cx('box3')}>
                             <div className={cx('box3-item')}>
                                 <img
-                                    src="https://firebasestorage.googleapis.com/v0/b/shop-g2a-d5524.appspot.com/o/Posters%2Fimg4.jpg?alt=media&token=33ecc62f-7e6a-4868-8cee-e627a7e4b700"
+                                    src="https://firebasestorage.googleapis.com/v0/b/shop-g2a-d5524.appspot.com/o/Posters%2Fimg4.avif?alt=media&token=b438e53b-c992-4878-beb3-6d260e103d89"
                                     alt=""
                                 />
                             </div>

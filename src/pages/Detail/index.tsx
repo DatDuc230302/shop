@@ -10,6 +10,7 @@ import { loadingApi } from '../../components/Loading';
 import cartAction from '../../redux/actions/cartAction';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import NotFoundPage from '../NotFound';
 
 const cx = classNames.bind(style);
 
@@ -40,14 +41,22 @@ function Detail() {
 
     // Effect
     useEffect(() => {
-        getApi();
         window.scrollTo(0, 0);
+    }, []);
+
+    useEffect(() => {
+        getApi();
     }, [params.key]);
 
     // Function
     const getApi = loadingApi(async () => {
-        const data = await axios.post(`${ServerURL}/products/findAndUpdateViews`, { id: String(params.key) });
-        setApi(data.data);
+        const api = await axios.post(`${ServerURL}/products/findIdAndUpdateViews`, { id: String(params.key) });
+        if (api.data.length > 0) {
+            document.title = `Buy ${api.data[0].name}`;
+            setApi(api.data);
+        } else {
+            document.title = `Buy Error`;
+        }
     }, setLoading);
 
     const addCarts = loadingApi(async (userId: string, item: string) => {
@@ -125,8 +134,10 @@ function Detail() {
                 </div>
                 <img className={cx('advert')} src={require('./../../assets/imgs/advert.avif')} alt="" />
                 {loading ? (
-                    <Loading />
-                ) : (
+                    <div style={{ marginTop: 100 }}>
+                        <Loading />
+                    </div>
+                ) : api.length > 0 ? (
                     api.map((item: any, index: number) => (
                         <div key={index} className={cx('product', tb && 'tb', mb && 'mb')}>
                             <img src={item.img} className={cx('product-img')} alt="" />
@@ -137,24 +148,32 @@ function Detail() {
                                         <div className={cx('item')}>
                                             <div className={cx('platform')}>
                                                 <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    fill="none"
+                                                    viewBox="0 0 24 24"
                                                     width="24px"
                                                     height="24px"
-                                                    viewBox="0 0 24 24"
-                                                    fill="white"
-                                                    xmlns="http://www.w3.org/2000/svg"
                                                 >
                                                     <path
-                                                        fillRule="evenodd"
-                                                        clipRule="evenodd"
-                                                        d="M24 15.571h-5.187l-.823-5.102-3.023 5.065h-.574c-.344-.586-.479-1.436-.479-1.966 0-.407.013-.81.026-1.239.015-.485.031-1.003.031-1.595 0-1.474-.44-2.249-1.608-2.532v-.038c2.469-.341 3.599-1.966 3.599-4.234C15.962.7 13.78 0 10.928 0H3.253L0 15.193h4.076l1.186-5.537H7.98c1.454 0 2.047.7 2.047 2.042 0 .545-.032 1.03-.062 1.484-.027.394-.052.763-.052 1.123 0 .283.057.964.268 1.229l2.947 3.08L10.584 24l5.435-3.193 4.058 3.08-.746-5.083L24 15.571zM9.206 6.822H5.953l.783-3.666H9.76c1.072 0 2.201.283 2.201 1.568.001 1.644-1.282 2.098-2.755 2.098zm3.1 15.325l3.79-2.23 2.986 2.288-.556-3.742 3.1-2.136h-3.445l-.593-3.685-2.182 3.647h-3.463l2.105 2.192-1.742 3.666z"
-                                                        fill="#white"
+                                                        stroke="#777777"
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        strokeWidth="2"
+                                                        d="M21 5H3a2 2 0 00-2 2v10a2 2 0 002 2h18a2 2 0 002-2V7a2 2 0 00-2-2zM9 12H5m2 2v-4 4z"
+                                                    ></path>
+                                                    <path
+                                                        stroke="#777777"
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        strokeWidth="2"
+                                                        d="M17 14a2 2 0 100-4 2 2 0 000 4z"
                                                     ></path>
                                                 </svg>
                                             </div>
                                             <div className={cx('description')}>
                                                 <div className={cx('title')}>
                                                     <span className={cx('subtitle')}>Platform:</span>
-                                                    Rockstar
+                                                    HMA!
                                                 </div>
                                                 <span className={cx('check')}>Check activation guide</span>
                                             </div>
@@ -286,7 +305,13 @@ function Detail() {
                                         <div className={cx('info')}>
                                             <span className={cx('info-name')}>Kinguin</span>
                                             <div className={cx('info-percent')}>
-                                                <span style={{ fontWeight: 'bold', color: '#000', marginRight: '3px' }}>
+                                                <span
+                                                    style={{
+                                                        fontWeight: 'bold',
+                                                        color: '#000',
+                                                        marginRight: '3px',
+                                                    }}
+                                                >
                                                     93%
                                                 </span>
                                                 Positive feedback
@@ -350,6 +375,10 @@ function Detail() {
                             </div>
                         </div>
                     ))
+                ) : (
+                    <div>
+                        <NotFoundPage />
+                    </div>
                 )}
             </div>
         </div>

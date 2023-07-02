@@ -42,6 +42,7 @@ function Home() {
         setTimeout(() => {
             setViewAdmin(false);
         }, 4000);
+        window.scrollTo(0, 0);
     }, []);
 
     //

@@ -9,6 +9,7 @@ import { useMediaQuery } from 'react-responsive';
 import Loading from '../Loading';
 import { loadingApi } from '../Loading';
 import RenderCustom from '../RenderCustom';
+import RenderNews from '../RenderNews';
 
 const bestDealsBG = [
     'https://firebasestorage.googleapis.com/v0/b/shop-g2a-d5524.appspot.com/o/SteamGiftCards%2Fbg1.avif?alt=media&token=2b885803-4c02-4b96-bf4a-83b86d181355',
@@ -86,7 +87,9 @@ function RenderBestDeals() {
     return (
         <div className={cx('wrapper')}>
             {loading ? (
-                <Loading />
+                <div style={{ marginTop: 100 }}>
+                    <Loading />
+                </div>
             ) : (
                 <div className={cx('inner')}>
                     <div className={cx('background', tb && 'tb', mb && 'mb')}>
@@ -147,6 +150,7 @@ function RenderBestDeals() {
                             {componentId === 2 && <RenderCustom type={'Csgo'} />}
                         </div>
                     </div>
+                    <RenderNews />
                 </div>
             )}
         </div>
