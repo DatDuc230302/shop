@@ -7,7 +7,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { loadingApi } from '../../../components/Loading';
 import Loading from '../../../components/Loading';
 import { Alert, Button } from '@mui/material';
-import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+import { ref, uploadBytesResumable, getDownloadURL, list } from 'firebase/storage';
 import { storage } from '../../../App';
 import { useMediaQuery } from 'react-responsive';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -45,13 +45,15 @@ function AdminEditProduct() {
     const [type, setType] = useState('');
     const [views, setViews] = useState(0);
     const [sold, setSold] = useState(0);
-    const [key, setKey] = useState('');
-    const [listKeys, setListKeys] = useState([]);
     const [rerender, setRerender] = useState(false);
 
+    // Keys
     const [confirmDelete, setConfirmDelete] = useState(false);
-
     const [keyDel, setKeyDel] = useState('');
+    const [listKeys, setListKeys] = useState([]);
+    const [key1, setKey1] = useState('');
+    const [key2, setKey2] = useState('');
+    const [key3, setkey3] = useState('');
 
     const handleFileChange = (event: any) => {
         const file = event.target.files[0];
@@ -181,12 +183,20 @@ function AdminEditProduct() {
     }, setLoading);
 
     const addKey = async () => {
-        if (key.length > 0) {
+        if (key1.length > 0 && key2.length > 0 && key3.length > 0) {
+            const key = `${key1}-${key2}-${key3}`;
             const api = await axios.post(`${ServerURL}/products/addKey`, { id: id, key: key });
             if (api.data.status === 200) {
                 setRerender(!rerender);
-                setKey('');
+                setKey1('');
+                setKey2('');
+                setkey3('');
             }
+        } else {
+            setWarn(true);
+            setTimeout(() => {
+                setWarn(false);
+            }, 500);
         }
     };
 
@@ -194,8 +204,26 @@ function AdminEditProduct() {
         const api = await axios.post(`${ServerURL}/products/deleteKey`, { id: id, key: keyDel });
         if (api.data.status === 200) {
             setRerender(!rerender);
-            setKey('');
             setConfirmDelete(false);
+        }
+    };
+
+    const onChangeKey123 = (number: number, e: any) => {
+        const valueKey = String(e.target.value).toLocaleUpperCase();
+        if (valueKey.length <= 2) {
+            switch (number) {
+                case 1:
+                    setKey1(valueKey);
+                    break;
+                case 2:
+                    setKey2(valueKey);
+                    break;
+                case 3:
+                    setkey3(valueKey);
+                    break;
+                default:
+                    break;
+            }
         }
     };
 
@@ -220,38 +248,64 @@ function AdminEditProduct() {
                         <div className={cx('col')}>
                             <span className={cx('label-title')}>List Keys</span>
                             <div className={cx('keys-add')}>
-                                <input
-                                    onChange={(e) =>
-                                        String(e.target.value).length <= 6 && setKey(String(e.target.value))
-                                    }
-                                    className={cx('input')}
-                                    type="text"
-                                    placeholder="Add Key Here"
-                                    value={key}
-                                />
+                                <div className={cx('row')}>
+                                    <input
+                                        onChange={(e) => onChangeKey123(1, e)}
+                                        className={cx('key-input')}
+                                        type="text"
+                                        placeholder="Add Key1 Here"
+                                        value={key1}
+                                    />
+                                    -
+                                    <input
+                                        onChange={(e) => onChangeKey123(2, e)}
+                                        className={cx('key-input')}
+                                        type="text"
+                                        placeholder="Add Key2 Here"
+                                        value={key2}
+                                    />
+                                    -
+                                    <input
+                                        onChange={(e) => onChangeKey123(3, e)}
+                                        className={cx('key-input')}
+                                        type="text"
+                                        placeholder="Add Key3 Here"
+                                        value={key3}
+                                    />
+                                </div>
                                 <div onClick={() => addKey()} className={cx('keys-btn')}>
                                     Add key
                                 </div>
                             </div>
                             <div className={cx('keys-box')}>
-                                {listKeys.map((item: string, index: number) => (
-                                    <div key={index} className={cx('keys-item')}>
-                                        <div>
-                                            <span className={cx('keys-quantity')}>{index} : </span>
-                                            <span className={cx('keys-name')}>{item}</span>
-                                        </div>
-                                        <div style={{ display: 'flex', gap: 10 }}>
-                                            <CreateIcon sx={{ cursor: 'pointer', fontSize: 20 }} />
-                                            <DeleteIcon
-                                                onClick={() => {
-                                                    setConfirmDelete(true);
-                                                    setKeyDel(String(item));
-                                                }}
-                                                sx={{ cursor: 'pointer', fontSize: 20 }}
-                                            />
-                                        </div>
-                                    </div>
-                                ))}
+                                {listKeys.length > 0 ? (
+                                    <>
+                                        <span className={cx('keys-total')}>
+                                            Total Keys: <strong>{listKeys.length}</strong>
+                                        </span>
+                                        {listKeys.map((item: string, index: number) => (
+                                            <div key={index} className={cx('keys-item')}>
+                                                <div>
+                                                    <span className={cx('keys-quantity')}>{index} : </span>
+                                                    <span className={cx('keys-name')}>{item}</span>
+                                                </div>
+                                                <div style={{ display: 'flex', gap: 10 }}>
+                                                    <DeleteIcon
+                                                        onClick={() => {
+                                                            setConfirmDelete(true);
+                                                            setKeyDel(String(item));
+                                                        }}
+                                                        sx={{ cursor: 'pointer', fontSize: 20 }}
+                                                    />
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </>
+                                ) : (
+                                    <span style={{ textAlign: 'center', fontSize: 15 }}>
+                                        This Products Doesn't Have any key!
+                                    </span>
+                                )}
                             </div>
                         </div>
                     </div>
