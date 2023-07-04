@@ -2,6 +2,7 @@ import classNames from 'classnames/bind';
 import style from './Footer.module.scss';
 import { useMediaQuery } from 'react-responsive';
 import { useState } from 'react';
+import { useEffect } from 'react';
 
 const infoLists = [
     {
@@ -30,6 +31,33 @@ const infoLists = [
     },
 ];
 
+const listSocials = [
+    'https://images.g2a.com/facebook/28x28/1x1x1/8e99c08cdbda/605ae42d7e696c259961a462',
+    'https://images.g2a.com/twitter/28x28/1x1x1/225a9ced8d38/605ae47e46177c04b511d712',
+    'https://images.g2a.com/youtube/28x28/1x1x1/6624e20dfc20/605ae4d746177c471a610dd2',
+    'https://images.g2a.com/instagram/28x28/1x1x1/a28f82123e6b/605ae4aa7e696c2a5346b672',
+    'https://images.g2a.com/linkedin/28x28/1x1x1/8223483aa633/605ae5127e696c2efa512f62',
+    'https://images.g2a.com/twitch/28x28/1x1x1/9422ab6d9c45/605ae53646177c7b1b4eb952',
+    'https://images.g2a.com/reddit/28x28/1x1x1/8a5840c01a34/605ae17746177c6d930f11c2',
+];
+
+const paymentsLight = [
+    'https://www.g2a.com/static/assets/payment-methods/visa.svg',
+    'https://www.g2a.com/static/assets/payment-methods/mastercard.svg',
+    'https://www.g2a.com/static/assets/payment-methods/paysafecard.svg',
+    'https://www.g2a.com/static/assets/payment-methods/discover.svg',
+    'https://www.g2a.com/static/assets/payment-methods/paypal.svg',
+];
+
+const paymentDark = [
+    'https://www.g2a.com/static/assets/payment-methods/dark/visa.svg',
+    'https://www.g2a.com/static/assets/payment-methods/dark/mastercard.svg',
+    'https://www.g2a.com/static/assets/payment-methods/dark/paysafecard.svg',
+    'https://www.g2a.com/static/assets/payment-methods/dark/discover.svg',
+    'https://www.g2a.com/static/assets/payment-methods/dark/paypal.svg',
+    'https://www.g2a.com/static/assets/payment-methods/dark/paypal.svg',
+];
+
 const locationLists = [
     [
         'G2A.COM Limited 31/F, Tower Two, Times Square, 1 Matheson Street',
@@ -47,7 +75,7 @@ const locationLists = [
 ];
 
 const cx = classNames.bind(style);
-function Footer() {
+function Footer({ theme }: any) {
     // Responsive
     const pc = useMediaQuery({ minWidth: 992 });
     const tb = useMediaQuery({ minWidth: 768, maxWidth: 991 });
@@ -55,6 +83,7 @@ function Footer() {
 
     // State
     const [activeItems, setActiveItems] = useState<number[]>([]);
+    const [listPayments, setListPayments] = useState<string[]>([]);
 
     // Function
     const handleItemClick = (index: number) => {
@@ -65,19 +94,28 @@ function Footer() {
         }
     };
 
+    useEffect(() => {
+        if (theme === 'dark') {
+            setListPayments(paymentDark);
+        } else {
+            setListPayments(paymentsLight);
+        }
+    }, [theme]);
+
     return (
-        <div className={cx('wrapper', tb && 'tb', mb && 'mb')}>
+        <div
+            style={{ background: theme === 'dark' ? '#212121' : '#ffffff' }}
+            className={cx('wrapper', tb && 'tb', mb && 'mb')}
+        >
             <div className={cx('inner')}>
                 <div className={cx('body', tb && 'tb', mb && 'mb')}>
                     <div className={cx('payment')}>
                         <div className={cx('payment-methods')}>
                             {pc && <div className={cx('paymentMethods-title')}>Payment methods:</div>}
                             <div className={cx('paymentMethods-list')}>
-                                <img src="https://www.g2a.com/static/assets/payment-methods/visa.svg" alt="" />
-                                <img src="https://www.g2a.com/static/assets/payment-methods/mastercard.svg" alt="" />
-                                <img src="https://www.g2a.com/static/assets/payment-methods/paysafecard.svg" alt="" />
-                                <img src="https://www.g2a.com/static/assets/payment-methods/discover.svg" alt="" />
-                                <img src="https://www.g2a.com/static/assets/payment-methods/paypal.svg" alt="" />
+                                {listPayments.map((item: string, index: number) => (
+                                    <img key={index} src={item} alt="" />
+                                ))}
                                 and 200+ more
                             </div>
                         </div>
@@ -101,7 +139,7 @@ function Footer() {
                                         strokeLinecap="round"
                                         strokeLinejoin="round"
                                         strokeWidth="2"
-                                        stroke="currentColor"
+                                        stroke="#ccc"
                                     ></path>
                                 </svg>
                             )}
@@ -130,7 +168,11 @@ function Footer() {
                                         )}
                                     </span>
                                     {item.contents.map((content: any, index: number) => (
-                                        <span key={index} className={cx('infoItem-content')}>
+                                        <span
+                                            style={{ color: theme === 'dark' ? '#c6c6c6' : '#0000008a' }}
+                                            key={index}
+                                            className={cx('infoItem-content')}
+                                        >
                                             {content}
                                         </span>
                                     ))}
@@ -170,7 +212,12 @@ function Footer() {
                             </div>
                         )}
                         <div className={cx('info-contact')}>
-                            <span className={cx('infoContact-title')}>Install the G2A app</span>
+                            <span
+                                style={{ color: theme === 'dark' ? '#ffffffde' : '#000' }}
+                                className={cx('infoContact-title')}
+                            >
+                                Install the G2A app
+                            </span>
                             <span className={cx('infoContact-content')}>Get great deals on games wherever you go!</span>
                             <div className={cx('infoContact-vote')}>
                                 <div className={cx('infoContact-starts')}>
@@ -273,42 +320,24 @@ function Footer() {
                         </div>
                         {pc && (
                             <div className={cx('location-socials')}>
-                                <img
-                                    src="https://images.g2a.com/facebook/28x28/1x1x1/8e99c08cdbda/605ae42d7e696c259961a462"
-                                    alt=""
-                                />
-                                <img
-                                    src="https://images.g2a.com/twitter/28x28/1x1x1/225a9ced8d38/605ae47e46177c04b511d712"
-                                    alt=""
-                                />
-                                <img
-                                    src="https://images.g2a.com/youtube/28x28/1x1x1/6624e20dfc20/605ae4d746177c471a610dd2"
-                                    alt=""
-                                />
-                                <img
-                                    src="https://images.g2a.com/instagram/28x28/1x1x1/a28f82123e6b/605ae4aa7e696c2a5346b672"
-                                    alt=""
-                                />
-                                <img
-                                    src="https://images.g2a.com/linkedin/28x28/1x1x1/8223483aa633/605ae5127e696c2efa512f62"
-                                    alt=""
-                                />
-                                <img
-                                    src="https://images.g2a.com/twitch/28x28/1x1x1/9422ab6d9c45/605ae53646177c7b1b4eb952"
-                                    alt=""
-                                />
-                                <img
-                                    src="https://images.g2a.com/reddit/28x28/1x1x1/8a5840c01a34/605ae17746177c6d930f11c2"
-                                    alt=""
-                                />
+                                {listSocials.map((item: string, index: number) => (
+                                    <img key={index} src={item} alt="" />
+                                ))}
                             </div>
                         )}
                     </div>
                     <div className={cx('privacy')}>
                         Use of this Web site constitutes acceptance of the
-                        <span className={cx('privacy-link')}> Terms and Conditions</span> and
-                        <span className={cx('privacy-link')}> Privacy policy</span>. All copyrights, trade marks,
-                        service marks belong to the corresponding owners.
+                        <span style={{ color: theme === 'dark' ? '#fff' : '#000' }} className={cx('privacy-link')}>
+                            {' '}
+                            Terms and Conditions{' '}
+                        </span>
+                        and
+                        <span style={{ color: theme === 'dark' ? '#fff' : '#000' }} className={cx('privacy-link')}>
+                            {' '}
+                            Privacy policy{' '}
+                        </span>
+                        . All copyrights, trade marks, service marks belong to the corresponding owners.
                     </div>
                 </div>
             </div>

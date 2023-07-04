@@ -140,7 +140,9 @@ function Cart() {
         <div className={cx('wrapper')}>
             <div className={cx('inner')}>
                 {loading ? (
-                    <Loading />
+                    <div style={{ paddingTop: 100 }}>
+                        <Loading />
+                    </div>
                 ) : api.length === 0 ? (
                     <div className={cx('empty')}>
                         <div className={cx('img')}>{emptyCart}</div>

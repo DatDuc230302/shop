@@ -11,9 +11,16 @@
 
 .section {
     width: 100%;
-    height: 632px;
+    min-height: 632px;
     position: relative;
     background: black;
+
+    &.tb {
+        min-height: 1100px;
+    }
+    &.mb {
+        min-height: 1600px;
+    }
 
     .section-bg {
         display: flex;
@@ -40,14 +47,30 @@
             width: 1170px;
             display: flex;
             justify-content: space-between;
+
+            &.tb,
+            &.mb {
+                flex-direction: column;
+                align-items: center;
+            }
             .section-left {
-                width: 501px;
+                width: 42.821%;
                 display: flex;
                 flex-direction: column;
 
+                &.tb,
+                &.mb {
+                    width: 100%;
+
+                    .sectionLeft-title {
+                        font-size: 4.5rem;
+                        margin-top: 10px;
+                    }
+                }
+
                 .sectionLeft-title {
                     margin-top: 23px;
-                    font-size: 50px;
+                    font-size: 5rem;
                     font-weight: 500;
                     line-height: 60px;
                     color: white;
@@ -74,204 +97,243 @@
                 width: 616px;
                 padding-top: 6px;
                 display: flex;
-                gap: 4rem;
+                flex-direction: column;
 
-                .sectionRight-Box {
-                    border: 1px solid rgb(117, 117, 117);
-                    border-radius: 5px;
-                    width: 268px;
-                    height: 330px;
-                    padding: 2px;
-                    background-color: rgb(0, 0, 0);
+                &.tb,
+                &.mb {
+                    width: 100%;
+                }
+
+                .sectionRight-row {
                     display: flex;
-                    flex-direction: column;
-                    -webkit-box-align: center;
-                    align-items: center;
-                    flex-direction: column;
+                    gap: 4rem;
 
-                    &.active {
-                        border: 2px solid rgb(253, 200, 74);
-
-                        .sectionRightBox-detail {
-                            padding-left: 25px;
-                            padding-right: 24.5px;
-                        }
+                    &.tb,
+                    &.mb {
+                        justify-content: center;
+                        flex-wrap: wrap;
                     }
-
-                    .sectionRightBox-present {
+                    .sectionRight-col {
                         display: flex;
-                        width: 100%;
-                        margin-top: -2px;
-                        margin-left: -4px;
-                        margin-bottom: 18.5px;
-
-                        span {
-                            display: block;
-                            width: 50%;
-                            color: black;
-                            text-transform: uppercase;
-                            font-size: 14px;
-                            line-height: 27px;
-                            background: rgb(253, 200, 74);
-                            width: 132.4px;
-                            clip-path: polygon(0px 0px, 100% 0px, 95% 100%, 0% 100%);
-                            padding-left: 27px;
-                        }
-
-                        p {
-                            display: block;
-                            font-size: 14px;
-                            line-height: 27px;
-                            font-weight: normal;
-                            color: rgb(253, 200, 74);
-                            padding-left: 23px;
-                        }
-                    }
-
-                    .sectionRightBox-header {
-                        font-size: 1.2rem;
-                        color: #757575;
-                        height: 14px;
-                        display: flex;
-                        margin-top: 29.6px;
-                    }
-
-                    .sectionRightBox-name {
-                        margin-top: 31.5px;
-                        text-align: center;
-                        font-size: 18px;
-                        line-height: 21px;
-                        color: rgb(189, 151, 244);
-                        font-weight: bold;
-                    }
-
-                    .sectionRightBox-price {
-                        color: white;
-                        display: flex;
-                        margin-top: 13.5px;
-                        position: relative;
-
-                        sup {
-                            font-size: 1.2rem;
-                            font-weight: bold;
-                            transform: translateY(13px);
-                        }
-
-                        span {
-                            font-size: 3.2rem;
-                            font-weight: bold;
-                            margin: 0 5px;
+                        flex-direction: column;
+                        align-items: center;
+                        gap: 3rem;
+                        .sectionRight-Box {
+                            border: 1px solid rgb(117, 117, 117);
+                            border-radius: 5px;
+                            width: 268px;
+                            height: 330px;
+                            padding: 2px;
+                            background-color: rgb(0, 0, 0);
                             display: flex;
-                            align-items: end;
-                            transform: translateY(5px);
-                        }
+                            flex-direction: column;
+                            -webkit-box-align: center;
+                            align-items: center;
+                            flex-direction: column;
 
-                        p {
-                            font-size: 1.2rem;
-                            font-weight: bold;
-                            display: flex;
-                            align-items: end;
-                            height: 100%;
-                        }
+                            &.active {
+                                border: 2px solid rgb(253, 200, 74);
 
-                        text {
-                            position: absolute;
-                            bottom: -21.5px;
-                            right: 0;
-                            font-size: 1.2rem;
-                            color: #757575;
-                        }
-                    }
+                                .sectionRightBox-detail {
+                                    padding-left: 25px;
+                                    padding-right: 24.5px;
+                                }
+                            }
 
-                    .sectionRightBox-detail {
-                        width: 100%;
-                        margin-top: 32.5px;
-                        width: 100%;
-                        padding-left: 26px;
-                        padding-right: 25.5px;
-
-                        .sectionRightBox-list {
-                            width: 100%;
-                            border-top: 1px solid rgb(117, 117, 117);
-                            padding-top: 15px;
-
-                            .sectionRightBox-item {
-                                color: #757575;
-                                font-size: 1.2rem;
-                                gap: 1rem;
+                            .sectionRightBox-present {
                                 display: flex;
-                                margin-bottom: 9.8px;
+                                width: 100%;
+                                margin-top: -2px;
+                                margin-left: -4px;
+                                margin-bottom: 18.5px;
 
-                                img {
-                                    width: 14px;
-                                    height: 10.53px;
+                                span {
+                                    display: block;
+                                    width: 50%;
+                                    color: black;
+                                    text-transform: uppercase;
+                                    font-size: 14px;
+                                    line-height: 27px;
+                                    background: rgb(253, 200, 74);
+                                    width: 132.4px;
+                                    clip-path: polygon(0px 0px, 100% 0px, 95% 100%, 0% 100%);
+                                    padding-left: 27px;
+                                }
+
+                                p {
+                                    display: block;
+                                    font-size: 14px;
+                                    line-height: 27px;
+                                    font-weight: normal;
+                                    color: rgb(253, 200, 74);
+                                    padding-left: 23px;
+                                }
+                            }
+
+                            .sectionRightBox-header {
+                                font-size: 1.2rem;
+                                color: #757575;
+                                height: 14px;
+                                display: flex;
+                                margin-top: 29.6px;
+                            }
+
+                            .sectionRightBox-name {
+                                margin-top: 31.5px;
+                                text-align: center;
+                                font-size: 18px;
+                                line-height: 21px;
+                                color: rgb(189, 151, 244);
+                                font-weight: bold;
+                            }
+
+                            .sectionRightBox-price {
+                                color: white;
+                                display: flex;
+                                margin-top: 13.5px;
+                                position: relative;
+
+                                sup {
+                                    font-size: 1.2rem;
+                                    font-weight: bold;
+                                    transform: translateY(13px);
                                 }
 
                                 span {
-                                    transform: translateY(-1px);
+                                    font-size: 3.2rem;
+                                    font-weight: bold;
+                                    margin: 0 5px;
+                                    display: flex;
+                                    align-items: end;
+                                    transform: translateY(5px);
+                                }
+
+                                p {
+                                    font-size: 1.2rem;
+                                    font-weight: bold;
+                                    display: flex;
+                                    align-items: end;
+                                    height: 100%;
+                                }
+
+                                h6 {
+                                    font-weight: 100;
+                                    position: absolute;
+                                    bottom: -21.5px;
+                                    right: 0;
+                                    font-size: 1.2rem;
+                                    color: #757575;
+                                }
+                            }
+
+                            .sectionRightBox-detail {
+                                width: 100%;
+                                margin-top: 32.5px;
+                                width: 100%;
+                                padding-left: 26px;
+                                padding-right: 25.5px;
+
+                                .sectionRightBox-list {
+                                    width: 100%;
+                                    border-top: 1px solid rgb(117, 117, 117);
+                                    padding-top: 15px;
+
+                                    .sectionRightBox-item {
+                                        color: #757575;
+                                        font-size: 1.2rem;
+                                        gap: 1rem;
+                                        display: flex;
+                                        margin-bottom: 9.8px;
+
+                                        img {
+                                            width: 14px;
+                                            height: 10.53px;
+                                        }
+
+                                        span {
+                                            transform: translateY(-1px);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        .sectionRightBox-btn {
+                            background: rgb(98, 2, 234);
+                            color: rgb(255, 255, 255);
+                            border: 1px solid rgb(98, 2, 234);
+                            border-radius: 3px;
+                            height: 42px;
+                            font-size: 14px;
+                            line-height: 16px;
+                            font-weight: 600;
+                            cursor: pointer;
+                            bottom: 43px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            font-family: Arial;
+                            width: 216px;
+                        }
+                    }
+                }
+
+                .section-privacy {
+                    width: 100%;
+                    display: flex;
+                    justify-content: center;
+                    margin-top: 45px;
+                    transform: translateX(2px);
+
+                    &.tb,
+                    &.mb {
+                        .sectionPrivacy-col {
+                            width: 100%;
+                            .privacyCol-item {
+                                .privacyCol-title {
+                                    width: 100%;
                                 }
                             }
                         }
                     }
 
-                    .sectionRightBox-btn {
-                        background: rgb(98, 2, 234);
-                        color: rgb(255, 255, 255);
-                        border: 1px solid rgb(98, 2, 234);
-                        border-radius: 3px;
-                        min-width: 216px;
-                        height: 42px;
-                        font-size: 14px;
-                        line-height: 16px;
-                        font-weight: 600;
-                        cursor: pointer;
-                        position: absolute;
-                        bottom: 43px;
+                    .sectionPrivacy-col {
+                        width: 1170px;
                         display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        font-family: Arial;
-                    }
-                }
-            }
-        }
-    }
+                        flex-direction: column;
+                        align-items: flex-end;
+                        .privacyCol-item {
+                            display: flex;
+                            flex-direction: column;
+                            align-items: center;
+                            .privacyCol-title {
+                                width: 660px;
+                                z-index: 20;
+                                font-size: 1.2rem;
+                                color: #757575;
+                                line-height: 20px;
+                                text-align: center;
+                            }
 
-    .section-privacy {
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        margin-top: 32px;
-        .sectionPrivacy-col {
-            width: 1170px;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            div {
-                transform: translateX(24px);
-                display: flex;
-                flex-direction: column;
-                width: 660px;
-                align-items: center;
-                span {
-                    z-index: 20;
-                    font-size: 1.2rem;
-                    color: #757575;
-                    text-align: center;
-                    display: flex;
-                    line-height: 20px;
-                }
+                            .privacy-link {
+                                color: #757575;
+                                font-size: 1.2rem;
+                                line-height: 20px;
+                                text-align: center;
+                                transform: translateX(1.4px);
 
-                p {
-                    display: flex;
-                    text-align: center;
-                    z-index: 20;
-                    font-size: 1.2rem;
-                    color: #757575;
-                    line-height: 20px;
-                    a {
-                        color: #2f82fb;
-                        margin-left: 2px;
+                                .privacyLink-item {
+                                    color: #2f82fb;
+                                    width: max-content;
+                                    cursor: pointer;
+                                    margin: 0 3px;
+
+                                    &:hover {
+                                        text-decoration: underline;
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -280,4 +342,236 @@
 }
 
 .members {
+    width: 100%;
+    min-height: max-content;
+    display: flex;
+    justify-content: center;
+    background-color: black;
+    padding-top: 4px;
+    padding-bottom: 20px;
+
+    .members-body {
+        width: 1170px;
+        display: flex;
+        flex-direction: column;
+
+        .members-header {
+            text-align: center;
+            color: white;
+            font-weight: bold;
+            font-size: 2.4rem;
+            font-weight: 500;
+            margin-bottom: 39.5px;
+        }
+
+        .members-list {
+            width: 100%;
+            height: 68px;
+            display: flex;
+            justify-content: center;
+            padding-left: 5px;
+
+            .membersList-euro {
+                color: white;
+                font-size: 4.8rem;
+                font-weight: 500;
+                margin-right: 20px;
+            }
+
+            .membersList-quantity {
+                display: flex;
+                height: 100%;
+                transform: translateY(-5px);
+
+                &.tb {
+                    .membersQuantity-item {
+                        .membersItem-top {
+                            width: 36px;
+                        }
+
+                        .membersItem-number {
+                            font-size: 3.6rem;
+                        }
+
+                        .membersItem-bottom {
+                            width: 36px;
+                        }
+                    }
+                }
+                &.mb {
+                    .membersQuantity-item {
+                        .membersItem-top {
+                            width: 28px;
+                        }
+
+                        .membersItem-number {
+                            font-size: 2.4rem;
+                        }
+
+                        .membersItem-bottom {
+                            width: 28px;
+                        }
+                    }
+                }
+
+                .membersQuantity-item {
+                    height: 100%;
+                    gap: 1px;
+                    display: flex;
+                    flex-direction: column;
+                    position: relative;
+                    margin-right: 5px;
+
+                    &.active {
+                        margin-right: 20px;
+                    }
+
+                    .membersItem-top {
+                        width: 48px;
+                        height: 34px;
+                        background-color: rgb(59, 59, 59);
+                        border-top-left-radius: 4px;
+                        border-top-right-radius: 4px;
+                    }
+
+                    .membersItem-number {
+                        width: 100%;
+                        height: 100%;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        position: absolute;
+                        font-weight: 500;
+                        font-size: 4.8rem;
+                        color: white;
+                    }
+
+                    .membersItem-bottom {
+                        width: 48px;
+                        height: 34px;
+                        background-color: rgb(59, 59, 59);
+                        border-bottom-left-radius: 4px;
+                        border-bottom-right-radius: 4px;
+                    }
+                }
+            }
+        }
+
+        .members-footer {
+            margin-top: 54px;
+            font-size: 1.8rem;
+            color: white;
+            font-weight: 300px;
+            text-align: center;
+        }
+    }
+}
+
+.articles {
+    width: 100%;
+    min-height: 483.98px;
+    background-color: black;
+    display: flex;
+    justify-content: center;
+    padding: 0 16px;
+
+    &.active {
+        .articles-body {
+            flex-direction: row-reverse;
+        }
+    }
+
+    .articles-body {
+        width: 1170px;
+        height: max-content;
+        border-top: 1px solid #626262;
+        display: flex;
+        padding: 30px 0;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 3rem;
+
+        .articles-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding-top: 1px;
+
+            .articles-title {
+                font-size: 3rem;
+                color: #ffffffde;
+                font-weight: 500;
+                letter-spacing: -0.4px;
+            }
+
+            .articles-content {
+                margin-top: 16px;
+                color: #ffffffde;
+                font-size: 1.4rem;
+            }
+
+            .articles-btns {
+                display: flex;
+                gap: 4px;
+                margin-top: 30px;
+
+                &.tb,
+                &.mb {
+                    flex-direction: column;
+                    align-items: center;
+
+                    .articles-btn {
+                        width: 100%;
+                    }
+                }
+
+                .articles-btn {
+                    width: 33.334%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    height: 42px;
+                    font-weight: 600;
+                    font-size: 1.4rem;
+                    background: rgb(98, 2, 234);
+                    color: rgb(255, 255, 255);
+                    border: 1px solid rgb(98, 2, 234);
+                    border-radius: 4px;
+                    cursor: pointer;
+
+                    &.active {
+                        background-color: transparent;
+                        color: rgb(189, 151, 244);
+                    }
+                }
+            }
+        }
+
+        .articles-img {
+            &.active {
+                width: 50%;
+                &.tb,
+                &.mb {
+                    width: 100%;
+                }
+            }
+            img {
+                width: 100%;
+            }
+        }
+    }
+}
+
+.products {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    background-color: black;
+    min-height: 1000px;
+    padding-bottom: 40px;
+
+    .products-body {
+        width: 1170px;
+    }
 }

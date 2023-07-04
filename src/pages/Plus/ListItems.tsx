@@ -293,3 +293,92 @@ export const sectionLeftG2A = (
         </g>
     </svg>
 );
+
+export const sectionRightBox1 = [
+    'Cheaper games up to 10%',
+    'Free game each month',
+    'Games & software for any platform',
+    'Cancel anytime',
+];
+
+export const sectionRightBox2 = [
+    'Cheaper games up to 10%',
+    'Free game each month',
+    'Games & software for any platform',
+    'Collect savings all year round',
+];
+
+export const membersQuantity = [
+    {
+        number: 1,
+        active: true,
+    },
+    {
+        number: 7,
+        active: false,
+    },
+    {
+        number: 6,
+        active: false,
+    },
+    {
+        number: 1,
+        active: true,
+    },
+    {
+        number: 2,
+        active: false,
+    },
+    {
+        number: 5,
+        active: false,
+    },
+    {
+        number: 2,
+        active: false,
+    },
+];
+
+export const articles = [
+    {
+        img: require('../../assets/imgs/Plus/Articles/img1.webp'),
+        title: 'Lowest prices just got lower!',
+        content: 'All games at even lower prices exclusively for G2A Plus members only.',
+        active: false,
+        activeImg: false,
+        activeBtns: false,
+    },
+    {
+        img: require('../../assets/imgs/Plus/Articles/img2.webp'),
+        title: 'Free game every month!',
+        content: 'Expand your gaming library and get a new, free game every month',
+        active: true,
+        activeImg: false,
+        activeBtns: false,
+    },
+    {
+        img: require('../../assets/imgs/Plus/Articles/img3.webp'),
+        title: 'Games and software for any platform',
+        content: 'Get games for your favorite platforms and software for dedicated OS.',
+        active: false,
+        activeImg: true,
+        activeBtns: false,
+    },
+    {
+        img: require('../../assets/imgs/Plus/Articles/img4.webp'),
+        title: 'Cancel anytime',
+        content: 'Cancel anytime, even midway through your plan and still enjoy your benefits.',
+        active: true,
+        activeImg: false,
+        activeBtns: false,
+    },
+    {
+        img: require('../../assets/imgs/Plus/Articles/img5.webp'),
+        title: 'Redeem or get a gift',
+        content:
+            'Not a fan of memberships, but got gamer friends who love savings and buying games? Then G2A Plus is a perfect solution for you! Have one already? Hit that “redeem“ button below!',
+        active: false,
+        activeImg: false,
+        activeBtns: true,
+    },
+];
