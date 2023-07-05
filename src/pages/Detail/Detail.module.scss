@@ -421,6 +421,17 @@
     font-family: Arial;
     transition: all linear 0.2s;
 
+    &.disable {
+        cursor: not-allowed;
+        background-color: #ccc;
+        border: none;
+
+        &:hover {
+            transform: scale(1);
+            background-color: #ccc;
+        }
+    }
+
     &:hover {
         background-color: #3673cd;
         transform: scale(1.01);

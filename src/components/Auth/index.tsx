@@ -24,12 +24,12 @@ function Auth() {
     const mb = useMediaQuery({ maxWidth: 767 });
 
     // State
-    const [idUser, setIdUser] = useState('');
+    const [idUser, setIdUser] = useState<string>('');
     const [name, setName] = useState('');
     const [avatar, setAvatar] = useState('');
     const [mail, setMail] = useState('');
     const [rule, setRule] = useState(1);
-    const [cartsLocal, setCartsLocal] = useState([]);
+    const [cartsLocal, setCartsLocal] = useState<number>(0);
     const [show, setShow] = useState(false);
     const [showChangeAva, setShowChangeAva] = useState(false);
     const [oldAvatar, setOldvatar] = useState('');
@@ -42,32 +42,34 @@ function Auth() {
     // Effect
     useEffect(() => {
         if (currentUser) {
-            getUser(idUser);
+            if (idUser) {
+                getCartsUser(idUser);
+            }
         } else {
             const temp = localStorage.getItem('cartsLocal');
             const carts = JSON.parse(`${temp}`);
             if (carts !== null) {
-                setCartsLocal(carts);
+                setCartsLocal(carts.length);
             } else {
-                setCartsLocal([]);
+                setCartsLocal(0);
             }
         }
-    }, [currentUser, renderCart]);
+    }, [currentUser, renderCart, idUser]);
 
     // Function
-    const getUser = async (idUser: any) => {
-        const data = await axios.get(`${ServerURL}/users/queryId?id=${idUser}`);
-        const cartsUser = data.data[0].carts;
-        setCartsLocal(cartsUser);
+
+    const getCartsUser = async (idUser: string) => {
+        const api = await axios.get(`${ServerURL}/carts/getCarts?idUser=${idUser}`);
+        setCartsLocal(api.data.result.products.length);
     };
 
     // Login
     const loginSuccess = async (res: any) => {
         const api = res.profileObj;
-        setIdUser(api.googleId);
         const resData = await axios.get(`${ServerURL}/users/queryId?id=${api.googleId}`);
         const data = resData.data[0];
         setOldvatar(api.imageUrl);
+        setIdUser(api.googleId);
         if (data !== undefined) {
             setName(data.name);
             setAvatar(data.avatar);
@@ -85,8 +87,9 @@ function Auth() {
                 avatar: api.imageUrl,
                 rule: 1,
                 email: api.email,
-                carts: [],
             });
+            await axios.post(`${ServerURL}/carts/addCarts`, { idUser: api.googleId });
+            dispath(cartAction());
         }
         dispath(authAction('LOGIN'));
         setShow(false);
@@ -257,7 +260,7 @@ function Auth() {
                     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width={24} height={24}>
                         <path fill="white" d="M21 7l-2 10H5L2.4 4H0V2h5l1 5h15zM7 22h3v-3H7v3zm7 0h3v-3h-3v3z"></path>
                     </svg>
-                    {cartsLocal.length > 0 && <span className={cx('quantity')}>{cartsLocal.length}</span>}
+                    {cartsLocal > 0 && <span className={cx('quantity')}>{cartsLocal}</span>}
                 </Link>
                 {currentUser && (
                     <ChangeAvatar

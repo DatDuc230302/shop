@@ -37,7 +37,7 @@ function Detail() {
     const [api, setApi] = useState([]);
     const [plus, setPlus] = useState('Add to cart');
     const [loading, setLoading] = useState(false);
-    const [loadingCart, setLoadingCart] = useState(false);
+    const [keys, setKeys] = useState<string[]>([]);
 
     // Effect
     useEffect(() => {
@@ -54,15 +54,11 @@ function Detail() {
         if (api.data.length > 0) {
             document.title = `Buy ${api.data[0].name}`;
             setApi(api.data);
+            setKeys(api.data[0].keys);
         } else {
             document.title = `Buy Error`;
         }
     }, setLoading);
-
-    const addCarts = loadingApi(async (userId: string, item: string) => {
-        axios.post(`${ServerURL}/users/addCarts`, { id: userId, item: item });
-        dispath(cartAction());
-    }, setLoadingCart);
 
     const handlePickPrice = (bool: boolean) => {
         if (bool) {
@@ -74,21 +70,31 @@ function Detail() {
         }
     };
 
-    const handleAddCart = (item: string) => {
+    const handleAddCart = async (id: string) => {
         if (currentUser) {
-            addCarts(localStorage.getItem('currentUser'), item);
-        } else {
-            var cartsValue = localStorage.getItem('cartsLocal');
-            if (cartsValue === null || typeof cartsValue !== 'string') {
-                var cartsArray = [];
+            const idUser = localStorage.getItem('currentUser');
+            const idProduct = id;
+            const api = await axios.post(`${ServerURL}/carts/updateProductsCarts`, {
+                idUser: idUser,
+                idProduct: idProduct,
+            });
+            if (api.data.message === 'successfully') {
+                dispath(cartAction());
+                navigate('/page/cart');
             } else {
-                cartsArray = JSON.parse(cartsValue);
             }
-            cartsArray.push(item);
+        } else {
+            const api = await axios.get(`${ServerURL}/products/getKey?idProduct=${String(params.key)}`);
+            const key = api.data.result;
+            const cartsLocal = localStorage.getItem('cartsLocal');
+            let cartArray = cartsLocal ? JSON.parse(cartsLocal) : [];
+            const cartItem = { idProduct: String(params.key), key: key };
+            cartArray.push(cartItem);
+            const updatedCart = JSON.stringify(cartArray);
+            localStorage.setItem('cartsLocal', updatedCart);
+            navigate('/page/cart');
             dispath(cartAction());
-            localStorage.setItem('cartsLocal', JSON.stringify(cartsArray));
         }
-        navigate('/page/cart');
     };
 
     return (
@@ -367,8 +373,11 @@ function Detail() {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div onClick={() => handleAddCart(item._id)} className={cx('pay-cart')}>
-                                            {plus}
+                                        <div
+                                            onClick={() => handleAddCart(item._id)}
+                                            className={cx('pay-cart', keys.length === 0 && 'disable')}
+                                        >
+                                            {keys.length === 0 ? 'Sold Out' : plus}
                                         </div>
                                     </div>
                                 </div>

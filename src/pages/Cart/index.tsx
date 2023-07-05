@@ -24,6 +24,8 @@ function Cart() {
 
     // State
     const [api, setApi] = useState([]);
+    const [apiUnique, setApiUnique] = useState<string[]>([]);
+    const [apiKeys, setApiKeys] = useState<string[]>([]);
     const [showChange, setShowChange] = useState(false);
     const [loading, setLoading] = useState(false);
     const [indexProduct, setIndexProduct] = useState(-1);
@@ -38,45 +40,38 @@ function Cart() {
 
     // Effect
     useEffect(() => {
-        getApi();
         window.scrollTo(0, 0);
+        if (currentUser) {
+            getApi();
+        } else {
+            setApi([]);
+            const cartsLocal = !localStorage.getItem('cartsLocal') ? localStorage.getItem('cartsLocal') : [];
+            console.log(JSON.parse(cartsLocal || []));
+        }
     }, [rerender, currentUser]);
-
-    let apiUnique = api.filter((obj: any, index: any, self: any) => {
-        return index === self.findIndex((item: any) => item._id === obj._id);
-    });
 
     // Function
     const getApi = loadingApi(async () => {
-        if (currentUser) {
-            const idUser = localStorage.getItem('currentUser');
-            const cartsUser = await axios.post(`${ServerURL}/users/queryId?id=${idUser}`);
-            const data = await axios.post(`${ServerURL}/products/findAllById`, { arrId: cartsUser.data[0].carts });
-            setApi(data.data);
-        } else {
-            if (localStorage.getItem('cartsLocal') !== null) {
-                const arrId = JSON.parse(`${localStorage.getItem('cartsLocal')}`);
-                const data = await axios.post(`${ServerURL}/products/findAllById`, { arrId: arrId });
-                setApi(data.data);
-            }
+        const idUser = localStorage.getItem('currentUser');
+        const apiKeysData = await axios.get(`${ServerURL}/carts/getCarts?idUser=${idUser}`);
+        if (apiKeys !== undefined) {
+            const keys = apiKeysData.data.result.products.map((item: any, index: number) => item.idProduct);
+            const api = await axios.post(`${ServerURL}/products/findAllById`, { arrId: keys });
+            const arr = api.data.result;
+
+            // Unique mảng khi có nhiều _id trùng nhau và chỉ lấy 1 _id
+            const uniqueArr: string[] = [];
+            const uniqueIds: Record<string, boolean> = {};
+            arr.forEach((item: any) => {
+                if (!uniqueIds[item._id]) {
+                    uniqueIds[item._id] = true;
+                    uniqueArr.push(item);
+                }
+            });
+            setApiKeys(apiKeysData.data.result.products);
+            setApi(api.data.result);
+            setApiUnique(uniqueArr);
         }
-    }, setLoading);
-
-    const updateCarts = async (newArr: any, item: any) => {
-        await axios.post(`${ServerURL}/users/updateCarts`, {
-            id: localStorage.getItem('currentUser'),
-            newArr: newArr,
-            item: item,
-        });
-        dispath(cartAction());
-    };
-
-    const deleteCarts = loadingApi(async (item: any) => {
-        await axios.post(`${ServerURL}/users/deleteCarts`, {
-            id: localStorage.getItem('currentUser'),
-            item: item,
-        });
-        dispath(cartAction());
     }, setLoading);
 
     const handleChoose = (id: number) => {
@@ -90,7 +85,6 @@ function Cart() {
             for (let i = 0; i < quantity; i++) {
                 arr.push(id);
             }
-            updateCarts(arr, id);
         } else {
             const arr = JSON.parse(`${localStorage.getItem('cartsLocal')}`);
             const lenArr = arr.filter((item: any) => item === id).length;
@@ -117,23 +111,35 @@ function Cart() {
         setShowChange(false);
     };
 
-    const handleDelete = (id: any) => {
+    const handleDelete = async (idProduct: string) => {
         if (currentUser) {
-            deleteCarts(id);
+            const idUser = localStorage.getItem('currentUser');
+            // Khi click vào deleteAll thì sẽ return các keys hiện đang có trong giỏ hàng về lại product
+            const retunrKeys = apiKeys
+                .filter((item: any) => item.idProduct === idProduct && item)
+                .map((item: any) => item.key);
+            await axios.post(`${ServerURL}/products/returnKeys`, {
+                idProduct: idProduct,
+                returnKeys: retunrKeys,
+            });
+            // Khi click vào deleteAll thì sẽ xóa tất cả các key trong carts
+            await axios.post(`${ServerURL}/carts/deleteAllByIdProducts`, {
+                idProduct: idProduct,
+                idUser: idUser,
+            });
         } else {
             const arr = JSON.parse(`${localStorage.getItem('cartsLocal')}`);
             let count = 0;
             const filteredArr = arr.filter((obj: any) => {
-                if (obj === id) {
+                if (obj === idProduct) {
                     count++;
                     return count <= 0; // Giữ lại tối đa 0 phần tử
                 }
                 return true;
             });
-
             localStorage.setItem('cartsLocal', JSON.stringify(filteredArr));
-            dispath(cartAction());
         }
+        dispath(cartAction());
     };
 
     return (
