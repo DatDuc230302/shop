@@ -11,7 +11,7 @@ import { ref, uploadBytesResumable, getDownloadURL, list } from 'firebase/storag
 import { storage } from '../../../App';
 import { useMediaQuery } from 'react-responsive';
 import DeleteIcon from '@mui/icons-material/Delete';
-import CreateIcon from '@mui/icons-material/Create';
+import AutorenewIcon from '@mui/icons-material/Autorenew';
 
 const cx = classNames.bind(style);
 function AdminEditProduct() {
@@ -309,6 +309,7 @@ function AdminEditProduct() {
                             </div>
                         </div>
                     </div>
+                    <AutorenewIcon onClick={() => setRerender(!rerender)} sx={{ cursor: 'pointer', fontSize: 25 }} />
                     <div className={cx('edit')}>
                         <h1 className={cx('header')}>Edit Products </h1>
                         <div className={cx('col')}>

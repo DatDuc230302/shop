@@ -81,6 +81,7 @@ export default function AdminSignin() {
                     </Typography>
                     <Box component="form" noValidate sx={{ mt: 1 }}>
                         <TextField
+                            placeholder="admin"
                             margin="normal"
                             required
                             fullWidth
@@ -98,6 +99,7 @@ export default function AdminSignin() {
                             onChange={(e) => setUid(String(e.target.value))}
                         />
                         <TextField
+                            placeholder="123"
                             margin="normal"
                             required
                             fullWidth

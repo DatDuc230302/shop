@@ -5,14 +5,13 @@ import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import { emptyCart } from '../../assets/imgs/empty_cart';
 import { ServerURL } from '../../connect';
-import Loading from '../../components/Loading';
-import { loadingApi } from '../../components/Loading';
 import { useDispatch, useSelector } from 'react-redux';
 import cartAction from '../../redux/actions/cartAction';
 import HeadLessTippy from '@tippyjs/react/headless';
 import 'tippy.js/dist/tippy.css';
 import { choose } from '../../apiLocal/choose';
 import { useMediaQuery } from 'react-responsive';
+import RenderCustom from '../../components/RenderCustom';
 
 const cx = classNames.bind(style);
 
@@ -27,8 +26,8 @@ function Cart() {
     const [apiUnique, setApiUnique] = useState<string[]>([]);
     const [apiKeys, setApiKeys] = useState<string[]>([]);
     const [showChange, setShowChange] = useState(false);
-    const [loading, setLoading] = useState(false);
     const [indexProduct, setIndexProduct] = useState(-1);
+    const [tooMany, setTooMany] = useState<boolean>(false);
 
     // React-Router
     const navigate = useNavigate();
@@ -41,73 +40,89 @@ function Cart() {
     // Effect
     useEffect(() => {
         window.scrollTo(0, 0);
-        if (currentUser) {
-            getApi();
-        } else {
-            setApi([]);
-            const cartsLocal = !localStorage.getItem('cartsLocal') ? localStorage.getItem('cartsLocal') : [];
-            console.log(JSON.parse(cartsLocal || []));
-        }
+        getApi();
     }, [rerender, currentUser]);
 
     // Function
-    const getApi = loadingApi(async () => {
-        const idUser = localStorage.getItem('currentUser');
-        const apiKeysData = await axios.get(`${ServerURL}/carts/getCarts?idUser=${idUser}`);
-        if (apiKeys !== undefined) {
-            const keys = apiKeysData.data.result.products.map((item: any, index: number) => item.idProduct);
-            const api = await axios.post(`${ServerURL}/products/findAllById`, { arrId: keys });
-            const arr = api.data.result;
-
-            // Unique mảng khi có nhiều _id trùng nhau và chỉ lấy 1 _id
-            const uniqueArr: string[] = [];
-            const uniqueIds: Record<string, boolean> = {};
-            arr.forEach((item: any) => {
-                if (!uniqueIds[item._id]) {
-                    uniqueIds[item._id] = true;
-                    uniqueArr.push(item);
-                }
-            });
-            setApiKeys(apiKeysData.data.result.products);
-            setApi(api.data.result);
-            setApiUnique(uniqueArr);
+    const getApi = async () => {
+        if (currentUser) {
+            const idUser = localStorage.getItem('currentUser');
+            const apiKeysData = await axios.get(`${ServerURL}/carts/getCarts?idUser=${idUser}`);
+            if (apiKeys !== undefined) {
+                const keys = apiKeysData.data.result.products.map((item: any, index: number) => item.idProduct);
+                const api = await axios.post(`${ServerURL}/products/findAllById`, { arrId: keys });
+                const arr = api.data.result;
+                // Unique mảng khi có nhiều _id trùng nhau và chỉ lấy 1 _id
+                const uniqueArr: string[] = [];
+                const uniqueIds: Record<string, boolean> = {};
+                arr.forEach((item: any) => {
+                    if (!uniqueIds[item._id]) {
+                        uniqueIds[item._id] = true;
+                        uniqueArr.push(item);
+                    }
+                });
+                setApiKeys(apiKeysData.data.result.products);
+                setApi(api.data.result);
+                setApiUnique(uniqueArr);
+            }
+        } else {
+            const cartsLocal = localStorage.getItem('cartsLocal');
+            const apiKeysData = JSON.parse(`${cartsLocal}`);
+            if (apiKeys !== undefined) {
+                const keys = apiKeysData.map((item: any, index: number) => item.idProduct);
+                const api = await axios.post(`${ServerURL}/products/findAllById`, { arrId: keys });
+                const arr = api.data.result;
+                const uniqueArr: string[] = [];
+                const uniqueIds: Record<string, boolean> = {};
+                arr.forEach((item: any) => {
+                    if (!uniqueIds[item._id]) {
+                        uniqueIds[item._id] = true;
+                        uniqueArr.push(item);
+                    }
+                });
+                setApiKeys(apiKeysData);
+                setApi(api.data.result);
+                setApiUnique(uniqueArr);
+            }
         }
-    }, setLoading);
+    };
 
     const handleChoose = (id: number) => {
         setIndexProduct(id);
         setShowChange(!showChange);
     };
 
-    const handleChange = (id: any, quantity: number) => {
-        if (currentUser) {
-            const arr = [];
-            for (let i = 0; i < quantity; i++) {
-                arr.push(id);
-            }
-        } else {
-            const arr = JSON.parse(`${localStorage.getItem('cartsLocal')}`);
-            const lenArr = arr.filter((item: any) => item === id).length;
-            let count = 0;
-            const filteredArr = arr.filter((obj: any) => {
-                if (obj === id) {
-                    count++;
-                    return count <= quantity;
-                }
-                return true;
-            });
-            if (lenArr >= quantity) {
-                localStorage.setItem('cartsLocal', JSON.stringify(filteredArr));
-                dispath(cartAction());
-            } else {
-                for (let i = 0; i < quantity - lenArr; i++) {
-                    arr.push(id);
-                }
-                localStorage.setItem('cartsLocal', JSON.stringify(arr));
-                dispath(cartAction());
-            }
+    const handleChange = async (idProduct: string, quantity: number) => {
+        const idUser = localStorage.getItem('currentUser');
+        const retunrKeys = apiKeys
+            .filter((item: any) => item.idProduct === idProduct && item)
+            .map((item: any) => item.key);
+
+        // Return lại những keys hiện tại trở về products
+        await axios.post(`${ServerURL}/products/returnKeys`, {
+            idProduct: idProduct,
+            returnKeys: retunrKeys,
+        });
+
+        // Lấy những keys mới thêm vào carts
+        const api = await axios.post(`${ServerURL}/carts/updateChangeProductsCarts`, {
+            idUser: idUser,
+            idProduct: idProduct,
+            quantity: quantity,
+        });
+
+        switch (api.data.message) {
+            case 'The key is not enough':
+                alert('Keys không đủ');
+                break;
+            case 'Cart is full':
+                setTooMany(true);
+                break;
+            default:
+                break;
         }
 
+        dispath(cartAction());
         setShowChange(false);
     };
 
@@ -128,16 +143,11 @@ function Cart() {
                 idUser: idUser,
             });
         } else {
-            const arr = JSON.parse(`${localStorage.getItem('cartsLocal')}`);
-            let count = 0;
-            const filteredArr = arr.filter((obj: any) => {
-                if (obj === idProduct) {
-                    count++;
-                    return count <= 0; // Giữ lại tối đa 0 phần tử
-                }
-                return true;
-            });
-            localStorage.setItem('cartsLocal', JSON.stringify(filteredArr));
+            const cartsLocal = localStorage.getItem('cartsLocal');
+            let cartArray = JSON.parse(`${cartsLocal}`);
+            cartArray = cartArray.filter((item: any) => item.idProduct !== idProduct);
+            const updatedCart = JSON.stringify(cartArray);
+            localStorage.setItem('cartsLocal', updatedCart);
         }
         dispath(cartAction());
     };
@@ -145,16 +155,12 @@ function Cart() {
     return (
         <div className={cx('wrapper')}>
             <div className={cx('inner')}>
-                {loading ? (
-                    <div style={{ paddingTop: 100 }}>
-                        <Loading />
-                    </div>
-                ) : api.length === 0 ? (
+                {api.length === 0 ? (
                     <div className={cx('empty')}>
                         <div className={cx('img')}>{emptyCart}</div>
                         <span className={cx('title')}>Your cart is empty</span>
                         <span className={cx('content')}>Go ahead and add some cool stuff to it!</span>
-                        <Link to="/" className={cx('browse')}>
+                        <Link to="/category" className={cx('browse')}>
                             Browse deals
                         </Link>
                     </div>
@@ -414,8 +420,27 @@ function Cart() {
                                 </div>
                             </div>
                         </div>
+                        <div>{<RenderCustom type={'Csgo'} />}</div>
                     </>
                 )}
+            </div>
+            <div className={cx('many', tooMany && 'active')}>
+                <div className={cx('many-overlay')}></div>
+                <div className={cx('many-box', tooMany && 'active')}>
+                    <span className={cx('many-header')}>Too many products in the cart</span>
+                    <div className={cx('many-info')}>
+                        <span>You can add up to:</span>
+                        <li>5 single products</li>
+                        <li>15 products in bundles</li>
+                    </div>
+                    <span className={cx('many-content')}>
+                        Go to the cart and remove something before adding a new product. Or, continue to payment with
+                        your cart as it is.
+                    </span>
+                    <div onClick={() => setTooMany(false)} className={cx('many-btn')}>
+                        OK
+                    </div>
+                </div>
             </div>
         </div>
     );

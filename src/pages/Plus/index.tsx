@@ -13,6 +13,7 @@ import {
 import RenderCustom from '../../components/RenderCustom';
 
 const cx = classNames.bind(style);
+
 function Plus() {
     const pc = useMediaQuery({ minWidth: 992 });
     const tb = useMediaQuery({ minWidth: 768, maxWidth: 991 });
@@ -20,6 +21,7 @@ function Plus() {
 
     useEffect(() => {
         window.scrollTo(0, 0);
+        document.title = 'Buy & Sell Online: PC Games, Software, Gift Cards and More on G2A.COM';
     }, []);
 
     return (

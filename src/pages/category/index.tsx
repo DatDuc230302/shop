@@ -13,7 +13,7 @@ function Category() {
     const [priceMaxUrl, setPriceMaxUrl] = useState(0);
 
     useEffect(() => {
-        document.title = 'G2A Category';
+        document.title = 'Buy & Sell Online: PC Games, Software, Gift Cards and More on G2A.COM';
     }, []);
 
     useEffect(() => {

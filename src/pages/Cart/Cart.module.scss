@@ -390,3 +390,107 @@
         }
     }
 }
+
+.many {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000000000000000000;
+    visibility: hidden;
+
+    &.active {
+        visibility: visible;
+    }
+
+    .many-overlay {
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.8);
+        position: absolute;
+    }
+
+    .many-box {
+        width: 380px;
+        height: 347.6px;
+        background-color: white;
+        z-index: 10;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding-top: 34px;
+        padding-right: 1px;
+        opacity: 0;
+        transform: translateY(-150px);
+        transition: all linear 0.3s;
+
+        &.active {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .many-header {
+            font-size: 2.2rem;
+            color: #212121;
+            font-weight: bold;
+        }
+
+        .many-info {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 36px;
+            gap: 0.2rem;
+            span {
+                color: #757575;
+                font-size: 1.4rem;
+            }
+
+            li {
+                font-size: 1.4rem;
+                color: #7f7f7f;
+                font-weight: bold;
+                list-style: none;
+            }
+        }
+
+        .many-content {
+            margin-top: 34px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            font-size: 1.4rem;
+            color: #7f7f7f;
+            text-align: center;
+            padding: 0 30px;
+            line-height: 20px;
+        }
+
+        .many-btn {
+            width: 85px;
+            height: 42.4px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #0868f3;
+            transition: all linear 0.2s;
+            font-size: 1.4rem;
+            color: white;
+            font-weight: bold;
+            margin-top: 30px;
+            font-family: Arial;
+
+            cursor: pointer;
+
+            &:hover {
+                transform: scale(1.01);
+            }
+        }
+    }
+}
