@@ -1,0 +1,401 @@
+.wrapper {
+    width: 100%;
+    min-height: 1000px;
+    background-color: #f9f9f9;
+}
+
+.inner {
+    width: 100%;
+}
+
+.header {
+    height: 57px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    background-color: white;
+    box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.2);
+
+    .header-box {
+        width: 1170px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        .header-back {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+
+            span {
+                margin-left: 3px;
+                font-size: 1.4rem;
+                font-weight: bold;
+                color: #0000008a;
+                font-family: Arial;
+                margin-right: 6px;
+            }
+
+            img {
+                width: 57px;
+            }
+        }
+
+        .header-auth {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            span {
+                color: #0000008a;
+                font-size: 1.4rem;
+            }
+
+            img {
+                width: 63px;
+                height: 25px;
+            }
+        }
+    }
+}
+
+.body {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding-top: 40px;
+
+    .body-box {
+        width: 1170px;
+        padding: 0 125px;
+        display: flex;
+        flex-direction: column;
+
+        .body-header {
+            color: rgba(0, 0, 0, 0.87);
+            font-size: 16px;
+            font-weight: 700;
+            line-height: 19px;
+            margin-bottom: 15px;
+        }
+
+        .body-section {
+            display: flex;
+            justify-content: space-between;
+
+            .body-payments {
+                width: 510px;
+                min-height: 500px;
+                background: rgb(255, 255, 255);
+                border: 1px solid rgb(224, 224, 224);
+                border-radius: 4px;
+                padding: 19px;
+
+                .payments-header {
+                    display: flex;
+                    gap: 1.5rem;
+                    span {
+                        font-size: 1.4rem;
+                        color: #0000008a;
+                    }
+                    margin-bottom: 20px;
+                }
+
+                .payments-list {
+                    .payments-item {
+                        display: flex;
+                        border-top: none;
+                        height: 62.8px;
+                        flex-direction: column;
+                        border-bottom: 1px solid rgb(224, 224, 224);
+                        border-left: 1px solid rgb(224, 224, 224);
+                        border-right: 1px solid rgb(224, 224, 224);
+                        padding: 19px 15px 20px 20px;
+                        transition: all linear 0.2s;
+                        overflow: hidden;
+                        cursor: pointer;
+
+                        &:first-child {
+                            border-top-left-radius: 4px;
+                            border-top-right-radius: 4px;
+                            border-top: 1px solid rgb(224, 224, 224);
+                        }
+
+                        &.active {
+                            background-color: rgb(250, 250, 250);
+                            height: 93.8px;
+
+                            .payments-content {
+                                visibility: visible;
+                            }
+
+                            .item-btn {
+                                &::before {
+                                    background-color: #2f82fb;
+                                }
+                            }
+                        }
+
+                        .payments-box {
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: center;
+
+                            .item-pay {
+                                display: flex;
+                                align-items: center;
+
+                                .item-btn {
+                                    height: 21px;
+                                    width: 21px;
+                                    border-radius: 50%;
+                                    border: 1px solid rgb(224, 224, 224);
+                                    position: relative;
+                                    margin-right: 9px;
+                                    transition: all linear 0.2s;
+
+                                    &::before {
+                                        content: '';
+                                        width: 11px;
+                                        height: 11px;
+                                        border-radius: 50%;
+                                        position: absolute;
+                                        left: 50%;
+                                        transform: translateX(-50%) translateY(-50%);
+                                        top: 50%;
+                                    }
+                                }
+
+                                .item-img {
+                                    height: 24px;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    padding: 0 3px;
+                                    margin-right: 6px;
+                                    padding-top: 1px;
+
+                                    img {
+                                        display: flex;
+                                        align-self: center;
+                                        max-width: 100px;
+                                        height: 100%;
+                                        max-height: 20px;
+                                    }
+                                }
+                            }
+
+                            .item-recommended {
+                                display: flex;
+                                flex-direction: column;
+                                padding-top: 1px;
+                                gap: 0.3rem;
+
+                                span {
+                                    font-size: 1.4rem;
+                                    color: #0000008a;
+                                }
+
+                                p {
+                                    padding: 0px 6px;
+                                    margin-left: auto;
+                                    line-height: 21px;
+                                    height: 20px;
+                                    background: rgb(65, 195, 3);
+                                    border-radius: 4px;
+                                    font-size: 11px;
+                                    color: rgb(255, 255, 255);
+                                }
+                            }
+                        }
+
+                        .payments-content {
+                            margin-top: 12px;
+                            padding-left: 33px;
+                            font-size: 1.2rem;
+                            color: #0000008a;
+                            visibility: hidden;
+                        }
+                    }
+                }
+            }
+
+            .body-pay {
+                margin-top: 1px;
+                background-color: white;
+                width: 370px;
+                height: max-content;
+                border: 1px solid rgb(224, 224, 224);
+                padding: 19px 19px 19.5px 19px;
+                border-radius: 4px;
+                display: flex;
+                flex-direction: column;
+
+                .pay-products {
+                    display: flex;
+                    flex-direction: column;
+                    overflow: hidden;
+                    height: 24px;
+                    transition: all linear 0.2s;
+
+                    &.active {
+                        transition: all linear 0.2s;
+                        height: max-content;
+                    }
+
+                    .pay-info {
+                        display: flex;
+                        justify-content: space-between;
+                        margin-bottom: 13px;
+                        .payInfo-name {
+                            padding-top: 4px;
+                            cursor: pointer;
+                            span {
+                                font-size: 1.4rem;
+                                color: #0000008a;
+                                font-family: Arial;
+                            }
+
+                            i {
+                                position: relative;
+                                display: inline-block;
+                                top: -2px;
+                                padding: 3px;
+                                margin-left: 10px;
+                                border-style: solid;
+                                border-color: rgba(0, 0, 0, 0.54);
+                                border-image: initial;
+                                border-width: 0px 1px 1px 0px;
+                                transition: transform 200ms ease 0s, top 200ms ease 0s;
+                                transform: rotate(45deg);
+
+                                &.active {
+                                    transform: rotate(-135deg);
+                                }
+                            }
+                        }
+
+                        .payInfo-price {
+                            display: flex;
+                            font-size: 1.4rem;
+                            height: 24px;
+                            align-items: center;
+                            color: #212121;
+                            p {
+                                margin-right: 3.5px;
+                            }
+
+                            span {
+                                font-weight: bold;
+                            }
+                        }
+                    }
+
+                    .product {
+                        display: flex;
+                        height: 62px;
+                        padding: 7px 0;
+                        justify-content: space-between;
+
+                        .product-name {
+                            display: flex;
+                            color: rgba(0, 0, 0, 0.87);
+                            font-size: 1.4rem;
+                            max-width: 200px;
+                        }
+
+                        .product-quantity {
+                            font-size: 1.4rem;
+                            color: #0000008a;
+                            margin-right: 37px;
+                        }
+
+                        .product-price {
+                            font-size: 1.4rem;
+                            color: #212121;
+                            display: flex;
+                            flex-direction: column;
+
+                            .main-price {
+                                display: flex;
+                                p {
+                                    margin-right: 3.5px;
+                                }
+
+                                span {
+                                    font-weight: bold;
+                                }
+                            }
+
+                            .old-price {
+                                font-size: 1.4rem;
+                                display: flex;
+                                color: #757575;
+                                text-decoration: line-through;
+                                margin-top: 7px;
+                                margin-left: 1px;
+                                p {
+                                    margin-right: 3.5px;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                .pay-detail {
+                    width: 100%;
+                    margin-top: 18px;
+                    padding-top: 20px;
+                    border-top: 1px dashed rgb(219, 219, 219);
+                    display: flex;
+                    flex-direction: column;
+
+                    .payDetail-cost {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        width: 100%;
+                        .payDetail-total {
+                            font-size: 1.4rem;
+                            font-weight: bold;
+                        }
+
+                        .payDetail-price {
+                            display: flex;
+                            font-size: 2.2rem;
+                            transform: translateY(-2.5px);
+
+                            p {
+                                margin-right: 5.5px;
+                            }
+
+                            span {
+                                font-weight: bold;
+                            }
+                        }
+                    }
+
+                    .payDetail-btn {
+                        margin-top: 21px;
+                        font-size: 14px;
+                        font-weight: 400;
+                        border-radius: 3px;
+                        height: 42.4px;
+                        width: 100%;
+                        background-color: rgb(47, 130, 251);
+                        color: rgb(255, 255, 255);
+                        cursor: pointer;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+
+                        &:hover {
+                            background-color: rgb(88, 150, 243);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
