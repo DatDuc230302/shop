@@ -30,30 +30,6 @@
         height: 40px;
     }
 
-    .tools {
-        font-size: 1.6rem;
-    }
-
-    .btns {
-        display: flex;
-        gap: 1rem;
-
-        .btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            border: 1px solid #ccc;
-            cursor: pointer;
-            transition: all linear 0.2s;
-
-            &:hover {
-                background-color: #a59e9e;
-            }
-        }
-    }
-
     .btn-add {
         flex: 1;
         height: 100%;

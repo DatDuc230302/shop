@@ -24,15 +24,14 @@ function Auth() {
     const mb = useMediaQuery({ maxWidth: 767 });
 
     // State
-    const [idUser, setIdUser] = useState<string>('');
-    const [name, setName] = useState('');
-    const [avatar, setAvatar] = useState('');
-    const [mail, setMail] = useState('');
-    const [rule, setRule] = useState(1);
+    const [name, setName] = useState<string>('');
+    const [avatar, setAvatar] = useState<string>('');
+    const [mail, setMail] = useState<string>('');
+    const [rule, setRule] = useState<number>(1);
     const [cartsLocal, setCartsLocal] = useState<number>(0);
-    const [show, setShow] = useState(false);
-    const [showChangeAva, setShowChangeAva] = useState(false);
-    const [oldAvatar, setOldvatar] = useState('');
+    const [show, setShow] = useState<boolean>(false);
+    const [showChangeAva, setShowChangeAva] = useState<boolean>(false);
+    const [oldAvatar, setOldvatar] = useState<string>('');
 
     //Redux
     const dispath = useDispatch();
@@ -42,6 +41,8 @@ function Auth() {
     // Effect
     useEffect(() => {
         if (currentUser) {
+            const idUser = localStorage.getItem('currentUser');
+            getUser();
             if (idUser) {
                 getCartsUser(idUser);
             }
@@ -54,27 +55,40 @@ function Auth() {
                 setCartsLocal(0);
             }
         }
-    }, [currentUser, renderCart, idUser]);
+    }, [renderCart, currentUser]);
+
+    useEffect(() => {}, []);
 
     // Function
-
     const getCartsUser = async (idUser: string) => {
         const api = await axios.get(`${ServerURL}/carts/getCarts?idUser=${idUser}`);
-        setCartsLocal(api.data.result.products.length);
+        if (api) {
+            setCartsLocal(api.data.result.products.length);
+        }
     };
 
-    // Login
-    const loginSuccess = async (res: any) => {
-        const api = res.profileObj;
-        const resData = await axios.get(`${ServerURL}/users/queryId?id=${api.googleId}`);
-        const data = resData.data[0];
-        setOldvatar(api.imageUrl);
-        setIdUser(api.googleId);
-        if (data !== undefined) {
+    const getUser = async () => {
+        const idUser = localStorage.getItem('currentUser');
+        const api = await axios.get(`${ServerURL}/users/queryId?id=${idUser}`);
+        const data = api.data[0];
+        if (data) {
             setName(data.name);
             setAvatar(data.avatar);
             setMail(data.email);
             setRule(data.rule);
+        }
+    };
+
+    // Login
+
+    const loginSuccess = async (res: any) => {
+        const api = res.profileObj;
+        // Kiểm tra xem idUser đã tồn tại trên database chưa
+        const resData = await axios.get(`${ServerURL}/users/queryId?id=${api.googleId}`);
+        const data = resData.data[0];
+        setOldvatar(api.imageUrl);
+        if (data !== undefined) {
+            getUser();
             localStorage.setItem('currentUser', data.id);
         } else {
             setName(api.name);
@@ -89,9 +103,9 @@ function Auth() {
                 email: api.email,
             });
             await axios.post(`${ServerURL}/carts/addCarts`, { idUser: api.googleId });
-            dispath(cartAction());
         }
         dispath(authAction('LOGIN'));
+        dispath(cartAction());
         setShow(false);
     };
 

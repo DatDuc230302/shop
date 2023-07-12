@@ -84,11 +84,9 @@ function Detail() {
             } else {
             }
         } else {
-            const api = await axios.get(`${ServerURL}/products/getKey?idProduct=${String(params.key)}`);
-            const key = api.data.result;
             const cartsLocal = localStorage.getItem('cartsLocal');
             let cartArray = cartsLocal ? JSON.parse(cartsLocal) : [];
-            const cartItem = { idProduct: String(params.key), key: key };
+            const cartItem = { idProduct: String(params.key) };
             cartArray.push(cartItem);
             const updatedCart = JSON.stringify(cartArray);
             localStorage.setItem('cartsLocal', updatedCart);
@@ -374,7 +372,7 @@ function Detail() {
                                             </div>
                                         </div>
                                         <div
-                                            onClick={() => handleAddCart(item._id)}
+                                            onClick={() => keys.length > 0 && handleAddCart(item._id)}
                                             className={cx('pay-cart', keys.length === 0 && 'disable')}
                                         >
                                             {keys.length === 0 ? 'Sold Out' : plus}

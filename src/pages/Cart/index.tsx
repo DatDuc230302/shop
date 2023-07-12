@@ -1,6 +1,6 @@
 import classNames from 'classnames/bind';
 import style from './Cart.module.scss';
-import { useEffect, useState } from 'react';
+import { useEffect, useId, useState } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import { emptyCart } from '../../assets/imgs/empty_cart';
@@ -39,7 +39,6 @@ function Cart() {
 
     // Effect
     useEffect(() => {
-        window.scrollTo(0, 0);
         getApi();
     }, [rerender, currentUser]);
 
@@ -93,33 +92,56 @@ function Cart() {
     };
 
     const handleChange = async (idProduct: string, quantity: number) => {
-        const idUser = localStorage.getItem('currentUser');
-        const retunrKeys = apiKeys
-            .filter((item: any) => item.idProduct === idProduct && item)
-            .map((item: any) => item.key);
+        if (currentUser) {
+            const idUser = localStorage.getItem('currentUser');
+            const retunrKeys = apiKeys
+                .filter((item: any) => item.idProduct === idProduct && item)
+                .map((item: any) => item.key);
+            // Return lại những keys hiện tại trở về products
+            await axios.post(`${ServerURL}/products/returnKeys`, {
+                idProduct: idProduct,
+                returnKeys: retunrKeys,
+            });
+            // Lấy những keys mới thêm vào carts
+            const api = await axios.post(`${ServerURL}/carts/updateChangeProductsCarts`, {
+                idUser: idUser,
+                idProduct: idProduct,
+                quantity: quantity,
+            });
+            switch (api.data.message) {
+                case 'The key is not enough':
+                    alert('Keys không đủ');
+                    break;
+                case 'Cart is full':
+                    setTooMany(true);
+                    break;
+                default:
+                    break;
+            }
+        } else {
+            const cartsLocal = localStorage.getItem('cartsLocal');
+            let cartArray = cartsLocal ? JSON.parse(cartsLocal) : [];
 
-        // Return lại những keys hiện tại trở về products
-        await axios.post(`${ServerURL}/products/returnKeys`, {
-            idProduct: idProduct,
-            returnKeys: retunrKeys,
-        });
+            // Kiểm tra xem idProduct đã tồn tại trong cartArray hay chưa
+            const exists = cartArray.some((item: any) => item.idProduct === idProduct);
 
-        // Lấy những keys mới thêm vào carts
-        const api = await axios.post(`${ServerURL}/carts/updateChangeProductsCarts`, {
-            idUser: idUser,
-            idProduct: idProduct,
-            quantity: quantity,
-        });
+            // Nếu idProduct đã tồn tại, xóa các phần tử có idProduct đó
+            if (exists) {
+                cartArray = cartArray.filter((item: any) => item.idProduct !== idProduct);
+            }
 
-        switch (api.data.message) {
-            case 'The key is not enough':
-                alert('Keys không đủ');
-                break;
-            case 'Cart is full':
+            // Thêm idProduct mới vào cartArray dựa trên quantity
+            for (let i = 0; i < quantity; i++) {
+                const cartItem = { idProduct: idProduct };
+                cartArray.unshift(cartItem);
+            }
+
+            if (cartArray.length <= 15) {
+                const updatedCart = JSON.stringify(cartArray);
+                localStorage.setItem('cartsLocal', updatedCart);
+            } else {
                 setTooMany(true);
-                break;
-            default:
-                break;
+            }
         }
 
         dispath(cartAction());
@@ -150,6 +172,30 @@ function Cart() {
             localStorage.setItem('cartsLocal', updatedCart);
         }
         dispath(cartAction());
+    };
+
+    const handleNextPay = async () => {
+        if (currentUser) {
+            const userId = localStorage.getItem('currentUser');
+            const totalPrice = api
+                .reduce(
+                    (accumulator: any, item: any) =>
+                        accumulator + (item.discount > 0 ? item.priceDiscount : item.price),
+                    0,
+                )
+                .toFixed(2);
+            const result = await axios.post(`${ServerURL}/orders/addOrders`, {
+                userId: userId,
+                productsFromCarts: apiKeys,
+                totalPrice: totalPrice,
+            });
+
+            if (result.data.message === 'successfully') {
+                navigate('/payment');
+            }
+        } else {
+            alert('You have to loggin');
+        }
     };
 
     return (
@@ -414,9 +460,9 @@ function Cart() {
                                             </span>
                                         </span>
                                     </div>
-                                    <Link to={'/payment'} className={cx('payBox2-button')}>
+                                    <div onClick={() => handleNextPay()} className={cx('payBox2-button')}>
                                         Continue to payment
-                                    </Link>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -430,7 +476,6 @@ function Cart() {
                     <span className={cx('many-header')}>Too many products in the cart</span>
                     <div className={cx('many-info')}>
                         <span>You can add up to:</span>
-                        <li>5 single products</li>
                         <li>15 products in bundles</li>
                     </div>
                     <span className={cx('many-content')}>

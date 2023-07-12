@@ -1,6 +1,9 @@
 import classNames from 'classnames/bind';
 import style from './Payment.module.scss';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { ServerURL } from '../../connect';
+import { Link, useNavigate } from 'react-router-dom';
 
 const payments = [
     {
@@ -40,10 +43,44 @@ function Payment() {
     const [activeItem, setActiveItem] = useState<number>(0);
     const [activeProducts, setActiveProducts] = useState<boolean>(false);
     const [titlePay, setTitlePay] = useState<string>('Pay with G2A Wallet');
+    const [api, setApi] = useState<Object[]>([]);
+    const [totalPrice, setTotalPrice] = useState<number>(0);
+    const [products, setProducts] = useState<Object[]>([]);
+    const [productsView, setProductsView] = useState<Object[]>([]);
+
+    const navigate = useNavigate();
 
     const handleItem = (index: number, content: string) => {
         setActiveItem(index);
         setTitlePay(content);
+    };
+
+    useEffect(() => {
+        const userId = localStorage.getItem('currentUser');
+        getOrder(String(userId));
+    }, []);
+
+    const getOrder = async (userId: string) => {
+        const api = await axios.get(`${ServerURL}/orders/getOrders?userId=${userId}`);
+        setApi(api.data.result);
+        setTotalPrice(api.data.result.totalPrice);
+        setProducts(api.data.result.products);
+
+        const arr = api.data.result.products.map((item: any) => item.idProduct);
+
+        const arrId: string[] = arr.filter((value: any, index: any, self: any) => {
+            return self.indexOf(value) === index;
+        });
+
+        const productsUnique = await axios.post(`${ServerURL}/products/findAllById`, {
+            arrId: arrId,
+        });
+        setProductsView(productsUnique.data.result);
+
+        if (api.data.result.products.length > 0) {
+        } else {
+            navigate('/');
+        }
     };
 
     return (
@@ -51,7 +88,7 @@ function Payment() {
             <div className={cx('inner')}>
                 <div className={cx('header')}>
                     <div className={cx('header-box')}>
-                        <div className={cx('header-back')}>
+                        <Link to="/page/cart" className={cx('header-back')}>
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 viewBox="0 0 24 24"
@@ -71,7 +108,7 @@ function Payment() {
                             </svg>
                             <span>Back to</span>
                             <img src="https://www.g2a.com/static/assets/images/logo_g2a_dark.svg" alt="" />
-                        </div>
+                        </Link>
                         <div className={cx('header-auth')}>
                             <span>Authorized by</span>
                             <img src="https://www.g2a.com/best-deals/static/static/assets/images/zen_logo.svg" alt="" />
@@ -130,37 +167,43 @@ function Payment() {
                                             onClick={() => setActiveProducts(!activeProducts)}
                                             className={cx('payInfo-name')}
                                         >
-                                            <span>Subtotal (2 items from 2 sellers)</span>
+                                            <span>
+                                                Subtotal ({products.length} item from {products.length} seller)
+                                            </span>
                                             <i className={cx(activeProducts && 'active')}></i>
                                         </div>
                                         <div className={cx('payInfo-price')}>
                                             <p>$</p>
-                                            <span>16.85</span>
+                                            <span>{totalPrice}</span>
                                         </div>
                                     </div>
-                                    <div className={cx('product')}>
-                                        <span className={cx('product-name')}>
-                                            Xbox Game Pass Ultimate 1 Month Xbox Live Key GLOBAL
-                                        </span>
-                                        <span className={cx('product-quantity')}>1x</span>
-                                        <span className={cx('product-price')}>
-                                            <div className={cx('main-price')}>
-                                                <p>$</p>
-                                                <span>13.17</span>
-                                            </div>
-                                            <div className={cx('old-price')}>
-                                                <p>$</p>
-                                                <span>16.45</span>
-                                            </div>
-                                        </span>
-                                    </div>
+                                    {productsView.map((item: any, index: number) => (
+                                        <div key={index} className={cx('product')}>
+                                            <span className={cx('product-name')}>{item.name}</span>
+                                            <span className={cx('product-quantity')}>
+                                                {products.filter((it: any) => it.idProduct === item._id).length}x
+                                            </span>
+                                            <span className={cx('product-price')}>
+                                                <div className={cx('main-price')}>
+                                                    <p>$</p>
+                                                    <span>{item.discount > 0 ? item.priceDiscount : item.price}</span>
+                                                </div>
+                                                {item.discount > 0 && (
+                                                    <div className={cx('old-price')}>
+                                                        <p>$</p>
+                                                        <span>{item.price}</span>
+                                                    </div>
+                                                )}
+                                            </span>
+                                        </div>
+                                    ))}
                                 </div>
                                 <div className={cx('pay-detail')}>
                                     <div className={cx('payDetail-cost')}>
                                         <span className={cx('payDetail-total')}>Total price</span>
                                         <div className={cx('payDetail-price')}>
                                             <p>$</p>
-                                            <span>16.85</span>
+                                            <span>{totalPrice}</span>
                                         </div>
                                     </div>
                                     <div className={cx('payDetail-btn')}>{titlePay}</div>

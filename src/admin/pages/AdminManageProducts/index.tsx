@@ -93,17 +93,6 @@ function AdminManageProducts() {
                         className={cx('search-input')}
                         type="text"
                     />
-                    <div className={cx('tools')}>
-                        {totalProducts} / {totalApi.length}
-                    </div>
-                    <div className={cx('btns')}>
-                        <div onClick={() => handlePageNum(true)} className={cx('btn')}>
-                            Prev
-                        </div>
-                        <div onClick={() => handlePageNum(false)} className={cx('btn')}>
-                            Next
-                        </div>
-                    </div>
                     <div className={cx('btn-add')}>
                         <Button
                             onClick={() => navigate('/admin/manage-products/addProduct')}

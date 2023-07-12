@@ -47,6 +47,10 @@ function Navigate() {
         setShowOverlay(false);
     };
 
+    const move = () => {
+        navigate('/best-deals/steam-gift-cards');
+    };
+
     return (
         <div className={cx('wrapper')}>
             <div className={cx('inner')}>
