@@ -38,6 +38,7 @@ function Detail() {
     const [plus, setPlus] = useState('Add to cart');
     const [loading, setLoading] = useState(false);
     const [keys, setKeys] = useState<string[]>([]);
+    const [fullCart, setFullCart] = useState<boolean>(false);
 
     // Effect
     useEffect(() => {
@@ -86,12 +87,17 @@ function Detail() {
         } else {
             const cartsLocal = localStorage.getItem('cartsLocal');
             let cartArray = cartsLocal ? JSON.parse(cartsLocal) : [];
-            const cartItem = { idProduct: String(params.key) };
-            cartArray.push(cartItem);
-            const updatedCart = JSON.stringify(cartArray);
-            localStorage.setItem('cartsLocal', updatedCart);
-            navigate('/page/cart');
-            dispath(cartAction());
+
+            if (cartArray.length < 15) {
+                const cartItem = { idProduct: String(params.key) };
+                cartArray.unshift(cartItem);
+                const updatedCart = JSON.stringify(cartArray);
+                localStorage.setItem('cartsLocal', updatedCart);
+                navigate('/page/cart');
+                dispath(cartAction());
+            } else {
+                setFullCart(true);
+            }
         }
     };
 
@@ -387,6 +393,23 @@ function Detail() {
                         <NotFoundPage />
                     </div>
                 )}
+            </div>
+            <div className={cx('many', fullCart && 'active')}>
+                <div className={cx('many-overlay')}></div>
+                <div className={cx('many-box', fullCart && 'active')}>
+                    <span className={cx('many-header')}>Too many products in the cart</span>
+                    <div className={cx('many-info')}>
+                        <span>You can add up to:</span>
+                        <li>15 products in bundles</li>
+                    </div>
+                    <span className={cx('many-content')}>
+                        Go to the cart and remove something before adding a new product. Or, continue to payment with
+                        your cart as it is.
+                    </span>
+                    <div onClick={() => setFullCart(false)} className={cx('many-btn')}>
+                        OK
+                    </div>
+                </div>
             </div>
         </div>
     );

@@ -422,8 +422,7 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        padding-top: 34px;
-        padding-right: 1px;
+        padding: 34px 20px 0 21px;
         opacity: 0;
         transform: translateY(-150px);
         transition: all linear 0.3s;
@@ -487,6 +486,14 @@
             font-family: Arial;
 
             cursor: pointer;
+
+            &.disable {
+                background-color: #ccc;
+
+                &:hover {
+                    transform: scale(1);
+                }
+            }
 
             &:hover {
                 transform: scale(1.01);

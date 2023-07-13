@@ -153,7 +153,8 @@ function Auth() {
                 <div className={cx('login')}>
                     <HeadlessTippy
                         onClickOutside={() => setShow(false)}
-                        visible={show}
+                        // visible={show}
+                        visible
                         appendTo={'parent'}
                         interactive
                         placement="bottom"
@@ -244,6 +245,13 @@ function Auth() {
                                             cookiePolicy="single_host_origin"
                                             isSignedIn={true}
                                         />
+                                        <Link to={'welcome'} className={cx('login-btn')}>
+                                            Sign in
+                                        </Link>
+                                        <div className={cx('register')}>
+                                            <span>Don't have an account?</span>
+                                            <Link to={'/welcome/register'}>Register</Link>
+                                        </div>
                                     </div>
                                 )}
                             </>

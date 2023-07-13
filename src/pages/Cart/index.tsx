@@ -12,6 +12,7 @@ import 'tippy.js/dist/tippy.css';
 import { choose } from '../../apiLocal/choose';
 import { useMediaQuery } from 'react-responsive';
 import RenderCustom from '../../components/RenderCustom';
+import Loading, { loadingApi } from '../../components/Loading';
 
 const cx = classNames.bind(style);
 
@@ -22,12 +23,14 @@ function Cart() {
     const mb = useMediaQuery({ maxWidth: 767 });
 
     // State
-    const [api, setApi] = useState([]);
+    const [api, setApi] = useState<Object[]>([]);
     const [apiUnique, setApiUnique] = useState<string[]>([]);
     const [apiKeys, setApiKeys] = useState<string[]>([]);
-    const [showChange, setShowChange] = useState(false);
-    const [indexProduct, setIndexProduct] = useState(-1);
+    const [showChange, setShowChange] = useState<boolean>(false);
+    const [indexProduct, setIndexProduct] = useState<number>(-1);
     const [tooMany, setTooMany] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [mustLogin, setMustLogin] = useState<boolean>(false);
 
     // React-Router
     const navigate = useNavigate();
@@ -43,7 +46,7 @@ function Cart() {
     }, [rerender, currentUser]);
 
     // Function
-    const getApi = async () => {
+    const getApi = loadingApi(async () => {
         if (currentUser) {
             const idUser = localStorage.getItem('currentUser');
             const apiKeysData = await axios.get(`${ServerURL}/carts/getCarts?idUser=${idUser}`);
@@ -84,7 +87,7 @@ function Cart() {
                 setApiUnique(uniqueArr);
             }
         }
-    };
+    }, setLoading);
 
     const handleChoose = (id: number) => {
         setIndexProduct(id);
@@ -194,14 +197,18 @@ function Cart() {
                 navigate('/payment');
             }
         } else {
-            alert('You have to loggin');
+            setMustLogin(true);
         }
     };
 
     return (
         <div className={cx('wrapper')}>
             <div className={cx('inner')}>
-                {api.length === 0 ? (
+                {loading ? (
+                    <div style={{ minHeight: 790, marginTop: 40 }}>
+                        <Loading />
+                    </div>
+                ) : api.length === 0 ? (
                     <div className={cx('empty')}>
                         <div className={cx('img')}>{emptyCart}</div>
                         <span className={cx('title')}>Your cart is empty</span>
@@ -466,11 +473,11 @@ function Cart() {
                                 </div>
                             </div>
                         </div>
-                        <div>{<RenderCustom type={'Csgo'} />}</div>
                     </>
                 )}
+                <div>{<RenderCustom type={'Csgo'} />}</div>
             </div>
-            <div className={cx('many', tooMany && 'active')}>
+            <div className={cx('login', mustLogin && 'active')}>
                 <div className={cx('many-overlay')}></div>
                 <div className={cx('many-box', tooMany && 'active')}>
                     <span className={cx('many-header')}>Too many products in the cart</span>
@@ -484,6 +491,24 @@ function Cart() {
                     </span>
                     <div onClick={() => setTooMany(false)} className={cx('many-btn')}>
                         OK
+                    </div>
+                </div>
+            </div>
+            <div className={cx('many', mustLogin && 'active')}>
+                <div onClick={() => setMustLogin(false)} className={cx('many-overlay')}></div>
+                <div className={cx('many-box', mustLogin && 'active')}>
+                    <span style={{ textAlign: 'center' }} className={cx('many-header')}>
+                        You have to login to add product to cart!!!
+                    </span>
+                    <div style={{ width: '100%' }} className={cx('many-btn')}>
+                        Login Here
+                    </div>
+                    <div
+                        style={{ width: '100%' }}
+                        onClick={() => setMustLogin(false)}
+                        className={cx('many-btn', 'disable')}
+                    >
+                        Cancel
                     </div>
                 </div>
             </div>
