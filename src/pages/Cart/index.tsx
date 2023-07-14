@@ -500,7 +500,11 @@ function Cart() {
                     <span style={{ textAlign: 'center' }} className={cx('many-header')}>
                         You have to login to add product to cart!!!
                     </span>
-                    <div style={{ width: '100%' }} className={cx('many-btn')}>
+                    <div
+                        onClick={() => navigate('/welcome/login')}
+                        style={{ width: '100%' }}
+                        className={cx('many-btn')}
+                    >
                         Login Here
                     </div>
                     <div

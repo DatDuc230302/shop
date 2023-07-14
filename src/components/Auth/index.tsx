@@ -26,7 +26,6 @@ function Auth() {
     // State
     const [name, setName] = useState<string>('');
     const [avatar, setAvatar] = useState<string>('');
-    const [mail, setMail] = useState<string>('');
     const [rule, setRule] = useState<number>(1);
     const [cartsLocal, setCartsLocal] = useState<number>(0);
     const [show, setShow] = useState<boolean>(false);
@@ -74,7 +73,6 @@ function Auth() {
         if (data) {
             setName(data.name);
             setAvatar(data.avatar);
-            setMail(data.email);
             setRule(data.rule);
         }
     };
@@ -93,14 +91,23 @@ function Auth() {
         } else {
             setName(api.name);
             setAvatar(api.imageUrl);
-            setMail(api.email);
             localStorage.setItem('currentUser', api.googleId);
+            // Khi đăng nhập với gmail thì sẽ tạo password ngẫu nhiên với 8 kí tự
+            var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            var password = '';
+            var charactersLength = characters.length;
+
+            for (var i = 0; i < 8; i++) {
+                var randomIndex = Math.floor(Math.random() * charactersLength);
+                password += characters.charAt(randomIndex);
+            }
+            // End random here
             await axios.post(`${ServerURL}/users/add`, {
                 id: api.googleId,
+                password: password,
                 name: api.name,
                 avatar: api.imageUrl,
                 rule: 1,
-                email: api.email,
             });
             await axios.post(`${ServerURL}/carts/addCarts`, { idUser: api.googleId });
         }
@@ -153,8 +160,8 @@ function Auth() {
                 <div className={cx('login')}>
                     <HeadlessTippy
                         onClickOutside={() => setShow(false)}
-                        // visible={show}
-                        visible
+                        visible={show}
+                        // visible
                         appendTo={'parent'}
                         interactive
                         placement="bottom"
@@ -194,7 +201,7 @@ function Auth() {
                                                 </div>
                                             </div>
                                             <div className={cx('detail')}>
-                                                <span className={cx('gmail')}>{mail}</span>
+                                                <span className={cx('gmail')}>{name}</span>
                                                 <span className={cx('rule')}>
                                                     <div className={cx('rule-box')}></div>
                                                     {rule === 0 && 'Admin'}
@@ -245,7 +252,7 @@ function Auth() {
                                             cookiePolicy="single_host_origin"
                                             isSignedIn={true}
                                         />
-                                        <Link to={'welcome'} className={cx('login-btn')}>
+                                        <Link to={'/welcome/login'} className={cx('login-btn')}>
                                             Sign in
                                         </Link>
                                         <div className={cx('register')}>

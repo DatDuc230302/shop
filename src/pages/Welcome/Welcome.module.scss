@@ -1,7 +1,8 @@
 .wrapper {
     width: 100%;
-    min-height: 1000px;
+    height: 100vh;
     user-select: none;
+    background-color: #f9f9f9;
 }
 
 .inner {
@@ -20,7 +21,6 @@
 }
 
 .body {
-    background-color: #f9f9f9;
     display: flex;
     justify-content: center;
     padding: 48px 20px 48px 20px;
@@ -115,5 +115,102 @@
                 }
             }
         }
+    }
+}
+
+.alert {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    visibility: hidden;
+    opacity: 0;
+
+    &.active {
+        visibility: visible;
+        opacity: 1;
+    }
+
+    .overlay {
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        position: absolute;
+    }
+
+    .alert-box {
+        width: 300px;
+        height: 200px;
+        background-color: white;
+        border-radius: 4px;
+        z-index: 10;
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        padding-top: 40px;
+        transition: all linear 0.3s;
+        opacity: 0;
+        transform: scale(0.8);
+
+        &.active {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .alert-title {
+            text-align: center;
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: black;
+        }
+
+        .alert-btn {
+            width: 100%;
+            background-color: #2f82fb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 40px;
+            color: white;
+            border-radius: 4px;
+            margin-top: 2rem;
+            font-size: 1.4rem;
+            font-weight: bold;
+            transition: all linear 0.2s;
+            cursor: pointer;
+
+            &:hover {
+                background-color: #0868f3;
+            }
+        }
+    }
+}
+
+.alert-top {
+    width: 200px;
+    height: 60px;
+    background-color: #ccc;
+    color: black;
+    font-size: 2rem;
+    font-weight: bold;
+    position: absolute;
+    justify-content: center;
+    left: 50%;
+    border-radius: 3px;
+    box-shadow: 0 0 0 1px #fff;
+    transform: translateX(-50%);
+    transition: all linear 0.5s;
+    top: -100px;
+    display: flex;
+    align-items: center;
+    opacity: 0;
+
+    &.active {
+        opacity: 1;
+        top: 54px;
     }
 }
