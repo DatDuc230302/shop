@@ -8,8 +8,8 @@ import { ServerURL } from '../../connect';
 import Loading from '../../components/Loading';
 import { loadingApi } from '../../components/Loading';
 import { useSelector, useDispatch } from 'react-redux';
-import authAction from '../../redux/actions/authAction';
 import cartAction from '../../redux/actions/cartAction';
+import { LoginGoogle } from '../../components/Auth/AuthGoogle';
 
 const cx = classNames.bind(style);
 function Welcome() {
@@ -118,7 +118,6 @@ function Welcome() {
                         setAlertRegister(false);
                         localStorage.setItem('currentUser', idRegister);
                         navigate('/');
-                        dispath(authAction('LOGIN'));
                         dispath(cartAction());
                     }, 1000);
                 }
@@ -137,7 +136,6 @@ function Welcome() {
                 setAlertLogin(false);
                 localStorage.setItem('currentUser', idLogin);
                 navigate('/');
-                dispath(authAction('LOGIN'));
                 dispath(cartAction());
             }, 1000);
         } else {
@@ -183,6 +181,9 @@ function Welcome() {
                                     type="password"
                                     placeholder="Enter your password"
                                 />
+                                <div style={{ marginBottom: '10px' }}>
+                                    <LoginGoogle />
+                                </div>
                             </>
                         )}
                         {params.key === 'register' && (

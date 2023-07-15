@@ -30,7 +30,7 @@ function Detail() {
 
     // Redux
     const dispath = useDispatch();
-    const currentUser = useSelector((state: any) => state.authReducer);
+    const currentUser = useSelector((state: any) => state.authClientReducer);
 
     // State
     const [pickPrice, setPickPrice] = useState(true);
@@ -72,8 +72,8 @@ function Detail() {
     };
 
     const handleAddCart = async (id: string) => {
-        if (currentUser) {
-            const idUser = localStorage.getItem('currentUser');
+        if (currentUser.status) {
+            const idUser = currentUser.data.id;
             const idProduct = id;
             const api = await axios.post(`${ServerURL}/carts/updateProductsCarts`, {
                 idUser: idUser,

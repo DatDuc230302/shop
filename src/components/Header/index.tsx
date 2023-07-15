@@ -3,15 +3,13 @@ import style from './Header.module.scss';
 import { logo } from '../../assets/logo';
 import { Link, useNavigate } from 'react-router-dom';
 import { useMediaQuery } from 'react-responsive';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Navigate from '../Navigate';
-import { gapi } from 'gapi-script';
-import Auth from '../Auth';
 import Search from '../Search';
 import { categories } from '../../apiLocal/categories';
+import Auth from '../Auth';
 
 const cx = classNames.bind(style);
-const clientId = '796532655839-3484b4jq39k3kin9f8v1hfv8f0q1slvs.apps.googleusercontent.com';
 
 function Header() {
     // Responsive
@@ -20,18 +18,7 @@ function Header() {
     const mb = useMediaQuery({ maxWidth: 767 });
 
     // State
-    const [showMenu, setShowMenu] = useState(false);
-
-    // Effect
-    useEffect(() => {
-        function start() {
-            gapi.client.init({
-                clientId: clientId,
-                scope: 'email profile',
-            });
-        }
-        gapi.load('client:auth2', start);
-    });
+    const [showMenu, setShowMenu] = useState<boolean>(false);
 
     // React Router
     const navigate = useNavigate();

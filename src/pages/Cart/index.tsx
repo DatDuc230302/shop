@@ -37,7 +37,7 @@ function Cart() {
 
     // Redux
     const dispath = useDispatch();
-    const currentUser = useSelector((state: any) => state.authReducer);
+    const currentUser = useSelector((state: any) => state.authClientReducer);
     const rerender = useSelector((state: any) => state.cartReducer);
 
     // Effect
@@ -47,8 +47,8 @@ function Cart() {
 
     // Function
     const getApi = loadingApi(async () => {
-        if (currentUser) {
-            const idUser = localStorage.getItem('currentUser');
+        if (currentUser.status) {
+            const idUser = currentUser.data.id;
             const apiKeysData = await axios.get(`${ServerURL}/carts/getCarts?idUser=${idUser}`);
             if (apiKeys !== undefined) {
                 const keys = apiKeysData.data.result.products.map((item: any, index: number) => item.idProduct);
@@ -95,8 +95,8 @@ function Cart() {
     };
 
     const handleChange = async (idProduct: string, quantity: number) => {
-        if (currentUser) {
-            const idUser = localStorage.getItem('currentUser');
+        if (currentUser.status) {
+            const idUser = currentUser.data.id;
             const retunrKeys = apiKeys
                 .filter((item: any) => item.idProduct === idProduct && item)
                 .map((item: any) => item.key);
@@ -152,8 +152,8 @@ function Cart() {
     };
 
     const handleDelete = async (idProduct: string) => {
-        if (currentUser) {
-            const idUser = localStorage.getItem('currentUser');
+        if (currentUser.status) {
+            const idUser = currentUser.data.id;
             // Khi click vào deleteAll thì sẽ return các keys hiện đang có trong giỏ hàng về lại product
             const retunrKeys = apiKeys
                 .filter((item: any) => item.idProduct === idProduct && item)
@@ -178,8 +178,8 @@ function Cart() {
     };
 
     const handleNextPay = async () => {
-        if (currentUser) {
-            const userId = localStorage.getItem('currentUser');
+        if (currentUser.status) {
+            const userId = currentUser.data.id;
             const totalPrice = api
                 .reduce(
                     (accumulator: any, item: any) =>
