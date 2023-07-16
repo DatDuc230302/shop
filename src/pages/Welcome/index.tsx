@@ -10,28 +10,34 @@ import { loadingApi } from '../../components/Loading';
 import { useSelector, useDispatch } from 'react-redux';
 import cartAction from '../../redux/actions/cartAction';
 import { LoginGoogle } from '../../components/Auth/AuthGoogle';
+import authClientAction from '../../redux/actions/authClientAction';
 
 const cx = classNames.bind(style);
 function Welcome() {
+    // Router
     const params = useParams();
     const navigate = useNavigate();
 
+    // Redux
+    const dispath = useDispatch();
+
+    // State 1
     const [title, setTitle] = useState<string>('');
     const [content, setContent] = useState<string>('');
     const [btn, setBtn] = useState<string>('');
 
-    //
+    // State 2
     const [idLogin, setIdLogin] = useState<string>('');
     const [passLogin, setPassLogin] = useState<string>('');
 
-    //
+    // State 3
     const [idRegister, setIdRegister] = useState<string>('');
     const [nameRegister, setNameRegister] = useState<string>('');
     const [passRegister, setPassRegister] = useState<string>('');
     const [confirmPassRegister, setConfirmPassRegister] = useState<string>('');
     const [confirmPass, setConfirmPass] = useState<boolean>(false);
 
-    //
+    // State 4
     const [loading, setLoading] = useState<boolean>(false);
     const [warn, setWarn] = useState<boolean>(false);
     const [alert, setAlert] = useState<boolean>(false);
@@ -39,9 +45,7 @@ function Welcome() {
     const [alertLogin, setAlertLogin] = useState<boolean>(false);
     const [checkUserPass, setCheckUserPass] = useState<boolean>(false);
 
-    //
-    const dispath = useDispatch();
-
+    // Effect
     useEffect(() => {
         // Khi chuyển từ login qua register or ngược lại sẽ reset state về trạng thái ban đầu
         setIdLogin('');
@@ -72,6 +76,7 @@ function Welcome() {
         }
     }, [params.key]);
 
+    // Function
     const handlePost = () => {
         switch (params.key) {
             case 'login':
@@ -109,6 +114,8 @@ function Welcome() {
                     password: passRegister,
                     name: nameRegister,
                     avatar: 'https://firebasestorage.googleapis.com/v0/b/shop-g2a-d5524.appspot.com/o/avatars%2Favatar_10.svg?alt=media&token=321992ad-d6d1-4dcd-94d4-c6ab06a69283',
+                    defaultAvatar:
+                        'https://firebasestorage.googleapis.com/v0/b/shop-g2a-d5524.appspot.com/o/avatars%2Favatar_10.svg?alt=media&token=321992ad-d6d1-4dcd-94d4-c6ab06a69283',
                     rule: 1,
                 });
                 await axios.post(`${ServerURL}/carts/addCarts`, { idUser: idRegister });
@@ -116,7 +123,7 @@ function Welcome() {
                     setAlertRegister(true);
                     setTimeout(() => {
                         setAlertRegister(false);
-                        localStorage.setItem('currentUser', idRegister);
+                        localStorage.setItem('currentUserId', idRegister);
                         navigate('/');
                         dispath(cartAction());
                     }, 1000);
@@ -134,9 +141,12 @@ function Welcome() {
             setCheckUserPass(false);
             setTimeout(() => {
                 setAlertLogin(false);
-                localStorage.setItem('currentUser', idLogin);
-                navigate('/');
+                // Gán currentUserId lên localstorage
+                localStorage.setItem('currentUserId', idLogin);
+                // Rerender lại cart
                 dispath(cartAction());
+                // Điều trang về home
+                navigate('/');
             }, 1000);
         } else {
             setCheckUserPass(true);

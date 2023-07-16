@@ -6,10 +6,11 @@ import 'tippy.js/dist/tippy.css';
 import { useEffect, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux/es/exports';
+import { useDispatch, useSelector } from 'react-redux/es/exports';
 import { ServerURL } from '../../connect';
 import ChangeAvatar from '../ChangeAvatar';
 import { LoginGoogle, LogoutGoogle } from './AuthGoogle';
+import authClientAction from '../../redux/actions/authClientAction';
 
 const cx = classNames.bind(style);
 function Auth() {
@@ -19,24 +20,33 @@ function Auth() {
     const mb = useMediaQuery({ maxWidth: 767 });
 
     //Redux
+    const dispath = useDispatch();
     const renderCart = useSelector((state: any) => state.cartReducer);
     const currentUser = useSelector((state: any) => state.authClientReducer);
 
-    // Const Variable
-    const name = currentUser.status ? currentUser.data.name : '';
-    const avatar = currentUser.status ? currentUser.data.avatar : '';
-    const rule = currentUser.status ? currentUser.data.rule : 1;
+    // State Use
+    const [name, setName] = useState<string>(currentUser.status ? currentUser.data.name : '');
+    const [avatar, setAvatar] = useState<string>(currentUser.status ? currentUser.data.avatar : '');
+    const [defaultAvatar, setDefaultAvatar] = useState<string>(
+        currentUser.status ? currentUser.data.defaultAvatar : '',
+    );
+    const [rule, setRule] = useState<number>(currentUser.status ? currentUser.data.rule : 1);
 
     // State
     const [cartsLocal, setCartsLocal] = useState<number>(0);
     const [showAuth, setShowAuth] = useState<boolean>(false);
     const [showChangeAva, setShowChangeAva] = useState<boolean>(false);
 
+    // LocalStorage
+    const currentUserId = localStorage.getItem('currentUserId');
+
     // Effect
     useEffect(() => {
-        if (currentUser.status) {
-            const idUser = currentUser.status ? currentUser.data.id : '';
-            getCartsUser(idUser);
+        if (currentUserId) {
+            // Lấy thông tin User từ Server
+            getUser(currentUserId);
+            // Lấy thông tin Cart từ Server
+            getCartsUser(currentUserId);
         } else {
             const temp = localStorage.getItem('cartsLocal');
             const carts = JSON.parse(`${temp}`);
@@ -57,6 +67,26 @@ function Auth() {
         }
     };
 
+    const getUser = async (idUser: string) => {
+        const result = await axios.get(`${ServerURL}/users/queryId?id=${idUser}`);
+        const dataUser = result.data[0];
+        setName(dataUser.name);
+        setAvatar(dataUser.avatar);
+        setRule(dataUser.rule);
+        setDefaultAvatar(dataUser.defaultAvatar);
+
+        // Gán dữ liệu lấy từ server vào redux lưu trữ info của user
+        dispath(
+            authClientAction('LOGINCLIENT', {
+                id: dataUser.id,
+                name: dataUser.name,
+                avatar: dataUser.avatar,
+                defaultAvatar: dataUser.defaultAvatar,
+                rule: dataUser.rule,
+            }),
+        );
+    };
+
     return (
         <div className={cx('wrapper')}>
             <div className={cx('inner')}>
@@ -70,7 +100,7 @@ function Auth() {
                         offset={[3, 15]}
                         render={() => (
                             <>
-                                {currentUser.status ? (
+                                {currentUserId ? (
                                     <div className={cx('member')}>
                                         <div className={cx('info')}>
                                             <div
@@ -154,7 +184,7 @@ function Auth() {
                         )}
                     >
                         <div onClick={() => setShowAuth(!showAuth)} className={cx('user')}>
-                            {currentUser.status ? (
+                            {currentUserId ? (
                                 <img className={cx('avatar')} src={avatar} alt="" />
                             ) : (
                                 <svg
@@ -172,7 +202,7 @@ function Auth() {
                             )}
                         </div>
                     </HeadlessTippy>
-                    {pc && <div className={cx('auth')}>{currentUser.status ? name : 'Sign in / Register'}</div>}
+                    {pc && <div className={cx('auth')}>{currentUserId ? name : 'Sign in / Register'}</div>}
                 </div>
                 <Link to={'/page/cart'} className={cx('cart')}>
                     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width={24} height={24}>
@@ -180,8 +210,14 @@ function Auth() {
                     </svg>
                     {cartsLocal > 0 && <span className={cx('quantity')}>{cartsLocal}</span>}
                 </Link>
-                {currentUser.status && (
-                    <ChangeAvatar avatar={avatar} showChangeAva={showChangeAva} setShowChangeAva={setShowChangeAva} />
+                {currentUserId && (
+                    <ChangeAvatar
+                        avatar={avatar}
+                        setAvatar={setAvatar}
+                        defaultAvatar={defaultAvatar}
+                        showChangeAva={showChangeAva}
+                        setShowChangeAva={setShowChangeAva}
+                    />
                 )}
             </div>
         </div>

@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { ServerURL } from '../../connect';
 import { Link, useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const payments = [
     {
@@ -40,6 +41,10 @@ const payments = [
 
 const cx = classNames.bind(style);
 function Payment() {
+    // Redux
+    const currentUser = useSelector((state: any) => state.authClientReducer);
+
+    // State
     const [activeItem, setActiveItem] = useState<number>(0);
     const [activeProducts, setActiveProducts] = useState<boolean>(false);
     const [titlePay, setTitlePay] = useState<string>('Pay with G2A Wallet');
@@ -56,8 +61,12 @@ function Payment() {
     };
 
     useEffect(() => {
-        const userId = localStorage.getItem('currentUser');
-        getOrder(String(userId));
+        const currentUserId = localStorage.getItem('currentUserId');
+        if (currentUserId !== null) {
+            getOrder(currentUserId);
+        } else {
+            navigate('/');
+        }
     }, []);
 
     const getOrder = async (userId: string) => {
@@ -76,11 +85,6 @@ function Payment() {
             arrId: arrId,
         });
         setProductsView(productsUnique.data.result);
-
-        if (api.data.result.products.length > 0) {
-        } else {
-            navigate('/');
-        }
     };
 
     return (

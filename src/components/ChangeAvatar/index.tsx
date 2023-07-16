@@ -3,34 +3,22 @@ import style from './ChangeAvatar.module.scss';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { ServerURL } from '../../connect';
-import { useDispatch } from 'react-redux';
-import cartAction from '../../redux/actions/cartAction';
 
 const cx = classNames.bind(style);
 
-function ChangeAvatar({ oldAvatar, avatar, setAvatar, setShowChangeAva, showChangeAva }: any) {
+function ChangeAvatar({ avatar, setAvatar, defaultAvatar, setShowChangeAva, showChangeAva }: any) {
+    // State
     const [api, setApi] = useState([]);
     const [img, setImg] = useState('');
     const [currentImg, setCurrentImg] = useState(-1);
 
-    const dispath = useDispatch();
+    // LocalStorage
+    const currentUserId = localStorage.getItem('currentUserId');
 
+    // Effect
     useEffect(() => {
         getApi();
     }, []);
-
-    const getApi = async () => {
-        const data = await axios.get(`${ServerURL}/users/getAvatars`);
-        setApi(data.data);
-    };
-
-    const handleSubmit = async () => {
-        const idUser = localStorage.getItem('currentUser');
-        await axios.post(`${ServerURL}/users/updateAvatar`, { idUser: idUser, avatar: img });
-        setAvatar(img);
-        dispath(cartAction());
-        setShowChangeAva(false);
-    };
 
     useEffect(() => {
         const id = api.filter((item: any) => item.url === avatar).map((item: any) => item.id)[0];
@@ -40,6 +28,20 @@ function ChangeAvatar({ oldAvatar, avatar, setAvatar, setShowChangeAva, showChan
             setCurrentImg(0);
         }
     }, [avatar, api]);
+
+    // Function
+    const getApi = async () => {
+        const data = await axios.get(`${ServerURL}/users/getAvatars`);
+        setApi(data.data);
+    };
+
+    const handleSubmit = async () => {
+        // Post hình đã thay đổi lên server và lưu lại
+        await axios.post(`${ServerURL}/users/updateAvatar`, { idUser: currentUserId, avatar: img });
+        setAvatar(img);
+        setShowChangeAva(false);
+    };
+
     return (
         <div className={cx('wrapper', showChangeAva && 'active')}>
             <div className={cx('inner')}>
@@ -67,11 +69,15 @@ function ChangeAvatar({ oldAvatar, avatar, setAvatar, setShowChangeAva, showChan
                         <div
                             onClick={() => {
                                 setCurrentImg(0);
-                                setImg(oldAvatar);
+                                setImg(defaultAvatar);
                             }}
                             className={cx('item')}
                         >
-                            <img className={cx('item-img', currentImg === 0 && 'currentImg')} src={oldAvatar} alt="" />
+                            <img
+                                className={cx('item-img', currentImg === 0 && 'currentImg')}
+                                src={defaultAvatar}
+                                alt=""
+                            />
                         </div>
                         {api.map((item: any) => (
                             <div

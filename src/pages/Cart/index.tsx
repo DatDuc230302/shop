@@ -43,7 +43,7 @@ function Cart() {
     // Effect
     useEffect(() => {
         getApi();
-    }, [rerender, currentUser]);
+    }, [rerender]);
 
     // Function
     const getApi = loadingApi(async () => {

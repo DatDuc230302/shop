@@ -31,22 +31,8 @@ export function LoginGoogle() {
         const resData = await axios.get(`${ServerURL}/users/queryId?id=${api.googleId}`);
         const data = resData.data[0];
         if (data !== undefined) {
-            const dataUser = {
-                id: data.id,
-                name: data.name,
-                avatar: data.avatar,
-                rule: data.rule,
-            };
             localStorage.setItem('currentUserId', data.id);
-            dispath(authClientAction('LOGINCLIENT', dataUser));
         } else {
-            const dataUser = {
-                id: api.googleId,
-                name: api.name,
-                avatar: api.imageUrl,
-                rule: 1,
-            };
-            dispath(authClientAction('LOGINCLIENT', dataUser));
             localStorage.setItem('currentUserId', api.googleId);
             // Khi đăng nhập với gmail thì sẽ tạo password ngẫu nhiên với 8 kí tự
             var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -58,11 +44,14 @@ export function LoginGoogle() {
                 password += characters.charAt(randomIndex);
             }
             // End random here
+
+            // Gữi User mới lên server và lưu lại
             await axios.post(`${ServerURL}/users/add`, {
                 id: api.googleId,
                 password: password,
                 name: api.name,
                 avatar: api.imageUrl,
+                defaultAvatar: api.imageUrl,
                 rule: 1,
             });
             await axios.post(`${ServerURL}/carts/addCarts`, { idUser: api.googleId });
