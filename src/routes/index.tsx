@@ -26,6 +26,7 @@ import AdminAddProduct from '../admin/pages/AdminAddProduct';
 import AdminManageUsers from '../admin/pages/AdminManageUsers';
 import SoftWareDeals from '../pages/SofteWareDeals';
 import Welcome from '../pages/Welcome';
+import Orders from '../pages/Orders';
 
 interface route {
     path: string;
@@ -47,6 +48,8 @@ export const routes: route[] = [
     { path: path.plus, component: <Plus />, layout: SecondLayout },
     { path: path.softWareDeals, component: <SoftWareDeals />, layout: SecondLayout },
     { path: `${path.welcome}/:key`, component: <Welcome /> },
+    // Orders
+    { path: `${path.orders}`, component: <Orders /> },
 
     { path: path.welcome, component: <Welcome /> },
 

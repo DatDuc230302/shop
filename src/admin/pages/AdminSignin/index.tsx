@@ -36,7 +36,7 @@ export default function AdminSignin() {
 
     const handelPost = loadingApi(async () => {
         if (uid.length > 0 && password.length > 0) {
-            const api = await axios.get(`${ServerURL}/users/checkAdmin?uid=${uid}`);
+            const api = await axios.get(`${ServerURL}/users/checkAdmin?uid=${uid}&password=${password}`);
             if (api.data.status) {
                 setSuccessful(true);
                 setTimeout(() => {
@@ -99,7 +99,7 @@ export default function AdminSignin() {
                             onChange={(e) => setUid(String(e.target.value))}
                         />
                         <TextField
-                            placeholder="123"
+                            placeholder="123456"
                             margin="normal"
                             required
                             fullWidth

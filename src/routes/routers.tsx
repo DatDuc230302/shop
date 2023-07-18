@@ -8,6 +8,9 @@ export const routePath: {
     bestDeals: string;
     plus: string;
     softWareDeals: string;
+    // Orders
+    orders: string;
+
     welcome: string;
     //
     adminHome: string;
@@ -29,6 +32,7 @@ export const routePath: {
     bestDeals: '/best-deals',
     plus: '/plus',
     softWareDeals: '/software-deals',
+    orders: '/orders',
     welcome: '/welcome',
     //
     adminHome: '/admin/home',

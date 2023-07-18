@@ -87,7 +87,12 @@ function Welcome() {
                 }
                 break;
             case 'register':
-                if (nameRegister.length <= 0 || passRegister.length <= 0 || confirmPassRegister.length <= 0) {
+                if (
+                    nameRegister.length <= 0 ||
+                    passRegister.length <= 0 ||
+                    (passRegister.length > 0 && passRegister.length < 6) ||
+                    confirmPassRegister.length <= 0
+                ) {
                     setWarn(true);
                 } else {
                     registerUser();
@@ -221,6 +226,9 @@ function Welcome() {
                                 />
                                 {warn && passRegister.length <= 0 && (
                                     <span className={cx('body-warn')}>Please fill here!</span>
+                                )}
+                                {warn && passRegister.length > 0 && passRegister.length < 6 && (
+                                    <span className={cx('body-warn')}>Minimum password length is 6</span>
                                 )}
                                 <input
                                     className={cx('body-input')}

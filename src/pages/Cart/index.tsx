@@ -31,6 +31,7 @@ function Cart() {
     const [tooMany, setTooMany] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
     const [mustLogin, setMustLogin] = useState<boolean>(false);
+    const [enoughKeys, setEnoughKeys] = useState<boolean>(false);
 
     // React-Router
     const navigate = useNavigate();
@@ -113,7 +114,7 @@ function Cart() {
             });
             switch (api.data.message) {
                 case 'The key is not enough':
-                    alert('Keys không đủ');
+                    setEnoughKeys(true);
                     break;
                 case 'Cart is full':
                     setTooMany(true);
@@ -513,6 +514,17 @@ function Cart() {
                         className={cx('many-btn', 'disable')}
                     >
                         Cancel
+                    </div>
+                </div>
+            </div>
+            <div className={cx('many', enoughKeys && 'active')}>
+                <div onClick={() => setEnoughKeys(false)} className={cx('many-overlay')}></div>
+                <div className={cx('many-box', enoughKeys && 'active')}>
+                    <span style={{ textAlign: 'center' }} className={cx('many-header')}>
+                        This product does not have enough keys
+                    </span>
+                    <div style={{ width: '100%' }} onClick={() => setEnoughKeys(false)} className={cx('many-btn')}>
+                        OK
                     </div>
                 </div>
             </div>

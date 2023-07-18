@@ -4,7 +4,8 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { ServerURL } from '../../connect';
 import { Link, useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useMediaQuery } from 'react-responsive';
+import Loading, { loadingApi } from '../../components/Loading';
 
 const payments = [
     {
@@ -41,27 +42,27 @@ const payments = [
 
 const cx = classNames.bind(style);
 function Payment() {
-    // Redux
-    const currentUser = useSelector((state: any) => state.authClientReducer);
-
+    //Responsive
+    const pc = useMediaQuery({ minWidth: 992 });
+    const tb = useMediaQuery({ minWidth: 768, maxWidth: 991 });
+    const mb = useMediaQuery({ maxWidth: 767 });
     // State
     const [activeItem, setActiveItem] = useState<number>(0);
     const [activeProducts, setActiveProducts] = useState<boolean>(false);
+    const [imgPay, setImgPay] = useState<string>('https://checkout.pay.g2a.com/g2awallet.png');
     const [titlePay, setTitlePay] = useState<string>('Pay with G2A Wallet');
     const [api, setApi] = useState<Object[]>([]);
     const [totalPrice, setTotalPrice] = useState<number>(0);
     const [products, setProducts] = useState<Object[]>([]);
     const [productsView, setProductsView] = useState<Object[]>([]);
 
-    const navigate = useNavigate();
+    const [payAlert, setPayAlert] = useState<boolean>(false);
 
-    const handleItem = (index: number, content: string) => {
-        setActiveItem(index);
-        setTitlePay(content);
-    };
+    // Router
+    const navigate = useNavigate();
+    const currentUserId = localStorage.getItem('currentUserId');
 
     useEffect(() => {
-        const currentUserId = localStorage.getItem('currentUserId');
         if (currentUserId !== null) {
             getOrder(currentUserId);
         } else {
@@ -69,22 +70,59 @@ function Payment() {
         }
     }, []);
 
+    // Function
+
+    const handleItem = (index: number, content: string, img: string) => {
+        setActiveItem(index);
+        setTitlePay(content);
+        setImgPay(img);
+    };
+
     const getOrder = async (userId: string) => {
         const api = await axios.get(`${ServerURL}/orders/getOrders?userId=${userId}`);
-        setApi(api.data.result);
-        setTotalPrice(api.data.result.totalPrice);
-        setProducts(api.data.result.products);
 
-        const arr = api.data.result.products.map((item: any) => item.idProduct);
+        if (api.data.result !== null) {
+            if (api.data.result.status === 0) {
+                setApi(api.data.result);
+                setTotalPrice(api.data.result.totalPrice);
+                setProducts(api.data.result.products);
 
-        const arrId: string[] = arr.filter((value: any, index: any, self: any) => {
-            return self.indexOf(value) === index;
+                const arr = api.data.result.products.map((item: any) => item.idProduct);
+
+                const arrId: string[] = arr.filter((value: any, index: any, self: any) => {
+                    return self.indexOf(value) === index;
+                });
+
+                const productsUnique = await axios.post(`${ServerURL}/products/findAllById`, {
+                    arrId: arrId,
+                });
+                setProductsView(productsUnique.data.result);
+            } else {
+                navigate('/');
+            }
+        } else {
+            navigate('/');
+        }
+    };
+
+    const handlePayment = () => {
+        setPayAlert(true);
+    };
+
+    const handleBuy = async () => {
+        const result = await axios.post(`${ServerURL}/orders/updateStatus`, {
+            userId: currentUserId,
         });
+        if (result.data.message === 'successfully') {
+            // Sau khi mua hàng thì sẽ xóa giỏ hàng cũ
+            const result = await axios.post(`${ServerURL}/carts/deleteCart`, {
+                idUser: currentUserId,
+            });
 
-        const productsUnique = await axios.post(`${ServerURL}/products/findAllById`, {
-            arrId: arrId,
-        });
-        setProductsView(productsUnique.data.result);
+            if (result.data.message === 'successfully') {
+                navigate('/orders');
+            }
+        }
     };
 
     return (
@@ -123,7 +161,7 @@ function Payment() {
                     <div className={cx('body-box')}>
                         <span className={cx('body-header')}>Payment methods</span>
                         <div className={cx('body-section')}>
-                            <div className={cx('body-payments')}>
+                            <div className={cx('body-payments', tb && 'tb', mb && 'mb')}>
                                 <div className={cx('payments-header')}>
                                     <svg
                                         style={{ flexShrink: 0 }}
@@ -146,7 +184,7 @@ function Payment() {
                                         <div
                                             key={index}
                                             className={cx('payments-item', index === activeItem && 'active')}
-                                            onClick={() => handleItem(index, item.payTitle)}
+                                            onClick={() => handleItem(index, item.payTitle, item.img)}
                                         >
                                             <div className={cx('payments-box')}>
                                                 <div className={cx('item-pay')}>
@@ -164,7 +202,7 @@ function Payment() {
                                     ))}
                                 </div>
                             </div>
-                            <div className={cx('body-pay')}>
+                            <div className={cx('body-pay', tb && 'tb', mb && 'mb')}>
                                 <div className={cx('pay-products', activeProducts && 'active')}>
                                     <div className={cx('pay-info')}>
                                         <div
@@ -210,10 +248,25 @@ function Payment() {
                                             <span>{totalPrice}</span>
                                         </div>
                                     </div>
-                                    <div className={cx('payDetail-btn')}>{titlePay}</div>
+                                    <div onClick={() => handlePayment()} className={cx('payDetail-btn')}>
+                                        {titlePay}
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+            <div className={cx('pay-alert', payAlert && 'active')}>
+                <div onClick={() => setPayAlert(false)} className={cx('payAlert-overlay')}></div>
+                <div className={cx('payAlert-box', payAlert && 'active')}>
+                    <span>You are buying these products with</span>
+                    <img src={imgPay} alt="" />
+                    <div onClick={() => handleBuy()} className={cx('payAlert-btn')}>
+                        Yes
+                    </div>
+                    <div onClick={() => setPayAlert(false)} className={cx('payAlert-btn', 'disable')}>
+                        No
                     </div>
                 </div>
             </div>

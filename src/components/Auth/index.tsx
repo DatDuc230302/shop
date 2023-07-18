@@ -11,6 +11,7 @@ import { ServerURL } from '../../connect';
 import ChangeAvatar from '../ChangeAvatar';
 import { LoginGoogle, LogoutGoogle } from './AuthGoogle';
 import authClientAction from '../../redux/actions/authClientAction';
+import Loading, { loadingApi } from '../Loading';
 
 const cx = classNames.bind(style);
 function Auth() {
@@ -43,7 +44,6 @@ function Auth() {
     // Effect
     useEffect(() => {
         if (currentUserId) {
-            // Lấy thông tin User từ Server
             getUser(currentUserId);
             // Lấy thông tin Cart từ Server
             getCartsUser(currentUserId);
@@ -141,6 +141,30 @@ function Auth() {
                                                 </span>
                                             </div>
                                         </div>
+                                        <div className={cx('tools')}>
+                                            <Link to={'/orders'} className={cx('tools-item')}>
+                                                <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    viewBox="0 0 24 24"
+                                                    width="1.8rem"
+                                                    height="1.8rem"
+                                                    fill="#757575"
+                                                >
+                                                    <g
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        strokeWidth="2"
+                                                        stroke="#757575"
+                                                        fill="none"
+                                                        strokeMiterlimit="10"
+                                                    >
+                                                        <path d="M18 1L9.766 9.234A6.953 6.953 0 008 9a7 7 0 107 7c0-.891-.173-1.74-.476-2.524L17 11V8h3l3-3V1h-5z"></path>
+                                                        <circle cx="8" cy="16" r="2"></circle>
+                                                    </g>
+                                                </svg>
+                                                Your keys
+                                            </Link>
+                                        </div>
                                         <div className={cx('footer')}>
                                             <div className={cx('setting')}>
                                                 <svg
@@ -204,6 +228,7 @@ function Auth() {
                     </HeadlessTippy>
                     {pc && <div className={cx('auth')}>{currentUserId ? name : 'Sign in / Register'}</div>}
                 </div>
+
                 <Link to={'/page/cart'} className={cx('cart')}>
                     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width={24} height={24}>
                         <path fill="white" d="M21 7l-2 10H5L2.4 4H0V2h5l1 5h15zM7 22h3v-3H7v3zm7 0h3v-3h-3v3z"></path>
