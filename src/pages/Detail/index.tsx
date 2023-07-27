@@ -40,9 +40,12 @@ function Detail() {
     const [keys, setKeys] = useState<string[]>([]);
     const [fullCart, setFullCart] = useState<boolean>(false);
 
+    const [nameProduct, setNameProduct] = useState<string>('');
+
     // Effect
     useEffect(() => {
         window.scrollTo(0, 0);
+        getNameProduct();
     }, []);
 
     useEffect(() => {
@@ -71,6 +74,11 @@ function Detail() {
         }
     };
 
+    const getNameProduct = async () => {
+        const result = await axios.get(`${ServerURL}/products/queryId?id=${params.key}`);
+        setNameProduct(result.data[0].name);
+    };
+
     const handleAddCart = async (id: string) => {
         if (currentUser.status) {
             const idUser = currentUser.data.id;
@@ -78,6 +86,7 @@ function Detail() {
             const api = await axios.post(`${ServerURL}/carts/updateProductsCarts`, {
                 idUser: idUser,
                 idProduct: idProduct,
+                nameProduct: nameProduct,
             });
             if (api.data.message === 'successfully') {
                 dispath(cartAction());
@@ -87,7 +96,6 @@ function Detail() {
         } else {
             const cartsLocal = localStorage.getItem('cartsLocal');
             let cartArray = cartsLocal ? JSON.parse(cartsLocal) : [];
-
             if (cartArray.length < 15) {
                 const cartItem = { idProduct: String(params.key) };
                 cartArray.unshift(cartItem);

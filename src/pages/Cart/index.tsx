@@ -96,6 +96,8 @@ function Cart() {
     };
 
     const handleChange = async (idProduct: string, quantity: number) => {
+        let nameProduct = await axios.get(`${ServerURL}/products/queryId?id=${idProduct}`);
+        nameProduct = await nameProduct.data[0].name;
         if (currentUser.status) {
             const idUser = currentUser.data.id;
             const retunrKeys = apiKeys
@@ -110,6 +112,7 @@ function Cart() {
             const api = await axios.post(`${ServerURL}/carts/updateChangeProductsCarts`, {
                 idUser: idUser,
                 idProduct: idProduct,
+                nameProduct: nameProduct,
                 quantity: quantity,
             });
             switch (api.data.message) {
