@@ -113,7 +113,6 @@ export function LoginGoogle() {
             clientId={clientId}
             onSuccess={loginSuccess}
             onFailure={loginFailure}
-            cookiePolicy="single_host_origin"
             isSignedIn={true}
             render={(props) => loginUI(props)}
         />
