@@ -4,17 +4,33 @@ import { useEffect } from 'react';
 import axios from 'axios';
 import { ServerURL } from '../../connect';
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import Loading from '../Loading';
+import { loadingApi } from '../Loading';
+import { useSelector } from 'react-redux';
 
 const cx = classNames.bind(style);
 function ClientKeys({ userId }: any) {
+    // Redux
+    const currentUser = useSelector((state: any) => state.authClientReducer);
+    const currentUserId = localStorage.getItem('currentUserId');
+
+    // State
     const [api, setApi] = useState<object[]>([]);
+    const [loading, setLoading] = useState('');
+
+    // Router
+    const navigate = useNavigate();
 
     useEffect(() => {
-        getOrder();
-    }, []);
+        if (currentUserId) {
+            getOrder();
+        } else {
+            navigate('/');
+        }
+    }, [currentUser]);
 
-    const getOrder = async () => {
+    const getOrder = loadingApi(async () => {
         const result = await axios.get(`${ServerURL}/orders/getOrdered?userId=${userId}`);
         const ordereds = result.data.result;
 
@@ -26,14 +42,27 @@ function ClientKeys({ userId }: any) {
             }
             setApi(concatArr);
         }
-    };
+    }, setLoading);
 
+    // Function
     const formatDate = (dateString: string) => {
         const dateObject = new Date(dateString);
         const year = dateObject.getFullYear();
         const month = dateObject.getMonth() + 1;
         const day = dateObject.getDate();
         return `${year}-${month < 10 ? '0' : ''}${month}-${day < 10 ? '0' : ''}${day}`;
+    };
+
+    const handleSearch = (e: any) => {
+        const value = e.target.value;
+        const filteredProducts = api.filter((product: any) =>
+            product.nameProduct.toLowerCase().includes(value.toLowerCase()),
+        );
+        if (value.length > 0) {
+            setApi(filteredProducts);
+        } else {
+            getOrder();
+        }
     };
 
     return (
@@ -47,7 +76,7 @@ function ClientKeys({ userId }: any) {
                     <div className={cx('search')}>
                         <span className={cx('search-title')}>Search :</span>
                         <div className={cx('search-input')}>
-                            <input type="text" placeholder="Product name..." />
+                            <input onChange={(e) => handleSearch(e)} type="text" placeholder="Product name..." />
                             <div className={cx('search-icon')}>
                                 <svg
                                     viewBox="64 64 896 896"
@@ -63,28 +92,43 @@ function ClientKeys({ userId }: any) {
                         </div>
                     </div>
                 </div>
-                <div className={cx('products')}>
-                    <div className={cx('products-item')}>
-                        <div className={cx('item-title')}>Name</div>
-                        <div className={cx('item-title')}>Key</div>
-                        <div className={cx('item-title')}>Time</div>
-                        <div className={cx('item-title')}>View Product</div>
+                {loading ? (
+                    <div style={{ marginTop: 20 }}>
+                        <Loading />
                     </div>
-                    {api.map((item: any, index: number) => (
-                        <div key={index} className={cx('products-item')}>
-                            <div className={cx('item-title')}>
-                                <input type="text" value={item.nameProduct} />
-                            </div>
-                            <div className={cx('item-title')}>{item.key}</div>
-                            <div className={cx('item-title')}>{formatDate(item.orderedAt)}</div>
-                            <div className={cx('item-title')}>
-                                <Link to={`/detail/${item.idProduct}`} className={cx('view')}>
-                                    View
-                                </Link>
-                            </div>
+                ) : (
+                    <div className={cx('products')}>
+                        <div className={cx('products-item')}>
+                            <div className={cx('item-title')}>Name</div>
+                            <div className={cx('item-title')}>Key</div>
+                            <div className={cx('item-title')}>Time</div>
+                            <div className={cx('item-title')}>View Product</div>
+                            <div className={cx('item-title')}>Download</div>
                         </div>
-                    ))}
-                </div>
+                        {api.map((item: any, index: number) => (
+                            <div key={index} className={cx('products-item')}>
+                                <div className={cx('item-title')}>
+                                    <input onChange={() => ''} type="text" value={item.nameProduct} />
+                                </div>
+                                <div className={cx('item-title')}>{item.key}</div>
+                                <div className={cx('item-title')}>{formatDate(item.orderedAt)}</div>
+                                <div className={cx('item-title')}>
+                                    <Link to={`/detail/${item.idProduct}`} className={cx('view')}>
+                                        View
+                                    </Link>
+                                </div>
+                                <div className={cx('item-title')}>
+                                    <div
+                                        onClick={() => alert(`You are downloading this game. (${item.nameProduct})`)}
+                                        className={cx('view')}
+                                    >
+                                        Download
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )}
             </div>
         </div>
     );
